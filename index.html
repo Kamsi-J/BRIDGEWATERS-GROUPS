@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bridge Waters — Staff Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Outfit',sans-serif;min-height:100dvh;background:#f0f9ff;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+/* LAYOUT */
+.wrapper{display:grid;grid-template-columns:1fr 1fr;min-height:100dvh}
+
+/* LEFT BRAND PANEL */
+.brand{background:linear-gradient(155deg,#0369a1 0%,#0284c7 55%,#0ea5e9 100%);display:flex;flex-direction:column;justify-content:space-between;padding:48px 52px;position:relative;overflow:hidden}
+.brand::before{content:'';position:absolute;top:-120px;right:-120px;width:420px;height:420px;border-radius:50%;background:rgba(255,255,255,.06);pointer-events:none}
+.brand::after{content:'';position:absolute;bottom:-80px;left:-60px;width:300px;height:300px;border-radius:50%;background:rgba(255,255,255,.04);pointer-events:none}
+
+.brand-top{position:relative;z-index:1}
+.brand-logo{display:flex;align-items:center;gap:13px;margin-bottom:72px}
+.logo-mark{width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-mark svg{width:26px;height:26px}
+.logo-text h1{font-size:16px;font-weight:800;color:#fff;letter-spacing:-.3px;line-height:1.2}
+.logo-text span{font-size:11px;color:rgba(255,255,255,.65);font-weight:400}
+
+.brand-headline{font-size:38px;font-weight:800;color:#fff;line-height:1.15;letter-spacing:-.8px;margin-bottom:18px}
+.brand-headline em{font-style:normal;color:rgba(255,255,255,.7)}
+.brand-sub{font-size:15px;color:rgba(255,255,255,.72);line-height:1.65;max-width:380px;font-weight:400}
+
+.brand-features{display:flex;flex-direction:column;gap:14px;position:relative;z-index:1;margin-top:48px}
+.feat-item{display:flex;align-items:center;gap:12px}
+.feat-dot{width:30px;height:30px;border-radius:9px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.feat-txt{font-size:13.5px;color:rgba(255,255,255,.8);font-weight:500}
+
+.brand-bottom{position:relative;z-index:1}
+.brand-footer{font-size:11.5px;color:rgba(255,255,255,.45);line-height:1.6}
+.brand-footer strong{color:rgba(255,255,255,.65);font-weight:600}
+
+/* RIGHT FORM PANEL */
+.form-panel{background:#ffffff;display:flex;align-items:center;justify-content:center;padding:48px 52px}
+.form-wrap{width:100%;max-width:400px}
+.form-eyebrow{font-size:11px;font-weight:800;color:#0284c7;text-transform:uppercase;letter-spacing:.15em;margin-bottom:12px}
+.form-title{font-size:28px;font-weight:800;color:#0f172a;letter-spacing:-.6px;margin-bottom:6px}
+.form-subtitle{font-size:14px;color:#64748b;margin-bottom:36px;line-height:1.55}
+
+/* FORM ELEMENTS */
+.form-grp{margin-bottom:18px}
+.form-lbl{display:block;font-size:12px;font-weight:700;color:#334155;margin-bottom:6px;letter-spacing:.01em}
+.input-wrap{position:relative}
+.input-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);pointer-events:none}
+.input-icon svg{width:16px;height:16px;stroke:#94a3b8;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.form-input{width:100%;padding:11px 13px 11px 42px;border:1.5px solid #e2e8f0;border-radius:11px;background:#f8fafc;color:#0f172a;font-family:'Outfit',sans-serif;font-size:14px;outline:none;transition:all .2s;-webkit-appearance:none}
+.form-input:focus{border-color:#0284c7;background:#fff;box-shadow:0 0 0 4px rgba(2,132,199,.1)}
+.form-input::placeholder{color:#94a3b8}
+.toggle-pw{position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;background:none;border:none;padding:4px;color:#94a3b8;display:flex;align-items:center;transition:color .15s}
+.toggle-pw:hover{color:#0284c7}
+.toggle-pw svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+
+.form-row-between{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.remember-wrap{display:flex;align-items:center;gap:8px;cursor:pointer}
+.remember-wrap input{width:16px;height:16px;border-radius:4px;accent-color:#0284c7;cursor:pointer}
+.remember-wrap span{font-size:13px;color:#64748b;font-weight:500}
+.forgot-link{font-size:13px;color:#0284c7;font-weight:600;text-decoration:none;transition:color .15s}
+.forgot-link:hover{color:#0369a1;text-decoration:underline}
+
+/* ERROR */
+.err-box{background:#fef2f2;border:1px solid #fecaca;border-radius:9px;padding:11px 14px;font-size:13px;color:#dc2626;font-weight:500;display:none;margin-bottom:16px;align-items:center;gap:8px}
+.err-box.show{display:flex}
+
+/* SUCCESS */
+.success-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:9px;padding:11px 14px;font-size:13px;color:#15803d;font-weight:500;display:none;margin-bottom:16px;align-items:center;gap:8px}
+.success-box.show{display:flex}
+
+/* SUBMIT */
+.btn-submit{width:100%;height:48px;background:linear-gradient(135deg,#0284c7,#0369a1);color:#fff;border:none;border-radius:11px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .3s cubic-bezier(0.32,0.72,0,1);box-shadow:0 4px 16px rgba(2,132,199,.35);display:flex;align-items:center;justify-content:center;gap:9px;letter-spacing:-.1px}
+.btn-submit:hover:not(:disabled){background:linear-gradient(135deg,#0369a1,#075985);box-shadow:0 6px 24px rgba(2,132,199,.45);transform:translateY(-1px)}
+.btn-submit:active:not(:disabled){transform:scale(.99)}
+.btn-submit:disabled{opacity:.65;cursor:not-allowed;transform:none}
+.btn-submit .spinner{width:18px;height:18px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none}
+.btn-submit.loading .spinner{display:block}
+.btn-submit.loading .btn-txt{display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.divider{display:flex;align-items:center;gap:14px;margin:24px 0;color:#cbd5e1;font-size:12px;font-weight:600}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:#e2e8f0}
+
+.form-footer{text-align:center;font-size:12.5px;color:#94a3b8;margin-top:28px;line-height:1.6}
+.form-footer a{color:#0284c7;text-decoration:none;font-weight:600}
+.form-footer a:hover{text-decoration:underline}
+
+/* FORGOT modal overlay */
+.modal-ov{position:fixed;inset:0;background:rgba(2,132,199,.08);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .25s cubic-bezier(0.32,0.72,0,1)}
+.modal-ov.open{opacity:1;pointer-events:all}
+.modal{background:#fff;border-radius:20px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(2,132,199,.18),0 8px 24px rgba(0,0,0,.08);border:1px solid #e0f2fe;transform:translateY(18px) scale(.97);transition:transform .3s cubic-bezier(0.32,0.72,0,1)}
+.modal-ov.open .modal{transform:translateY(0) scale(1)}
+.modal-hdr{padding:22px 24px 18px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between}
+.modal-ttl{font-size:16px;font-weight:800;color:#0f172a;letter-spacing:-.3px}
+.modal-close{width:30px;height:30px;border-radius:8px;border:1px solid #e2e8f0;background:#f8fafc;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;color:#94a3b8;transition:all .2s;line-height:1}
+.modal-close:hover{background:#fee2e2;color:#dc2626;border-color:#fca5a5}
+.modal-body{padding:20px 24px 24px}
+.modal-desc{font-size:13.5px;color:#64748b;margin-bottom:20px;line-height:1.6}
+.modal-footer{padding:14px 24px 20px;border-top:1px solid #f1f5f9;display:flex;gap:9px;justify-content:flex-end}
+.btn-ghost{padding:0 16px;height:38px;border:1.5px solid #e2e8f0;border-radius:9px;background:transparent;color:#475569;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-ghost:hover{background:#f8fafc;border-color:#0284c7;color:#0284c7}
+.btn-sm-primary{padding:0 16px;height:38px;background:#0284c7;border:none;border-radius:9px;color:#fff;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 2px 8px rgba(2,132,199,.3)}
+.btn-sm-primary:hover{background:#0369a1}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .wrapper{grid-template-columns:1fr}
+  .brand{display:none}
+  .form-panel{padding:36px 24px;min-height:100dvh}
+}
+@media(max-width:460px){
+  .form-panel{padding:28px 18px}
+  .form-title{font-size:24px}
+}
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+  <!-- LEFT: BRAND PANEL -->
+  <div class="brand">
+    <div class="brand-top">
+      <div class="brand-logo">
+        <div class="logo-mark">
+          <svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 5.5H9.5C12 5.5 13.5 6.9 13.5 8.8C13.5 10.7 12 11.3 12 11.3C13.5 11.3 15.5 12.7 15.5 15C15.5 17.4 13.5 19.5 10 19.5H4V5.5Z" fill="white" fill-opacity=".95"/>
+            <path d="M17 5.5L19.5 13.5L22.8 5.5H24L19 20L15.8 12L17 5.5Z" fill="white" fill-opacity=".95"/>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <h1>Bridge Waters</h1>
+          <span>Hotel &amp; Conference Group</span>
+        </div>
+      </div>
+
+      <div class="brand-headline">Your workspace,<br><em>all in one place.</em></div>
+      <div class="brand-sub">The Bridge Waters staff portal gives you unified access to event bookings, requisitions, and operations across all properties.</div>
+
+      <div class="brand-features">
+        <div class="feat-item"><div class="feat-dot">📅</div><div class="feat-txt">Event booking &amp; hall management</div></div>
+        <div class="feat-item"><div class="feat-dot">📋</div><div class="feat-txt">Requisitions &amp; procurement</div></div>
+        <div class="feat-item"><div class="feat-dot">📊</div><div class="feat-txt">Revenue &amp; occupancy reporting</div></div>
+        <div class="feat-item"><div class="feat-dot">🔐</div><div class="feat-txt">Role-based access per department</div></div>
+      </div>
+    </div>
+
+    <div class="brand-bottom">
+      <div class="brand-footer">
+        <strong>Bridge Waters Hotel &amp; Conference Group</strong><br>
+        Internal staff portal — authorised access only.<br>
+        &copy; 2026 Bridge Waters Group. All rights reserved.
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: FORM PANEL -->
+  <div class="form-panel">
+    <div class="form-wrap">
+      <div class="form-eyebrow">Staff Portal</div>
+      <div class="form-title">Welcome back</div>
+      <div class="form-subtitle">Sign in with your work credentials to continue.</div>
+
+      <div class="err-box" id="errBox">
+        <span>⚠</span><span id="errMsg">Invalid email or password. Please try again.</span>
+      </div>
+      <div class="success-box" id="successBox">
+        <span>✓</span><span id="successMsg">Signed in! Redirecting...</span>
+      </div>
+
+      <form id="loginForm" onsubmit="return false">
+        <div class="form-grp">
+          <label class="form-lbl" for="email">Work Email</label>
+          <div class="input-wrap">
+            <span class="input-icon">
+              <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
+            </span>
+            <input class="form-input" type="email" id="email" name="email" autocomplete="email" placeholder="you@bridgewaters.com" required>
+          </div>
+        </div>
+
+        <div class="form-grp">
+          <label class="form-lbl" for="password">Password</label>
+          <div class="input-wrap">
+            <span class="input-icon">
+              <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </span>
+            <input class="form-input" type="password" id="password" name="password" autocomplete="current-password" placeholder="Enter your password" required>
+            <button type="button" class="toggle-pw" id="togglePw" aria-label="Show password" onclick="togglePassword()">
+              <svg id="eyeOpen" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg id="eyeClosed" viewBox="0 0 24 24" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-row-between">
+          <label class="remember-wrap">
+            <input type="checkbox" id="remember">
+            <span>Remember me</span>
+          </label>
+          <a href="#" class="forgot-link" onclick="openForgot();return false">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="btn-submit" id="submitBtn" onclick="handleLogin()">
+          <div class="spinner"></div>
+          <span class="btn-txt">Sign In</span>
+        </button>
+      </form>
+
+      <div class="form-footer">
+        Having trouble signing in? Contact your<br>
+        <a href="mailto:admin@bridgewaters.com">system administrator</a>.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FORGOT PASSWORD MODAL -->
+<div class="modal-ov" id="forgotModal">
+  <div class="modal">
+    <div class="modal-hdr">
+      <span class="modal-ttl">Reset Your Password</span>
+      <button class="modal-close" onclick="closeForgot()">&#215;</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-desc">Enter your work email address and we'll send you a link to reset your password.</div>
+      <div class="err-box" id="forgotErr" style="margin-bottom:12px"><span>⚠</span><span id="forgotErrMsg"></span></div>
+      <div class="success-box" id="forgotSuccess" style="margin-bottom:12px"><span>✓</span><span id="forgotSuccessMsg">Reset link sent! Check your email.</span></div>
+      <div class="form-grp" style="margin-bottom:0">
+        <label class="form-lbl">Work Email</label>
+        <div class="input-wrap">
+          <span class="input-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
+          </span>
+          <input class="form-input" type="email" id="forgotEmail" placeholder="you@bridgewaters.com">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeForgot()">Cancel</button>
+      <button class="btn-sm-primary" id="resetBtn" onclick="sendReset()">Send Reset Link</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.js"></script>
+<script>
+// Update this URL after publishing the events app
+const EVENTS_APP_URL = './events.html';
+const SB_URL  = 'https://brkzsxqqihbpnrsohhij.supabase.co';
+const SB_ANON = 'sb_publishable_zQdEhR6vwnrFZXykrV8D3A_3w4UTh-Z';
+
+let sb;
+try { sb = window.supabase?.createClient(SB_URL, SB_ANON); } catch(e) {}
+
+// Auto-redirect if already signed in
+(async function checkSession(){
+  if(!sb)return;
+  try{
+    const{data:{session}}=await sb.auth.getSession();
+    if(session)window.location.href=EVENTS_APP_URL;
+  }catch(e){}
+})();
+
+function setLoading(on){
+  const btn=document.getElementById('submitBtn');
+  btn.disabled=on;
+  btn.classList.toggle('loading',on);
+}
+
+function showErr(msg){
+  document.getElementById('errMsg').textContent=msg;
+  document.getElementById('errBox').classList.add('show');
+  document.getElementById('successBox').classList.remove('show');
+}
+function showSuccess(msg){
+  document.getElementById('successMsg').textContent=msg;
+  document.getElementById('successBox').classList.add('show');
+  document.getElementById('errBox').classList.remove('show');
+}
+function clearMessages(){
+  document.getElementById('errBox').classList.remove('show');
+  document.getElementById('successBox').classList.remove('show');
+}
+
+async function handleLogin(){
+  clearMessages();
+  const email=document.getElementById('email').value.trim();
+  const password=document.getElementById('password').value;
+  if(!email||!password){showErr('Please enter both email and password.');return}
+  setLoading(true);
+  if(!sb){showErr('Could not connect to authentication service. Please try again later.');setLoading(false);return}
+  try{
+    const{data,error}=await sb.auth.signInWithPassword({email,password});
+    if(error){
+      const msg=error.message.toLowerCase();
+      if(msg.includes('invalid')||msg.includes('credentials')||msg.includes('wrong')){showErr('Incorrect email or password. Please try again.')}
+      else if(msg.includes('email not confirmed')){showErr('Please verify your email address before signing in.')}
+      else if(msg.includes('too many')){showErr('Too many attempts. Please wait a moment before trying again.')}
+      else{showErr(error.message||'Sign-in failed. Please try again.')}
+      setLoading(false);return;
+    }
+    showSuccess('Signed in successfully! Redirecting…');
+    setTimeout(()=>{window.location.href=EVENTS_APP_URL;},900);
+  }catch(e){
+    showErr('An unexpected error occurred. Please try again.');
+    setLoading(false);
+  }
+}
+
+document.getElementById('loginForm').addEventListener('keydown',e=>{if(e.key==='Enter')handleLogin()});
+
+function togglePassword(){
+  const inp=document.getElementById('password');
+  const isHidden=inp.type==='password';
+  inp.type=isHidden?'text':'password';
+  document.getElementById('eyeOpen').style.display=isHidden?'none':'block';
+  document.getElementById('eyeClosed').style.display=isHidden?'block':'none';
+}
+
+function openForgot(){
+  document.getElementById('forgotModal').classList.add('open');
+  document.getElementById('forgotEmail').value=document.getElementById('email').value;
+  document.getElementById('forgotErr').classList.remove('show');
+  document.getElementById('forgotSuccess').classList.remove('show');
+  document.getElementById('resetBtn').disabled=false;
+}
+function closeForgot(){document.getElementById('forgotModal').classList.remove('open')}
+document.getElementById('forgotModal').addEventListener('click',e=>{if(e.target===document.getElementById('forgotModal'))closeForgot()});
+
+async function sendReset(){
+  const email=document.getElementById('forgotEmail').value.trim();
+  if(!email){document.getElementById('forgotErrMsg').textContent='Please enter your email address.';document.getElementById('forgotErr').classList.add('show');return}
+  document.getElementById('resetBtn').disabled=true;document.getElementById('resetBtn').textContent='Sending…';
+  document.getElementById('forgotErr').classList.remove('show');
+  if(!sb){document.getElementById('forgotErrMsg').textContent='Cannot connect to authentication service.';document.getElementById('forgotErr').classList.add('show');document.getElementById('resetBtn').disabled=false;document.getElementById('resetBtn').textContent='Send Reset Link';return}
+  try{
+    const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.href});
+    if(error){document.getElementById('forgotErrMsg').textContent=error.message||'Failed to send reset email.';document.getElementById('forgotErr').classList.add('show');document.getElementById('resetBtn').disabled=false;document.getElementById('resetBtn').textContent='Send Reset Link';return}
+    document.getElementById('forgotSuccess').classList.add('show');
+    document.getElementById('resetBtn').textContent='Sent!';
+    setTimeout(closeForgot,2500);
+  }catch(e){document.getElementById('forgotErrMsg').textContent='An unexpected error occurred.';document.getElementById('forgotErr').classList.add('show');document.getElementById('resetBtn').disabled=false;document.getElementById('resetBtn').textContent='Send Reset Link';}
+}
+</script>
+</body>
+</html>
