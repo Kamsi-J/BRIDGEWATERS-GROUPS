@@ -134,6 +134,7 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
 .day-chip{font-size:9.5px;font-weight:700;padding:2px 5px;border-radius:4px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;transition:opacity .15s;max-width:100%;line-height:1.4}
 .day-chip:hover{opacity:.82}
 .day-more{font-size:9.5px;font-weight:700;color:var(--muted);padding:1px 3px}
+#calGrid[data-canbooking="1"] .cal-day:not(.empty):hover::after{content:'+';position:absolute;bottom:5px;right:7px;font-size:16px;font-weight:700;color:var(--sky-400);opacity:.7;line-height:1;pointer-events:none}
 
 /* SIDE PANEL */
 .side-panel{display:flex;flex-direction:column;gap:14px}
@@ -300,9 +301,6 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
         </select>
       </div>
       <button class="theme-btn" onclick="toggleTheme()" title="Toggle theme"><span id="themeIcon">🌙</span></button>
-      <button class="btn-primary" id="bookBtn" onclick="openBookingModal()">
-        <span class="btn-icon">+</span><span>Book Event</span>
-      </button>
     </div>
   </header>
 
@@ -460,6 +458,7 @@ async function initSupabase(){
         document.getElementById('roleSelWrap').style.display='none';
       }
       document.getElementById('logoutBtn').style.display='flex';
+      document.getElementById('calGrid').dataset.canbooking=ROLES[profile.role]?.canBook?'1':'';
       // Load real events
       const{data:evts}=await sb.from('events').select('*').order('date');
       if(evts?.length){
@@ -526,7 +525,7 @@ function switchPage(p){
   document.getElementById('pageEvents').style.display=p==='events'?'':'none';
   document.getElementById('pageReq').style.display=p==='requisitions'?'':'none';
   document.getElementById('monthNav').style.display=p==='events'?'':'none';
-  document.getElementById('bookBtn').style.display=p==='events'&&ROLES[S.role].canBook?'':'none';
+  document.getElementById('calGrid').dataset.canbooking=ROLES[S.role].canBook&&p==='events'?'1':'';
   document.getElementById('pageTitle').textContent=p==='events'?'Event Booking':'Requisitions';
 }
 
@@ -535,7 +534,7 @@ function changeRole(r){
   document.getElementById('uAvatar').textContent=rl.initials;
   document.getElementById('uName').textContent=rl.label;
   document.getElementById('uRolePill').textContent=rl.label;
-  document.getElementById('bookBtn').style.display=rl.canBook&&S.page==='events'?'':'none';
+  document.getElementById('calGrid').dataset.canbooking=rl.canBook&&S.page==='events'?'1':'';
   renderStats();
 }
 
