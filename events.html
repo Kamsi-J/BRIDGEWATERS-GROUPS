@@ -910,25 +910,25 @@ function renderStats(){
   const pipRev=upc.reduce((s,e)=>s+e.amount,0);
   const rStats={
     banqueting_manager:[
-      {lbl:'Events This Month',val:mEvts.length,sub:'bookings confirmed',trend:'+3'},
-      {lbl:'Revenue This Month',val:fmtMoney(mRev),sub:'total collected',trend:'+12%'},
+      {lbl:'Events This Month',val:mEvts.length,sub:'bookings confirmed'},
+      {lbl:'Revenue This Month',val:fmtMoney(mRev),sub:'total collected'},
       {lbl:'Available Halls',val:HALLS.length-occH,sub:'free today'},
       {lbl:'Upcoming Events',val:upc.length,sub:'in the pipeline'},
     ],
     bdm:[
-      {lbl:'Events This Month',val:mEvts.length,sub:'total bookings',trend:'+3'},
-      {lbl:'Revenue This Month',val:fmtMoney(mRev),sub:'month-to-date',trend:'+12%'},
+      {lbl:'Events This Month',val:mEvts.length,sub:'total bookings'},
+      {lbl:'Revenue This Month',val:fmtMoney(mRev),sub:'month-to-date'},
       {lbl:'Halls Occupied Today',val:occH,sub:'of '+HALLS.length+' halls'},
       {lbl:'Pipeline Revenue',val:fmtMoney(pipRev),sub:'upcoming bookings'},
     ],
     admin:[
       {lbl:'Total Events',val:S.events.length,sub:'all time'},
-      {lbl:'Total Revenue',val:fmtMoney(totRev),sub:'all bookings',trend:'+18%'},
+      {lbl:'Total Revenue',val:fmtMoney(totRev),sub:'all bookings'},
       {lbl:'Halls Occupied Today',val:occH,sub:'of '+HALLS.length+' halls'},
       {lbl:'This Month',val:mEvts.length,sub:'events booked'},
     ],
     md:[
-      {lbl:'Total Revenue',val:fmtMoney(totRev),sub:'portfolio total',trend:'+18%'},
+      {lbl:'Total Revenue',val:fmtMoney(totRev),sub:'portfolio total'},
       {lbl:'Occupancy Rate',val:Math.round(occH/HALLS.length*100)+'%',sub:'today'},
       {lbl:'Events This Month',val:mEvts.length,sub:'confirmed bookings'},
       {lbl:'Upcoming Events',val:upc.length,sub:'scheduled ahead'},
@@ -947,7 +947,7 @@ function renderStats(){
     ],
   };
   const stats=rStats[S.role]||rStats['admin'];
-  document.getElementById('statsGrid').innerHTML=stats.map(s=>`<div class="stat-card"><div class="stat-inner"><div class="stat-lbl">${s.lbl}</div><div class="stat-val">${s.val}</div><div class="stat-sub"><span>${s.sub}</span>${s.trend?'<span class="stat-trend">'+s.trend+'</span>':''}</div></div></div>`).join('');
+  document.getElementById('statsGrid').innerHTML=stats.map(s=>`<div class="stat-card"><div class="stat-inner"><div class="stat-lbl">${s.lbl}</div><div class="stat-val">${s.val}</div><div class="stat-sub"><span>${s.sub}</span></div></div></div>`).join('');
   if(S.page==='events')showMapSection(S.role==='admin'||S.role==='md');
 }
 
