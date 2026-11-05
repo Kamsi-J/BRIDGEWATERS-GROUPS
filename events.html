@@ -241,6 +241,60 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
   .stat-val{font-size:18px}
   .cal-day{min-height:54px}
 }
+/* ── REQUISITIONS ───────────────────────────────────────────── */
+.req-page-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;gap:12px}
+.req-tabs{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap}
+.req-tab{padding:7px 15px;border-radius:9px;border:1px solid var(--border);background:var(--surface-2);color:var(--muted);font-size:12.5px;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Outfit',sans-serif}
+.req-tab.active{background:var(--sky-600);color:#fff;border-color:var(--sky-600)}
+.req-list{display:flex;flex-direction:column;gap:11px}
+.req-card{border:1px solid var(--border);background:var(--surface);border-radius:16px;padding:15px 18px;cursor:pointer;transition:all .25s var(--ease)}
+.req-card:hover{border-color:var(--sky-200);box-shadow:var(--shadow-sm);transform:translateY(-1px)}
+.req-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:7px}
+.req-card-title{font-size:14px;font-weight:800;color:var(--text)}
+.req-card-meta{font-size:11.5px;color:var(--muted);margin-top:2px}
+.req-card-right{text-align:right;flex-shrink:0}
+.req-card-amount{font-size:15.5px;font-weight:900;color:var(--sky-700);margin-bottom:4px}
+.req-status{display:inline-block;font-size:10px;font-weight:800;padding:2px 9px;border-radius:20px;letter-spacing:.04em;text-transform:uppercase}
+.req-status.pending{background:#fef3c7;color:#92400e}
+.req-status.approved{background:#d1fae5;color:#065f46}
+.req-status.paid{background:#dbeafe;color:#1e40af}
+.req-status.rejected{background:#fee2e2;color:#991b1b}
+.req-status.queried{background:#ede9fe;color:#5b21b6}
+.req-query-note{font-size:11.5px;color:#5b21b6;background:#ede9fe;border-radius:7px;padding:5px 9px;margin-top:7px}
+/* Items table */
+.req-items{width:100%;border-collapse:collapse;margin:10px 0 0}
+.req-items th{font-size:10.5px;font-weight:700;color:var(--muted);text-align:left;padding:5px 8px;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.04em}
+.req-items td{font-size:12.5px;padding:7px 8px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top}
+.req-items tr:last-child td{border-bottom:none}
+.req-items .r{text-align:right}
+.req-total-row{display:flex;justify-content:flex-end;gap:14px;align-items:center;padding:10px 8px 0;border-top:2px solid var(--border);margin-top:2px}
+.req-total-lbl{font-size:12px;font-weight:700;color:var(--muted)}
+.req-total-val{font-size:17px;font-weight:900;color:var(--sky-700)}
+/* Item rows in create form */
+.item-row{display:grid;grid-template-columns:1fr 72px 120px 28px;gap:7px;align-items:center;margin-bottom:7px}
+.item-del-btn{width:28px;height:28px;border-radius:7px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.item-del-btn:hover{background:#fee2e2;border-color:#fca5a5;color:#dc2626}
+.add-item-btn{font-size:12px;font-weight:700;color:var(--sky-600);background:transparent;border:1.5px dashed var(--sky-300);border-radius:9px;padding:7px;cursor:pointer;width:100%;margin:4px 0 10px;font-family:'Outfit',sans-serif;transition:all .2s}
+.add-item-btn:hover{background:var(--sky-50)}
+.req-sec-lbl{font-size:10.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 8px}
+/* Detail boxes */
+.detail-box{background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:11px 14px;margin-bottom:12px}
+.detail-box-row{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;padding:3px 0}
+.detail-box-lbl{color:var(--muted);font-weight:600;white-space:nowrap}
+.detail-box-val{color:var(--text);font-weight:700;text-align:right}
+/* Action buttons */
+.btn-approve{background:#059669;color:#fff;border:none;padding:9px 18px;border-radius:10px;font-weight:800;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;transition:all .2s}
+.btn-approve:hover{background:#047857}
+.btn-reject-r{background:#dc2626;color:#fff;border:none;padding:9px 18px;border-radius:10px;font-weight:800;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;transition:all .2s}
+.btn-reject-r:hover{background:#b91c1c}
+.btn-pay{background:var(--sky-600);color:#fff;border:none;padding:9px 18px;border-radius:10px;font-weight:800;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;transition:all .2s}
+.btn-pay:hover{background:var(--sky-700)}
+.btn-query{background:#7c3aed;color:#fff;border:none;padding:9px 18px;border-radius:10px;font-weight:800;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;transition:all .2s}
+.btn-query:hover{background:#6d28d9}
+.btn-del-grey{background:#6b7280;color:#fff;border:none;padding:9px 18px;border-radius:10px;font-weight:800;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;transition:all .2s}
+.btn-del-grey:hover{background:#4b5563}
+.empty-req{text-align:center;padding:52px 20px;color:var(--muted)}
+.empty-req svg{width:38px;height:38px;stroke:var(--light);fill:none;margin-bottom:12px;stroke-width:1.5}
 ::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--light);border-radius:3px}::-webkit-scrollbar-thumb:hover{background:var(--muted)}
 </style>
 </head>
@@ -323,6 +377,8 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
           <option value="bdm">BDM</option>
           <option value="admin">Admin</option>
           <option value="md">MD</option>
+          <option value="storekeeper">Store Keeper</option>
+          <option value="cashier">Cashier</option>
         </select>
       </div>
       <button class="theme-btn" onclick="toggleTheme()" title="Toggle theme"><span id="themeIcon">🌙</span></button>
@@ -362,13 +418,60 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
   </div>
 
   <div class="content" id="pageReq" style="display:none">
-    <div class="coming-soon">
-      <div class="cs-icon">&#128203;</div>
-      <h2>Requisitions</h2>
-      <p>The requisitions module is in development and will manage procurement, supplies, and internal requests across all Bridge Waters properties.</p>
+    <div class="req-page-hdr">
+      <div>
+        <div class="page-title" style="margin-bottom:3px">Requisitions</div>
+        <div style="font-size:12px;color:var(--muted)" id="reqSubtitle"></div>
+      </div>
+      <button class="btn-primary" id="newReqBtn" onclick="openNewReq()" style="display:none;align-items:center;gap:6px">
+        <span style="font-size:16px;line-height:1">+</span> New Requisition
+      </button>
     </div>
+    <div class="req-tabs" id="reqTabs"></div>
+    <div class="req-list" id="reqList"></div>
   </div>
 </main>
+</div>
+
+<!-- Requisition Create Modal -->
+<div class="modal-overlay" id="reqModal">
+  <div class="modal" style="max-width:580px">
+    <div class="modal-hdr"><span class="modal-ttl">New Requisition</span><button class="modal-close" onclick="closeModal('reqModal')">&#215;</button></div>
+    <div class="modal-body">
+      <div class="form-grp"><label class="form-lbl">Purpose / Title *</label><input class="form-input" id="rq-purpose" type="text" placeholder="e.g. Food items for Zenith Bank AGM dinner"></div>
+      <div class="req-sec-lbl">Items</div>
+      <div style="font-size:10.5px;color:var(--muted);margin-bottom:8px;display:grid;grid-template-columns:1fr 72px 120px 28px;gap:7px;padding:0 2px"><span>Description</span><span style="text-align:center">Qty</span><span style="text-align:right">Unit Cost (₦)</span><span></span></div>
+      <div id="rqItemRows"></div>
+      <button class="add-item-btn" onclick="addReqItem()">+ Add Item</button>
+      <div class="req-total-row" style="border-top:1px solid var(--border);padding-top:8px">
+        <span class="req-total-lbl">Total</span>
+        <span class="req-total-val" id="rqTotalDisp">₦0</span>
+      </div>
+      <div class="req-sec-lbl">Vendor &amp; Payment Details</div>
+      <div class="form-row">
+        <div class="form-grp"><label class="form-lbl">Vendor Name *</label><input class="form-input" id="rq-vendor" type="text" placeholder="e.g. Fresh Mart Supplies Ltd"></div>
+        <div class="form-grp"><label class="form-lbl">Bank Name</label><input class="form-input" id="rq-bank" type="text" placeholder="e.g. Access Bank"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-grp"><label class="form-lbl">Account Number</label><input class="form-input" id="rq-accno" type="text" placeholder="0123456789"></div>
+        <div class="form-grp"><label class="form-lbl">Account Name</label><input class="form-input" id="rq-accname" type="text" placeholder="Fresh Mart Supplies Ltd"></div>
+      </div>
+      <div class="form-grp"><label class="form-lbl">Notes (optional)</label><textarea class="form-ta" id="rq-notes" placeholder="Additional details, deadlines, delivery instructions..."></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('reqModal')">Cancel</button>
+      <button class="btn-primary" onclick="submitReq()">Submit Requisition</button>
+    </div>
+  </div>
+</div>
+
+<!-- Requisition Detail Modal -->
+<div class="modal-overlay" id="reqDetailModal">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-hdr"><span class="modal-ttl" id="reqDetailTtl">Requisition</span><button class="modal-close" onclick="closeModal('reqDetailModal')">&#215;</button></div>
+    <div class="modal-body" id="reqDetailBody"></div>
+    <div class="modal-footer" id="reqDetailFooter"></div>
+  </div>
 </div>
 
 <!-- Detail Modal -->
@@ -443,10 +546,12 @@ const HALLS=[
 ];
 const HM=Object.fromEntries(HALLS.map(h=>[h.id,h]));
 const ROLES={
-  banqueting_manager:{label:'Banqueting Manager',initials:'BM',canBook:true},
-  bdm:              {label:'BDM',               initials:'BD',canBook:true},
-  admin:            {label:'Admin',             initials:'AD',canBook:false},
-  md:               {label:'MD',               initials:'MD',canBook:false},
+  banqueting_manager:{label:'Banqueting Manager',initials:'BM',canBook:true, canRaiseReq:true},
+  bdm:              {label:'BDM',               initials:'BD',canBook:true,  canRaiseReq:false},
+  admin:            {label:'Admin',             initials:'AD',canBook:false, canApproveReq:true},
+  md:               {label:'MD',               initials:'MD',canBook:false, canOverrideReq:true},
+  storekeeper:      {label:'Store Keeper',      initials:'SK',canBook:false, canRaiseReq:true},
+  cashier:          {label:'Cashier',           initials:'CA',canBook:false, canPayReq:true},
 };
 const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
 const SEED=[
@@ -491,6 +596,10 @@ async function initSupabase(){
       }
       document.getElementById('logoutBtn').style.display='flex';
       document.getElementById('calGrid').dataset.canbooking=ROLES[profile.role]?.canBook?'1':'';
+      // For roles without event access, go straight to requisitions
+      if(profile.role==='storekeeper'||profile.role==='cashier'){
+        setTimeout(()=>switchPage('requisitions'),0);
+      }
       // Load real events
       const{data:evts}=await sb.from('events').select('*').order('date');
       if(evts?.length){
@@ -566,6 +675,10 @@ function switchPage(p){
   document.getElementById('monthNav').style.display=p==='events'?'':'none';
   document.getElementById('calGrid').dataset.canbooking=ROLES[S.role].canBook&&p==='events'?'1':'';
   document.getElementById('pageTitle').textContent=p==='events'?'Event Booking':'Requisitions';
+  if(p==='requisitions'){
+    currentReqTab=S.role==='cashier'?'approved':'pending';
+    renderReqPage();
+  }
 }
 
 function changeRole(r){
@@ -575,6 +688,7 @@ function changeRole(r){
   document.getElementById('uRolePill').textContent=rl.label;
   document.getElementById('calGrid').dataset.canbooking=rl.canBook&&S.page==='events'?'1':'';
   renderStats();
+  if(S.page==='requisitions')renderReqPage();
 }
 
 function changeMonth(d){
@@ -624,8 +738,21 @@ function renderStats(){
       {lbl:'Events This Month',val:mEvts.length,sub:'confirmed bookings'},
       {lbl:'Upcoming Events',val:upc.length,sub:'scheduled ahead'},
     ],
+    storekeeper:[
+      {lbl:'My Pending Requests',val:reqs.filter(r=>r.raised_by_role==='storekeeper'&&r.status==='pending').length,sub:'awaiting admin review'},
+      {lbl:'Approved for Payment',val:reqs.filter(r=>r.raised_by_role==='storekeeper'&&r.status==='approved').length,sub:'sent to cashier'},
+      {lbl:'Paid',val:reqs.filter(r=>r.raised_by_role==='storekeeper'&&r.status==='paid').length,sub:'completed'},
+      {lbl:'Total Submitted',val:fmtMoney(reqs.filter(r=>r.raised_by_role==='storekeeper').reduce((s,r)=>s+(r.total_amount||0),0)),sub:'all requisitions'},
+    ],
+    cashier:[
+      {lbl:'Pending Payments',val:reqs.filter(r=>r.status==='approved').length,sub:'awaiting payment'},
+      {lbl:'Paid This Month',val:reqs.filter(r=>r.status==='paid'&&r.paid_at&&new Date(r.paid_at).getMonth()===now.getMonth()).length,sub:'completed this month'},
+      {lbl:'Pending Value',val:fmtMoney(reqs.filter(r=>r.status==='approved').reduce((s,r)=>s+(r.total_amount||0),0)),sub:'to be paid out'},
+      {lbl:'Total Paid',val:fmtMoney(reqs.filter(r=>r.status==='paid').reduce((s,r)=>s+(r.total_amount||0),0)),sub:'all time'},
+    ],
   };
-  document.getElementById('statsGrid').innerHTML=rStats[S.role].map(s=>`<div class="stat-card"><div class="stat-inner"><div class="stat-lbl">${s.lbl}</div><div class="stat-val">${s.val}</div><div class="stat-sub"><span>${s.sub}</span>${s.trend?'<span class="stat-trend">'+s.trend+'</span>':''}</div></div></div>`).join('');
+  const stats=rStats[S.role]||rStats['admin'];
+  document.getElementById('statsGrid').innerHTML=stats.map(s=>`<div class="stat-card"><div class="stat-inner"><div class="stat-lbl">${s.lbl}</div><div class="stat-val">${s.val}</div><div class="stat-sub"><span>${s.sub}</span>${s.trend?'<span class="stat-trend">'+s.trend+'</span>':''}</div></div></div>`).join('');
 }
 
 function renderCal(){
@@ -730,10 +857,282 @@ function showToast(msg,icon){
   t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3400);
 }
 
+// ── REQUISITIONS MODULE ───────────────────────────────────────
+const REQ_STATUS={pending:{label:'Pending'},approved:{label:'Approved'},paid:{label:'Paid'},rejected:{label:'Rejected'},queried:{label:'Queried'}};
+const REQ_KEY='bw_reqs_v1';
+let reqs=[];
+let currentReqTab='pending';
+
+const REQ_SEED=[
+  {id:'rq1',purpose:'Food items for FBN Holdings AGM',items:[{description:'Rice 50kg bags',qty:10,unit_cost:35000,total:350000},{description:'Chicken crates',qty:5,unit_cost:40000,total:200000},{description:'Beverages assorted',qty:3,unit_cost:25000,total:75000}],total_amount:625000,vendor_name:'Fresh Mart Supplies Ltd',vendor_bank:'Access Bank',vendor_account_no:'0123456789',vendor_account_name:'Fresh Mart Supplies Ltd',notes:'Needed by Nov 4',raised_by:null,raised_by_name:'Banqueting Manager',raised_by_role:'banqueting_manager',status:'pending',admin_notes:'',md_query:'',created_at:'2026-11-01T10:00:00.000Z'},
+  {id:'rq2',purpose:'Kitchen supplies — cleaning & utensils',items:[{description:'Industrial detergent',qty:20,unit_cost:3500,total:70000},{description:'Stainless steel pots (large)',qty:4,unit_cost:15000,total:60000},{description:'Serving trays',qty:30,unit_cost:2000,total:60000}],total_amount:190000,vendor_name:'Kwik Kitchen Supplies',vendor_bank:'GTBank',vendor_account_no:'0987654321',vendor_account_name:'Kwik Kitchen Supplies',notes:'',raised_by:null,raised_by_name:'Store Keeper',raised_by_role:'storekeeper',status:'approved',admin_notes:'Quantity on pots reduced from 6 to 4',md_query:'',created_at:'2026-11-02T09:00:00.000Z',approved_at:'2026-11-03T11:00:00.000Z'},
+  {id:'rq3',purpose:'Decoration for Adeyemi wedding reception',items:[{description:'Fresh flower arrangements',qty:15,unit_cost:8000,total:120000},{description:'Table draping fabric',qty:50,unit_cost:3000,total:150000},{description:'LED candles',qty:100,unit_cost:800,total:80000}],total_amount:350000,vendor_name:'Bloom & Decor Nigeria',vendor_bank:'Zenith Bank',vendor_account_no:'1122334455',vendor_account_name:'Bloom and Decor Nigeria',notes:'Needed for Nov 8',raised_by:null,raised_by_name:'Banqueting Manager',raised_by_role:'banqueting_manager',status:'paid',admin_notes:'',md_query:'',created_at:'2026-11-01T14:00:00.000Z',approved_at:'2026-11-02T10:00:00.000Z',paid_at:'2026-11-03T15:00:00.000Z'},
+];
+
+function loadReqsLocal(){try{const s=localStorage.getItem(REQ_KEY);return s?JSON.parse(s):[...REQ_SEED]}catch{return[...REQ_SEED]}}
+function saveReqsLocal(){try{localStorage.setItem(REQ_KEY,JSON.stringify(reqs))}catch{}}
+
+async function fetchReqs(){
+  if(demoMode){reqs=loadReqsLocal();return;}
+  try{
+    const{data,error}=await sb.from('requisitions').select('*').order('created_at',{ascending:false});
+    if(error)throw error;
+    reqs=data||[];
+  }catch{reqs=loadReqsLocal();}
+}
+
+async function createReqDB(payload){
+  if(demoMode){const r={...payload,id:'rq'+Date.now(),created_at:new Date().toISOString(),status:'pending'};reqs.unshift(r);saveReqsLocal();return r;}
+  const{data,error}=await sb.from('requisitions').insert([payload]).select().single();
+  if(error)throw error;
+  reqs.unshift(data);return data;
+}
+
+async function updateReqDB(id,patch){
+  const idx=reqs.findIndex(r=>r.id===id);
+  const merged={...reqs[idx],...patch,updated_at:new Date().toISOString()};
+  if(demoMode){if(idx>=0){reqs[idx]=merged;saveReqsLocal();}return merged;}
+  const{data,error}=await sb.from('requisitions').update({...patch,updated_at:new Date().toISOString()}).eq('id',id).select().single();
+  if(error)throw error;
+  if(idx>=0)reqs[idx]=data;return data;
+}
+
+async function deleteReqDB(id){
+  reqs=reqs.filter(r=>r.id!==id);
+  if(demoMode){saveReqsLocal();return;}
+  const{error}=await sb.from('requisitions').delete().eq('id',id);
+  if(error)throw error;
+}
+
+function nairaFull(n){return'₦'+Number(n||0).toLocaleString('en-NG',{minimumFractionDigits:0,maximumFractionDigits:0})}
+
+function getFilteredReqs(tab){
+  const role=S.role;
+  let list=[...reqs];
+  if(role==='banqueting_manager'||role==='storekeeper'){
+    list=list.filter(r=>r.raised_by_role===role||(currentUser&&r.raised_by===currentUser.id));
+  }
+  if(tab==='all')return list;
+  if(tab==='rejected')return list.filter(r=>r.status==='rejected'||r.status==='queried');
+  return list.filter(r=>r.status===tab);
+}
+
+function getReqTabs(){
+  const role=S.role;
+  if(role==='cashier')return[{id:'approved',label:'For Payment'},{id:'paid',label:'Paid'}];
+  if(role==='banqueting_manager'||role==='storekeeper')return[{id:'pending',label:'Pending'},{id:'approved',label:'Approved'},{id:'paid',label:'Paid'},{id:'rejected',label:'Rejected'}];
+  return[{id:'pending',label:'Pending'},{id:'approved',label:'Approved'},{id:'paid',label:'Paid'},{id:'rejected',label:'Rejected'},{id:'all',label:'All'}];
+}
+
+function renderReqTabs(){
+  const el=document.getElementById('reqTabs');if(!el)return;
+  el.innerHTML=getReqTabs().map(t=>`<button class="req-tab${currentReqTab===t.id?' active':''}" onclick="switchReqTab('${t.id}')">${t.label} <span style="opacity:.65">(${getFilteredReqs(t.id).length})</span></button>`).join('');
+}
+
+function switchReqTab(tab){currentReqTab=tab;renderReqPage();}
+
+function renderReqPage(){
+  const role=S.role;
+  const btn=document.getElementById('newReqBtn');
+  if(btn)btn.style.display=(role==='banqueting_manager'||role==='storekeeper')?'flex':'none';
+  const sub=document.getElementById('reqSubtitle');
+  if(sub){const m={banqueting_manager:'Your procurement requests for events',storekeeper:'Your kitchen & supplies requests',admin:'Review and approve incoming requisitions',cashier:'Process payments for approved requests',md:'Overview of all requisitions',bdm:'Requisition overview'};sub.textContent=m[role]||'';}
+  renderReqTabs();
+  const list=getFilteredReqs(currentReqTab);
+  const el=document.getElementById('reqList');if(!el)return;
+  if(!list.length){
+    el.innerHTML=`<div class="empty-req"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><div style="font-weight:800;margin-bottom:5px;color:var(--text)">No ${currentReqTab==='all'?'':currentReqTab+' '}requisitions</div><div style="font-size:12px">${(role==='banqueting_manager'||role==='storekeeper')?'Tap "+ New Requisition" to raise one.':'Nothing here yet.'}</div></div>`;
+    return;
+  }
+  el.innerHTML=list.map(r=>{
+    const total=r.items?.reduce((s,it)=>s+(it.qty||0)*(it.unit_cost||0),0)||r.total_amount||0;
+    const date=r.created_at?new Date(r.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';
+    return`<div class="req-card" onclick="openReqDetail('${r.id}')">
+      <div class="req-card-top">
+        <div>
+          <div class="req-card-title">${r.purpose||'Untitled'}</div>
+          <div class="req-card-meta">${r.raised_by_name||r.raised_by_role||''}${date?' · '+date:''} · ${r.vendor_name||'No vendor'}</div>
+        </div>
+        <div class="req-card-right">
+          <div class="req-card-amount">${nairaFull(total)}</div>
+          <span class="req-status ${r.status||'pending'}">${REQ_STATUS[r.status||'pending']?.label||r.status}</span>
+        </div>
+      </div>
+      ${r.md_query?`<div class="req-query-note">MD Query: ${r.md_query}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+// ── CREATE ────────────────────────────────────────────────────
+function openNewReq(){
+  ['rq-purpose','rq-vendor','rq-bank','rq-accno','rq-accname','rq-notes'].forEach(id=>{document.getElementById(id).value='';});
+  document.getElementById('rqItemRows').innerHTML='';
+  document.getElementById('rqTotalDisp').textContent='₦0';
+  addReqItem();
+  openModal('reqModal');
+}
+
+function addReqItem(){
+  const id='ri'+Date.now()+Math.random().toString(36).slice(2,5);
+  const div=document.createElement('div');
+  div.className='item-row';div.id=id;
+  div.innerHTML=`<input class="form-input" placeholder="Description" oninput="calcReqTotal()"><input class="form-input" placeholder="1" type="number" min="1" value="1" oninput="calcReqTotal()" style="text-align:center"><input class="form-input" placeholder="0" type="number" min="0" oninput="calcReqTotal()" style="text-align:right"><button class="item-del-btn" onclick="document.getElementById('${id}').remove();calcReqTotal()">&#215;</button>`;
+  document.getElementById('rqItemRows').appendChild(div);
+}
+
+function calcReqTotal(){
+  let t=0;
+  document.querySelectorAll('#rqItemRows .item-row').forEach(row=>{const i=row.querySelectorAll('input');t+=(parseFloat(i[1]?.value)||0)*(parseFloat(i[2]?.value)||0);});
+  document.getElementById('rqTotalDisp').textContent=nairaFull(t);
+}
+
+function getReqItems(){
+  const items=[];
+  document.querySelectorAll('#rqItemRows .item-row').forEach(row=>{
+    const i=row.querySelectorAll('input');const desc=i[0]?.value?.trim();const qty=parseFloat(i[1]?.value)||0;const cost=parseFloat(i[2]?.value)||0;
+    if(desc)items.push({description:desc,qty,unit_cost:cost,total:qty*cost});
+  });
+  return items;
+}
+
+async function submitReq(){
+  const purpose=document.getElementById('rq-purpose').value.trim();
+  const items=getReqItems();
+  const vendor=document.getElementById('rq-vendor').value.trim();
+  if(!purpose){showToast('Enter a purpose/title','⚠️');return;}
+  if(!items.length){showToast('Add at least one item','⚠️');return;}
+  if(!vendor){showToast('Enter vendor name','⚠️');return;}
+  const total=items.reduce((s,it)=>s+it.total,0);
+  const payload={purpose,items,total_amount:total,vendor_name:vendor,vendor_bank:document.getElementById('rq-bank').value.trim(),vendor_account_no:document.getElementById('rq-accno').value.trim(),vendor_account_name:document.getElementById('rq-accname').value.trim(),notes:document.getElementById('rq-notes').value.trim(),raised_by:currentUser?.id||null,raised_by_name:document.getElementById('uName').textContent,raised_by_role:S.role,status:'pending',admin_notes:'',md_query:''};
+  try{await createReqDB(payload);closeModal('reqModal');showToast('Requisition submitted ✓','✅');renderReqPage();}
+  catch(e){showToast('Error: '+e.message,'❌');}
+}
+
+// ── DETAIL VIEW ───────────────────────────────────────────────
+let _reqId=null;
+
+function openReqDetail(id){
+  const r=reqs.find(x=>x.id===id);if(!r)return;
+  _reqId=id;
+  const role=S.role;
+  const total=r.items?.reduce((s,it)=>s+(it.qty||0)*(it.unit_cost||0),0)||r.total_amount||0;
+  document.getElementById('reqDetailTtl').textContent=r.purpose||'Requisition';
+
+  const statusBadge=`<span class="req-status ${r.status}">${REQ_STATUS[r.status]?.label||r.status}</span>`;
+
+  // Items — editable for admin on pending, read-only otherwise
+  let itemsHtml='';
+  if(role==='admin'&&r.status==='pending'){
+    itemsHtml=`<div class="req-sec-lbl">Items <span style="font-weight:500;text-transform:none;letter-spacing:0;color:var(--sky-600)">(you can adjust qty &amp; cost)</span></div>
+    <div style="font-size:10.5px;color:var(--muted);display:grid;grid-template-columns:1fr 72px 120px;gap:7px;padding:0 2px;margin-bottom:6px"><span>Description</span><span style="text-align:center">Qty</span><span style="text-align:right">Unit Cost</span></div>
+    <div id="adminItemRows">${(r.items||[]).map((it,i)=>`<div class="item-row" id="ai${i}" style="grid-template-columns:1fr 72px 120px"><input class="form-input" value="${it.description}" oninput="calcAdminTotal()"><input class="form-input" type="number" value="${it.qty}" min="1" oninput="calcAdminTotal()" style="text-align:center"><input class="form-input" type="number" value="${it.unit_cost}" min="0" oninput="calcAdminTotal()" style="text-align:right"></div>`).join('')}</div>
+    <div class="req-total-row"><span class="req-total-lbl">Total</span><span class="req-total-val" id="adminTotalDisp">${nairaFull(total)}</span></div>
+    <div class="form-grp" style="margin-top:12px"><label class="form-lbl">Admin Notes (optional)</label><textarea class="form-ta" id="adminNotesInp" placeholder="Adjustments, notes for cashier...">${r.admin_notes||''}</textarea></div>`;
+  }else{
+    itemsHtml=`<div class="req-sec-lbl">Items</div>
+    <table class="req-items"><thead><tr><th>Description</th><th class="r">Qty</th><th class="r">Unit Cost</th><th class="r">Total</th></tr></thead>
+    <tbody>${(r.items||[]).map(it=>`<tr><td>${it.description}</td><td class="r">${it.qty}</td><td class="r">${nairaFull(it.unit_cost)}</td><td class="r">${nairaFull(it.qty*it.unit_cost)}</td></tr>`).join('')}</tbody></table>
+    <div class="req-total-row"><span class="req-total-lbl">Total</span><span class="req-total-val">${nairaFull(total)}</span></div>`;
+  }
+
+  const vendorHtml=`<div class="req-sec-lbl">Vendor &amp; Payment Details</div>
+  <div class="detail-box">
+    <div class="detail-box-row"><span class="detail-box-lbl">Vendor</span><span class="detail-box-val">${r.vendor_name||'—'}</span></div>
+    <div class="detail-box-row"><span class="detail-box-lbl">Bank</span><span class="detail-box-val">${r.vendor_bank||'—'}</span></div>
+    <div class="detail-box-row"><span class="detail-box-lbl">Account No.</span><span class="detail-box-val">${r.vendor_account_no||'—'}</span></div>
+    <div class="detail-box-row"><span class="detail-box-lbl">Account Name</span><span class="detail-box-val">${r.vendor_account_name||'—'}</span></div>
+  </div>`;
+
+  const queryHtml=r.md_query?`<div style="background:#ede9fe;border:1px solid #c4b5fd;border-radius:10px;padding:10px 13px;margin:10px 0;font-size:12.5px;color:#5b21b6"><strong>MD Query:</strong> ${r.md_query}</div>`:'';
+
+  const infoHtml=`<div class="req-sec-lbl">Details</div>
+  <div class="detail-box">
+    <div class="detail-box-row"><span class="detail-box-lbl">Raised By</span><span class="detail-box-val">${r.raised_by_name||r.raised_by_role||'—'}</span></div>
+    <div class="detail-box-row"><span class="detail-box-lbl">Date</span><span class="detail-box-val">${r.created_at?new Date(r.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}):'—'}</span></div>
+    <div class="detail-box-row"><span class="detail-box-lbl">Status</span><span class="detail-box-val">${statusBadge}</span></div>
+    ${r.notes?`<div class="detail-box-row"><span class="detail-box-lbl">Notes</span><span class="detail-box-val" style="font-weight:500">${r.notes}</span></div>`:''}
+    ${r.admin_notes&&role!=='admin'?`<div class="detail-box-row"><span class="detail-box-lbl">Admin Notes</span><span class="detail-box-val" style="font-weight:500">${r.admin_notes}</span></div>`:''}
+    ${r.rejection_reason?`<div class="detail-box-row"><span class="detail-box-lbl">Rejection Reason</span><span class="detail-box-val" style="color:#dc2626">${r.rejection_reason}</span></div>`:''}
+  </div>`;
+
+  document.getElementById('reqDetailBody').innerHTML=itemsHtml+vendorHtml+queryHtml+infoHtml;
+
+  // Footer buttons
+  let footer=`<button class="btn-ghost" onclick="closeModal('reqDetailModal')">Close</button>`;
+  if(role==='admin'&&r.status==='pending'){
+    footer+=`<button class="btn-reject-r" onclick="rejectReq()">Reject</button>`;
+    footer+=`<button class="btn-approve" onclick="approveReq()">Approve &rarr; Cashier</button>`;
+  }else if(role==='cashier'&&r.status==='approved'){
+    footer+=`<button class="btn-pay" onclick="markPaid()">Mark as Paid ✓</button>`;
+  }else if(role==='md'){
+    if(r.status==='pending'||r.status==='approved'){
+      footer+=`<button class="btn-query" onclick="queryReqMD()">Query</button>`;
+      footer+=`<button class="btn-reject-r" onclick="rejectReqMD()">Reject</button>`;
+    }
+    footer+=`<button class="btn-del-grey" onclick="deleteReqMD()">Delete</button>`;
+  }
+  document.getElementById('reqDetailFooter').innerHTML=footer;
+  openModal('reqDetailModal');
+}
+
+function calcAdminTotal(){
+  let t=0;
+  document.querySelectorAll('#adminItemRows .item-row').forEach(row=>{const i=row.querySelectorAll('input');t+=(parseFloat(i[1]?.value)||0)*(parseFloat(i[2]?.value)||0);});
+  const el=document.getElementById('adminTotalDisp');if(el)el.textContent=nairaFull(t);
+}
+
+function getAdminItems(){
+  const items=[];
+  document.querySelectorAll('#adminItemRows .item-row').forEach(row=>{
+    const i=row.querySelectorAll('input');const desc=i[0]?.value?.trim();const qty=parseFloat(i[1]?.value)||0;const cost=parseFloat(i[2]?.value)||0;
+    if(desc)items.push({description:desc,qty,unit_cost:cost,total:qty*cost});
+  });
+  return items;
+}
+
+async function approveReq(){
+  const items=getAdminItems();const total=items.reduce((s,it)=>s+it.total,0);
+  const notes=document.getElementById('adminNotesInp')?.value?.trim()||'';
+  try{await updateReqDB(_reqId,{status:'approved',items,total_amount:total,admin_notes:notes,approved_by:currentUser?.id||null,approved_at:new Date().toISOString()});closeModal('reqDetailModal');showToast('Requisition approved — sent to cashier ✓','✅');renderReqPage();}
+  catch(e){showToast('Error: '+e.message,'❌');}
+}
+
+async function rejectReq(){
+  const reason=prompt('Reason for rejection (optional):');if(reason===null)return;
+  try{await updateReqDB(_reqId,{status:'rejected',rejection_reason:reason||'',rejected_by:currentUser?.id||null,rejected_at:new Date().toISOString()});closeModal('reqDetailModal');showToast('Requisition rejected','✓');renderReqPage();}
+  catch(e){showToast('Error: '+e.message,'❌');}
+}
+
+async function markPaid(){
+  if(!confirm('Confirm you have made this payment?'))return;
+  try{await updateReqDB(_reqId,{status:'paid',paid_by:currentUser?.id||null,paid_at:new Date().toISOString()});closeModal('reqDetailModal');showToast('Payment confirmed ✓','✅');renderReqPage();}
+  catch(e){showToast('Error: '+e.message,'❌');}
+}
+
+async function queryReqMD(){
+  const q=prompt('Enter your query:');if(!q?.trim())return;
+  try{await updateReqDB(_reqId,{md_query:q.trim(),status:'queried'});closeModal('reqDetailModal');showToast('Query sent','✓');renderReqPage();}
+  catch(e){showToast('Error: '+e.message,'❌');}
+}
+
+async function rejectReqMD(){
+  const reason=prompt('Reason for rejection (optional):');if(reason===null)return;
+  try{await updateReqDB(_reqId,{status:'rejected',rejection_reason:reason||'',rejected_by:currentUser?.id||null,rejected_at:new Date().toISOString()});closeModal('reqDetailModal');showToast('Requisition rejected','✓');renderReqPage();}
+  catch(e){showToast('Error: '+e.message,'❌');}
+}
+
+async function deleteReqMD(){
+  if(!confirm('Permanently delete this requisition? This cannot be undone.'))return;
+  try{await deleteReqDB(_reqId);closeModal('reqDetailModal');showToast('Deleted','✓');renderReqPage();}
+  catch(e){showToast('Error: '+e.message,'❌');}
+}
+
 // ── INIT ──────────────────────────────────────────────────────
 (async function init(){
   document.getElementById('monthLabel').textContent=MONTHS[S.month]+' '+S.year;
+  reqs=loadReqsLocal();
   await initSupabase();
+  await fetchReqs();
   renderStats();renderCal();renderUpcoming();renderLegend();
 })();
 </script>
