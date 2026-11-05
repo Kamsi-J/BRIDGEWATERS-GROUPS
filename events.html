@@ -79,6 +79,22 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
 .page-title{font-size:17px;font-weight:800;color:var(--text);letter-spacing:-.45px}
 .demo-badge{display:none;align-items:center;gap:5px;background:#fef3c7;color:#92400e;border:1px solid #fde68a;border-radius:8px;font-size:11px;font-weight:700;padding:4px 10px}
 .demo-badge.show{display:flex}
+.loc-pill{display:none;align-items:center;gap:5px;background:var(--sky-50);color:var(--sky-700);border:1px solid var(--sky-200);border-radius:8px;font-size:11px;font-weight:700;padding:4px 10px;white-space:nowrap}
+.loc-pill.show{display:flex}
+:root[data-theme="dark"] .loc-pill{background:rgba(14,165,233,.12);color:var(--sky-400);border-color:rgba(14,165,233,.2)}
+/* STAFF PAGE */
+.staff-page-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.staff-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.staff-card{border:1px solid var(--border);background:var(--sky-50);padding:5px;border-radius:18px}
+:root[data-theme="dark"] .staff-card{background:var(--surface-2)}
+.staff-card-inner{background:var(--surface);border-radius:13px;padding:16px 15px;box-shadow:inset 0 1px 0 rgba(255,255,255,.8)}
+:root[data-theme="dark"] .staff-card-inner{box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+.staff-avatar{width:42px;height:42px;border-radius:12px;background:var(--sky-500);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;letter-spacing:-.5px;flex-shrink:0}
+.staff-name{font-size:14px;font-weight:800;color:var(--text);letter-spacing:-.3px}
+.staff-role-pill{display:inline-flex;align-items:center;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--sky-100);color:var(--sky-700);margin-top:3px}
+:root[data-theme="dark"] .staff-role-pill{background:rgba(14,165,233,.15)}
+.staff-prop{font-size:11.5px;color:var(--muted);margin-top:5px}
+.staff-email{font-size:11px;color:var(--muted);margin-top:2px}
 .month-nav{display:flex;align-items:center;background:var(--surface-2);border-radius:10px;border:1px solid var(--border);overflow:hidden}
 .month-nav button{width:34px;height:34px;border:none;background:transparent;cursor:pointer;color:var(--muted);display:flex;align-items:center;justify-content:center;transition:all .2s}
 .month-nav button:hover{background:var(--sky-50);color:var(--sky-600)}
@@ -372,7 +388,7 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
       <div class="nav-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
       <div class="nav-txt"><span>Reports</span></div>
     </div>
-    <div class="nav-item dimmed">
+    <div class="nav-item dimmed" id="navStaff">
       <div class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg></div>
       <div class="nav-txt"><span>HR &amp; Staff</span></div>
     </div>
@@ -399,6 +415,7 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
         <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
       <span class="page-title" id="pageTitle">Event Booking</span>
+      <span class="loc-pill" id="locPill"></span>
     </div>
     <div class="tb-right">
       <button class="theme-btn" onclick="toggleTheme()" title="Toggle theme"><span id="themeIcon">🌙</span></button>
@@ -464,6 +481,17 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
     </div>
     <div class="req-tabs" id="reqTabs"></div>
     <div class="req-list" id="reqList"></div>
+  </div>
+
+  <div class="content" id="pageStaff" style="display:none">
+    <div class="staff-page-hdr">
+      <div>
+        <div class="page-title" style="margin-bottom:3px">HR &amp; Staff</div>
+        <div style="font-size:12px;color:var(--muted)">Manage staff accounts across all properties</div>
+      </div>
+      <button class="btn-primary" onclick="openAddStaff()"><span style="font-size:16px;line-height:1">+</span> Add Staff Member</button>
+    </div>
+    <div class="staff-grid" id="staffGrid"></div>
   </div>
 </main>
 </div>
@@ -555,6 +583,45 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
   </div>
 </div>
 
+<!-- Add Staff Modal -->
+<div class="modal-overlay" id="staffModal">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-hdr"><span class="modal-ttl">Add Staff Member</span><button class="modal-close" onclick="closeModal('staffModal')">&#215;</button></div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-grp"><label class="form-lbl">Full Name *</label><input class="form-input" id="st-name" type="text" placeholder="e.g. Chukwuemeka Obi"></div>
+        <div class="form-grp"><label class="form-lbl">Email Address *</label><input class="form-input" id="st-email" type="email" placeholder="e.g. c.obi@bridgewaters.ng"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-grp"><label class="form-lbl">Role *</label>
+          <select class="form-sel" id="st-role">
+            <option value="">Select role...</option>
+            <option value="banqueting_manager">Banqueting Manager</option>
+            <option value="bdm">BDM</option>
+            <option value="admin">Admin</option>
+            <option value="storekeeper">Store Keeper</option>
+            <option value="cashier">Cashier</option>
+          </select>
+        </div>
+        <div class="form-grp"><label class="form-lbl">Property Assignment</label>
+          <select class="form-sel" id="st-prop">
+            <option value="">All Properties (Admin / MD)</option>
+            <option value="bw_hotel">Bridge Waters Hotel · Lagos</option>
+            <option value="oak_enugu">Oakland Hotel · Enugu</option>
+            <option value="oak_park">Oakland Amusement Park · Enugu</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-grp"><label class="form-lbl">Temporary Password *</label><input class="form-input" id="st-pass" type="password" placeholder="Minimum 8 characters" autocomplete="new-password"></div>
+      <div style="font-size:11px;color:var(--muted);margin-top:8px;padding:9px 11px;background:var(--sky-50);border-radius:8px;border:1px solid var(--sky-100);line-height:1.6">The staff member will receive a confirmation email to activate their account. Ask them to change their password after first login.</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('staffModal')">Cancel</button>
+      <button class="btn-primary" id="staffSubmitBtn" onclick="submitNewStaff()">Create Account</button>
+    </div>
+  </div>
+</div>
+
 <div class="sb-overlay" id="sbOverlay" onclick="toggleMobSidebar()"></div>
 
 <div class="toast" id="toast"><span id="toastIcon">&#10003;</span><span id="toastMsg">Done!</span></div>
@@ -602,7 +669,7 @@ const KEY='bw_ev3';
 function loadEvts(){try{const s=localStorage.getItem(KEY);return s?JSON.parse(s):[]}catch{return[]}}
 function saveEvts(e){try{localStorage.setItem(KEY,JSON.stringify(e))}catch{}}
 
-let S={events:loadEvts(),role:'banqueting_manager',year:2026,month:10,page:'events'};
+let S={events:loadEvts(),role:'banqueting_manager',year:2026,month:10,page:'events',propertyId:null};
 
 // ── SUPABASE FUNCTIONS ────────────────────────────────────────
 async function initSupabase(){
@@ -614,9 +681,12 @@ async function initSupabase(){
       const{data:profile}=await sb.from('profiles').select('*').eq('id',session.user.id).single();
       if(profile){
         S.role=profile.role;
+        S.propertyId=profile.property_id||null;
         document.getElementById('uName').textContent=profile.full_name||ROLES[profile.role].label;
         document.getElementById('uRolePill').textContent=ROLES[profile.role].label;
         document.getElementById('uAvatar').textContent=ROLES[profile.role].initials;
+        updateLocPill();
+        updateNavForRole(S.role);
       }
       document.getElementById('logoutBtn').style.display='flex';
       document.getElementById('calGrid').dataset.canbooking=ROLES[S.role]?.canBook?'1':'';
@@ -697,15 +767,18 @@ function switchPage(p){
   document.querySelectorAll('.nav-item[data-page]').forEach(el=>el.classList.toggle('active',el.dataset.page===p));
   document.getElementById('pageEvents').style.display=p==='events'?'':'none';
   document.getElementById('pageReq').style.display=p==='requisitions'?'':'none';
+  document.getElementById('pageStaff').style.display=p==='staff'?'':'none';
   document.getElementById('monthNav').style.display=p==='events'?'':'none';
   document.getElementById('calGrid').dataset.canbooking=ROLES[S.role].canBook&&p==='events'?'1':'';
-  document.getElementById('pageTitle').textContent=p==='events'?'Event Booking':'Requisitions';
+  const titles={events:'Event Booking',requisitions:'Requisitions',staff:'HR & Staff'};
+  document.getElementById('pageTitle').textContent=titles[p]||'Event Booking';
   if(p==='events'){showMapSection(S.role==='admin'||S.role==='md');}
   else{showMapSection(false);}
   if(p==='requisitions'){
     currentReqTab=S.role==='cashier'?'approved':'pending';
     renderReqPage();
   }
+  if(p==='staff')renderStaffPage();
 }
 
 function changeRole(r){
@@ -717,6 +790,100 @@ function changeRole(r){
   showMapSection(S.page==='events'&&(r==='admin'||r==='md'));
   renderStats();
   if(S.page==='requisitions')renderReqPage();
+}
+
+function updateLocPill(){
+  const pill=document.getElementById('locPill');
+  if(!pill)return;
+  if(!S.propertyId||S.role==='admin'||S.role==='md'){pill.classList.remove('show');return;}
+  const prop=PM[S.propertyId];
+  if(!prop){pill.classList.remove('show');return;}
+  pill.textContent=prop.name+' · '+prop.city;
+  pill.classList.add('show');
+}
+
+function updateNavForRole(role){
+  const navStaff=document.getElementById('navStaff');
+  if(!navStaff)return;
+  if(role==='admin'){
+    navStaff.classList.remove('dimmed');
+    navStaff.style.pointerEvents='';
+    navStaff.style.opacity='';
+    navStaff.setAttribute('data-page','staff');
+    navStaff.onclick=function(){switchPage('staff');closeMobSidebar();};
+  }else{
+    navStaff.classList.add('dimmed');
+    navStaff.removeAttribute('data-page');
+    navStaff.onclick=null;
+  }
+}
+
+let staffList=[];
+async function fetchStaff(){
+  if(!sb)return;
+  try{
+    const{data,error}=await sb.from('profiles').select('*').order('full_name');
+    if(!error)staffList=data||[];
+  }catch{}
+}
+
+function renderStaffPage(){
+  const el=document.getElementById('staffGrid');if(!el)return;
+  if(!staffList.length){
+    fetchStaff().then(()=>{if(staffList.length)renderStaffPage();else el.innerHTML='<p style="color:var(--muted);font-size:13px">No staff found. Add a staff member to get started.</p>';});
+    return;
+  }
+  el.innerHTML=staffList.map(p=>{
+    const role=ROLES[p.role]||{label:p.role||'Unknown',initials:'??'};
+    const prop=p.property_id?PM[p.property_id]:null;
+    const initials=role.initials||(p.full_name?p.full_name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2):'??');
+    return`<div class="staff-card"><div class="staff-card-inner">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+        <div class="staff-avatar">${initials}</div>
+        <div><div class="staff-name">${p.full_name||'—'}</div><div class="staff-role-pill">${role.label}</div></div>
+      </div>
+      ${p.email?`<div class="staff-email">✉ ${p.email}</div>`:''}
+      <div class="staff-prop">${prop?'📍 '+prop.name+' · '+prop.city:'🌐 All Properties'}</div>
+    </div></div>`;
+  }).join('');
+}
+
+function openAddStaff(){
+  document.getElementById('st-name').value='';
+  document.getElementById('st-email').value='';
+  document.getElementById('st-role').value='';
+  document.getElementById('st-prop').value='';
+  document.getElementById('st-pass').value='';
+  openModal('staffModal');
+}
+
+async function submitNewStaff(){
+  const name=document.getElementById('st-name').value.trim();
+  const email=document.getElementById('st-email').value.trim();
+  const role=document.getElementById('st-role').value;
+  const propId=document.getElementById('st-prop').value||null;
+  const pass=document.getElementById('st-pass').value;
+  if(!name||!email||!role||!pass){showToast('Please fill in all required fields.','⚠️');return;}
+  if(pass.length<8){showToast('Password must be at least 8 characters.','⚠️');return;}
+  const btn=document.getElementById('staffSubmitBtn');
+  btn.disabled=true;btn.textContent='Creating...';
+  try{
+    const{data,error}=await sb.auth.signUp({email,password:pass,options:{data:{full_name:name,role}}});
+    if(error)throw error;
+    const uid=data?.user?.id;
+    if(uid){
+      await sb.from('profiles').upsert({id:uid,full_name:name,role,email,property_id:propId||null},{onConflict:'id'});
+    }
+    staffList=[];
+    await fetchStaff();
+    renderStaffPage();
+    closeModal('staffModal');
+    showToast(name+' added — confirmation email sent ✓','✅');
+  }catch(e){
+    showToast('Error: '+(e.message||'Could not create account'),'❌');
+  }finally{
+    btn.disabled=false;btn.textContent='Create Account';
+  }
 }
 
 function changeMonth(d){
