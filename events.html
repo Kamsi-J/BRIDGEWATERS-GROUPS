@@ -195,15 +195,6 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
   @keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
 }
 @media(max-width:1120px){.cal-layout{grid-template-columns:1fr}.side-panel{display:none}}
-/* MOBILE NAV BAR */
-.mob-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:50;background:var(--surface);border-top:1px solid var(--border);padding:6px 0 max(6px,env(safe-area-inset-bottom));box-shadow:0 -4px 20px rgba(14,165,233,.08)}
-.mob-nav-inner{display:flex;align-items:center;justify-content:space-around}
-.mob-nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 18px;border-radius:12px;cursor:pointer;color:var(--muted);transition:all .2s var(--ease);border:none;background:transparent;font-family:'Outfit',sans-serif}
-.mob-nav-item.active{color:var(--sky-600)}
-.mob-nav-item svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
-.mob-nav-lbl{font-size:10px;font-weight:700;letter-spacing:.02em}
-.mob-nav-dot{width:5px;height:5px;border-radius:50%;background:var(--sky-500);display:none;margin-top:1px}
-.mob-nav-item.active .mob-nav-dot{display:block}
 /* Hamburger — always visible */
 .mob-menu-btn{display:flex;width:36px;height:36px;border-radius:9px;background:var(--surface-2);border:1px solid var(--border);cursor:pointer;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
 .mob-menu-btn:hover{background:var(--sky-50);border-color:var(--sky-200)}
@@ -213,7 +204,6 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
 .sb-overlay.show{opacity:1;pointer-events:all}
 
 @media(min-width:769px){
-  .mob-nav{display:none}
   .content{padding:22px 32px}
   .topbar{padding:0 32px}
   .stats-grid{grid-template-columns:repeat(4,1fr);gap:14px}
@@ -224,14 +214,12 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
   .stat-val{font-size:23px}
 }
 @media(max-width:768px){
-  #main{padding-bottom:72px}
   .content{padding:14px 14px 20px}
   .topbar{padding:0 14px;height:56px}
   .stats-grid{grid-template-columns:1fr 1fr;gap:9px}
   .stat-val{font-size:21px}
   .role-sel-wrap{display:none}
   .month-label{min-width:0;font-size:12px;padding:0 8px}
-  .mob-nav{display:block}
   .cal-layout{grid-template-columns:1fr}
   .side-panel{display:none}
   .cal-day{min-height:68px;padding:7px 4px 4px}
@@ -326,11 +314,6 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
       </button>
       <span class="page-title" id="pageTitle">Event Booking</span>
       <div class="demo-badge" id="demoBadge">⚡ Demo Mode</div>
-      <div class="month-nav" id="monthNav">
-        <button onclick="changeMonth(-1)" title="Previous"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
-        <span class="month-label" id="monthLabel">November 2026</span>
-        <button onclick="changeMonth(1)" title="Next"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
-      </div>
     </div>
     <div class="tb-right">
       <div class="role-sel-wrap" id="roleSelWrap">
@@ -348,6 +331,11 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
 
   <div class="content" id="pageEvents">
     <div class="stats-grid" id="statsGrid"></div>
+    <div class="month-nav" id="monthNav" style="margin-bottom:16px">
+      <button onclick="changeMonth(-1)" title="Previous"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <span class="month-label" id="monthLabel">November 2026</span>
+      <button onclick="changeMonth(1)" title="Next"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+    </div>
     <div class="cal-layout">
       <div class="cal-card">
         <div class="cal-inner">
@@ -429,32 +417,7 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
   </div>
 </div>
 
-<!-- MOBILE BOTTOM NAV -->
 <div class="sb-overlay" id="sbOverlay" onclick="toggleMobSidebar()"></div>
-<nav class="mob-nav">
-  <div class="mob-nav-inner">
-    <button class="mob-nav-item active" id="mobNavEvents" onclick="switchPage('events');closeMobSidebar()">
-      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      <span class="mob-nav-lbl">Events</span>
-      <div class="mob-nav-dot"></div>
-    </button>
-    <button class="mob-nav-item" id="mobNavReq" onclick="switchPage('requisitions');closeMobSidebar()">
-      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-      <span class="mob-nav-lbl">Requests</span>
-      <div class="mob-nav-dot"></div>
-    </button>
-    <button class="mob-nav-item" id="mobNavTheme" onclick="toggleTheme()">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>
-      <span class="mob-nav-lbl">Theme</span>
-      <div class="mob-nav-dot" style="display:none"></div>
-    </button>
-    <button class="mob-nav-item" id="mobNavProfile" onclick="toggleMobSidebar()">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>
-      <span class="mob-nav-lbl" id="mobNavName">Profile</span>
-      <div class="mob-nav-dot" style="display:none"></div>
-    </button>
-  </div>
-</nav>
 
 <div class="toast" id="toast"><span id="toastIcon">&#10003;</span><span id="toastMsg">Done!</span></div>
 
@@ -522,7 +485,6 @@ async function initSupabase(){
         S.role=profile.role;
         document.getElementById('roleSelect').value=profile.role;
         document.getElementById('uName').textContent=profile.full_name||ROLES[profile.role].label;
-        document.getElementById('mobNavName').textContent=(profile.full_name||ROLES[profile.role].label).split(' ')[0];
         document.getElementById('uRolePill').textContent=ROLES[profile.role].label;
         document.getElementById('uAvatar').textContent=ROLES[profile.role].initials;
         document.getElementById('roleSelWrap').style.display='none';
@@ -604,8 +566,6 @@ function switchPage(p){
   document.getElementById('monthNav').style.display=p==='events'?'':'none';
   document.getElementById('calGrid').dataset.canbooking=ROLES[S.role].canBook&&p==='events'?'1':'';
   document.getElementById('pageTitle').textContent=p==='events'?'Event Booking':'Requisitions';
-  document.getElementById('mobNavEvents').classList.toggle('active',p==='events');
-  document.getElementById('mobNavReq').classList.toggle('active',p==='requisitions');
 }
 
 function changeRole(r){
