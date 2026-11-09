@@ -606,9 +606,11 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
         <div class="form-grp"><label class="form-lbl">Property Assignment</label>
           <select class="form-sel" id="st-prop">
             <option value="">All Properties (Admin / MD)</option>
-            <option value="bw_hotel">Bridge Waters Hotel · Lagos</option>
+            <option value="bw_hotel">Bridge Waters Hotel · Abuja</option>
+            <option value="bw_enugu">Bridge Waters Hotel · Enugu</option>
             <option value="oak_enugu">Oakland Hotel · Enugu</option>
             <option value="oak_park">Oakland Amusement Park · Enugu</option>
+            <option value="placia">Placia Hotel · Enugu</option>
           </select>
         </div>
       </div>
@@ -642,9 +644,11 @@ try { sb = window.supabase?.createClient(SB_URL, SB_ANON); } catch(e) {}
 // Properties (locations) under Bridge Waters Groups
 // Coordinates are approximate — update with exact GPS coordinates when available
 const PROPERTIES=[
-  {id:'bw_hotel',  name:'Bridge Waters Hotel',   city:'Lagos', state:'Lagos', lat:6.4274, lng:3.4216, color:'#0ea5e9'},
-  {id:'oak_enugu', name:'Oakland Hotel',          city:'Enugu', state:'Enugu', lat:6.4581, lng:7.5086, color:'#7c3aed'},
-  {id:'oak_park',  name:'Oakland Amusement Park', city:'Enugu', state:'Enugu', lat:6.4150, lng:7.5350, color:'#059669'},
+  {id:'bw_hotel',  name:'Bridge Waters Hotel',   city:'Abuja', state:'FCT',   lat:9.0795, lng:7.4858, color:'#0ea5e9'},
+  {id:'bw_enugu',  name:'Bridge Waters Hotel',   city:'Enugu', state:'Enugu', lat:6.4529, lng:7.5094, color:'#f59e0b'},
+  {id:'oak_enugu', name:'Oakland Hotel',          city:'Enugu', state:'Enugu', lat:6.3987, lng:7.5058, color:'#7c3aed'},
+  {id:'oak_park',  name:'Oakland Amusement Park', city:'Enugu', state:'Enugu', lat:6.3993, lng:7.5065, color:'#059669'},
+  {id:'placia',    name:'Placia Hotel',           city:'Enugu', state:'Enugu', lat:6.4350, lng:7.5004, color:'#dc2626'},
 ];
 // Halls per property — capacities are placeholders, update with actual figures
 const HALLS=[
@@ -1326,7 +1330,7 @@ function showMapSection(show){
 function initPropertyMap(){
   if(!window.L)return;
   if(_leafletMap){_leafletMap.invalidateSize();renderMapSidebar();return;}
-  _leafletMap=L.map('propertyMap',{zoomControl:true,scrollWheelZoom:false}).setView([7.0,5.5],6);
+  _leafletMap=L.map('propertyMap',{zoomControl:true,scrollWheelZoom:false}).setView([7.5,7.1],7);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
     attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     maxZoom:18
