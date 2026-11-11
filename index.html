@@ -3,173 +3,159 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bridge Waters — Staff Portal</title>
+<title>Bridge Waters | Staff portal</title>
 <link rel="icon" type="image/png" href="assets/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/light/style.css">
 <style>
+:root{
+  --serif:'Cormorant Garamond','Times New Roman',serif;
+  --sans:'Geist',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --canvas:#f4f6f8; --surface:#ffffff; --line:#dfe5ea; --line-2:#c6cfd7;
+  --ink:#0e1c28; --ink-2:#34454f; --muted:#5a6a74; --deep:#0b1823;
+  --azure:#2ea6dc; --azure-ink:#12709c; --bad:#962d2d; --bad-bg:#f7e8e6; --ok:#1d6445; --ok-bg:#e6f2ec;
+  --r:3px; --ease:cubic-bezier(.22,.7,.2,1);
+}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Outfit',sans-serif;min-height:100dvh;background:#f0f9ff;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{font-family:var(--sans);min-height:100dvh;background:var(--canvas);color:var(--ink);-webkit-font-smoothing:antialiased;overflow-x:hidden;font-size:14.5px;line-height:1.5}
+i[class*="ph-"]{display:inline-block;line-height:1;vertical-align:-.14em}
+:focus-visible{outline:2px solid var(--azure);outline-offset:2px}
 
-/* LAYOUT */
-.wrapper{display:grid;grid-template-columns:1fr 1fr;min-height:100dvh}
+.wrapper{display:grid;grid-template-columns:minmax(380px,5fr) 6fr;min-height:100dvh}
 
-/* LEFT BRAND PANEL */
-.brand{background:linear-gradient(155deg,#0369a1 0%,#0284c7 55%,#0ea5e9 100%);display:flex;flex-direction:column;justify-content:space-between;padding:48px 52px;position:relative;overflow:hidden}
-.brand::before{content:'';position:absolute;top:-120px;right:-120px;width:420px;height:420px;border-radius:50%;background:rgba(255,255,255,.06);pointer-events:none}
-.brand::after{content:'';position:absolute;bottom:-80px;left:-60px;width:300px;height:300px;border-radius:50%;background:rgba(255,255,255,.04);pointer-events:none}
+/* LEFT: brand panel */
+.brand{background:var(--deep);display:flex;flex-direction:column;justify-content:space-between;padding:56px 64px;position:relative}
+/* TODO: a property photograph (hotel exterior, about 1200x1600) can sit behind this panel at low opacity once supplied */
+.brand-logo img{width:240px;max-width:100%;height:auto;display:block}
+.brand-copy{max-width:420px}
+.brand-headline{font-family:var(--serif);font-size:52px;font-weight:500;color:#fff;line-height:1.02;letter-spacing:-.015em;margin-bottom:20px}
+.brand-sub{font-size:16px;color:rgba(214,224,231,.78);line-height:1.65}
+.brand-props{list-style:none;border-top:1px solid rgba(255,255,255,.12)}
+.brand-props li{display:flex;justify-content:space-between;gap:16px;padding:13px 0;border-bottom:1px solid rgba(255,255,255,.08);font-size:14.5px;color:rgba(214,224,231,.86)}
+.brand-props li span:last-child{color:rgba(214,224,231,.5)}
+.brand-footer{font-size:12.5px;color:rgba(214,224,231,.45);margin-top:28px}
 
-.brand-top{position:relative;z-index:1}
-.brand-logo{display:flex;align-items:center;gap:13px;margin-bottom:72px}
-.logo-mark{width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.logo-mark svg{width:26px;height:26px}
-.logo-text h1{font-size:16px;font-weight:800;color:#fff;letter-spacing:-.3px;line-height:1.2}
-.logo-text span{font-size:11px;color:rgba(255,255,255,.65);font-weight:400}
-
-.brand-headline{font-size:38px;font-weight:800;color:#fff;line-height:1.15;letter-spacing:-.8px;margin-bottom:18px}
-.brand-headline em{font-style:normal;color:rgba(255,255,255,.7)}
-.brand-sub{font-size:15px;color:rgba(255,255,255,.72);line-height:1.65;max-width:380px;font-weight:400}
-
-.brand-features{display:flex;flex-direction:column;gap:14px;position:relative;z-index:1;margin-top:48px}
-.feat-item{display:flex;align-items:center;gap:12px}
-.feat-dot{width:30px;height:30px;border-radius:9px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
-.feat-txt{font-size:13.5px;color:rgba(255,255,255,.8);font-weight:500}
-
-.brand-bottom{position:relative;z-index:1}
-.brand-footer{font-size:11.5px;color:rgba(255,255,255,.45);line-height:1.6}
-.brand-footer strong{color:rgba(255,255,255,.65);font-weight:600}
-
-/* RIGHT FORM PANEL */
-.form-panel{background:#ffffff;display:flex;align-items:center;justify-content:center;padding:48px 52px}
+/* RIGHT: form */
+.form-panel{background:var(--canvas);display:flex;align-items:center;justify-content:center;padding:56px 64px}
 .form-wrap{width:100%;max-width:400px}
-.form-eyebrow{font-size:11px;font-weight:800;color:#0284c7;text-transform:uppercase;letter-spacing:.15em;margin-bottom:12px}
-.form-title{font-size:28px;font-weight:800;color:#0f172a;letter-spacing:-.6px;margin-bottom:6px}
-.form-subtitle{font-size:14px;color:#64748b;margin-bottom:36px;line-height:1.55}
+.form-title{font-family:var(--serif);font-size:46px;font-weight:500;color:var(--ink);letter-spacing:-.015em;line-height:1;margin-bottom:12px}
+.form-subtitle{font-size:15px;color:var(--muted);margin-bottom:40px}
 
-/* FORM ELEMENTS */
-.form-grp{margin-bottom:18px}
-.form-lbl{display:block;font-size:12px;font-weight:700;color:#334155;margin-bottom:6px;letter-spacing:.01em}
+.form-grp{margin-bottom:20px}
+.form-lbl{display:block;font-size:13px;font-weight:500;color:var(--ink-2);margin-bottom:7px}
 .input-wrap{position:relative}
-.input-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);pointer-events:none}
-.input-icon svg{width:16px;height:16px;stroke:#94a3b8;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
-.form-input{width:100%;padding:11px 13px 11px 42px;border:1.5px solid #e2e8f0;border-radius:11px;background:#f8fafc;color:#0f172a;font-family:'Outfit',sans-serif;font-size:14px;outline:none;transition:all .2s;-webkit-appearance:none}
-.form-input:focus{border-color:#0284c7;background:#fff;box-shadow:0 0 0 4px rgba(2,132,199,.1)}
-.form-input::placeholder{color:#94a3b8}
-.toggle-pw{position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;background:none;border:none;padding:4px;color:#94a3b8;display:flex;align-items:center;transition:color .15s}
-.toggle-pw:hover{color:#0284c7}
-.toggle-pw svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.input-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--muted);font-size:18px}
+.form-input{width:100%;height:46px;padding:0 44px 0 44px;border:1px solid var(--line-2);border-radius:var(--r);background:var(--surface);color:var(--ink);font-family:var(--sans);font-size:15px;outline:none;transition:border-color .2s,box-shadow .2s}
+.form-input::placeholder{color:#66767f;opacity:1}
+.form-input:focus{border-color:var(--azure-ink);box-shadow:0 0 0 3px rgba(46,166,220,.2)}
+.toggle-pw{position:absolute;right:4px;top:50%;transform:translateY(-50%);cursor:pointer;background:none;border:none;width:38px;height:38px;color:var(--muted);display:flex;align-items:center;justify-content:center;font-size:19px;border-radius:var(--r);transition:color .2s}
+.toggle-pw:hover{color:var(--ink)}
 
-.form-row-between{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
-.remember-wrap{display:flex;align-items:center;gap:8px;cursor:pointer}
-.remember-wrap input{width:16px;height:16px;border-radius:4px;accent-color:#0284c7;cursor:pointer}
-.remember-wrap span{font-size:13px;color:#64748b;font-weight:500}
-.forgot-link{font-size:13px;color:#0284c7;font-weight:600;text-decoration:none;transition:color .15s}
-.forgot-link:hover{color:#0369a1;text-decoration:underline}
+.form-row-between{display:flex;align-items:center;justify-content:space-between;margin:4px 0 28px}
+.remember-wrap{display:flex;align-items:center;gap:9px;cursor:pointer}
+.remember-wrap input{width:16px;height:16px;accent-color:var(--ink);cursor:pointer}
+.remember-wrap span{font-size:14px;color:var(--ink-2)}
+.forgot-link{font-size:14px;color:var(--azure-ink);text-decoration:none}
+.forgot-link:hover{text-decoration:underline;text-underline-offset:3px}
 
-/* ERROR */
-.err-box{background:#fef2f2;border:1px solid #fecaca;border-radius:9px;padding:11px 14px;font-size:13px;color:#dc2626;font-weight:500;display:none;margin-bottom:16px;align-items:center;gap:8px}
-.err-box.show{display:flex}
+.err-box,.success-box{display:none;align-items:flex-start;gap:10px;border-radius:var(--r);padding:12px 14px;font-size:14px;margin-bottom:20px;border-left:2px solid}
+.err-box{background:var(--bad-bg);color:var(--bad);border-color:var(--bad)}
+.success-box{background:var(--ok-bg);color:var(--ok);border-color:var(--ok)}
+.err-box.show,.success-box.show{display:flex}
+.err-box i,.success-box i{font-size:18px;margin-top:1px}
 
-/* SUCCESS */
-.success-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:9px;padding:11px 14px;font-size:13px;color:#15803d;font-weight:500;display:none;margin-bottom:16px;align-items:center;gap:8px}
-.success-box.show{display:flex}
-
-/* SUBMIT */
-.btn-submit{width:100%;height:48px;background:linear-gradient(135deg,#0284c7,#0369a1);color:#fff;border:none;border-radius:11px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .3s cubic-bezier(0.32,0.72,0,1);box-shadow:0 4px 16px rgba(2,132,199,.35);display:flex;align-items:center;justify-content:center;gap:9px;letter-spacing:-.1px}
-.btn-submit:hover:not(:disabled){background:linear-gradient(135deg,#0369a1,#075985);box-shadow:0 6px 24px rgba(2,132,199,.45);transform:translateY(-1px)}
-.btn-submit:active:not(:disabled){transform:scale(.99)}
-.btn-submit:disabled{opacity:.65;cursor:not-allowed;transform:none}
-.btn-submit .spinner{width:18px;height:18px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none}
+.btn-submit{width:100%;height:48px;background:var(--ink);color:#fff;border:1px solid var(--ink);border-radius:var(--r);font-family:var(--sans);font-size:15px;font-weight:500;cursor:pointer;transition:background .2s,transform .12s;display:flex;align-items:center;justify-content:center;gap:9px;letter-spacing:.005em}
+.btn-submit:hover:not(:disabled){background:#122433}
+.btn-submit:active:not(:disabled){transform:translateY(1px)}
+.btn-submit:disabled{opacity:.65;cursor:not-allowed}
+.btn-submit .spinner{width:17px;height:17px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none}
 .btn-submit.loading .spinner{display:block}
 .btn-submit.loading .btn-txt{display:none}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-.divider{display:flex;align-items:center;gap:14px;margin:24px 0;color:#cbd5e1;font-size:12px;font-weight:600}
-.divider::before,.divider::after{content:'';flex:1;height:1px;background:#e2e8f0}
+.form-footer{font-size:13.5px;color:var(--muted);margin-top:32px;line-height:1.6}
+.form-footer a{color:var(--azure-ink);text-decoration:none}
+.form-footer a:hover{text-decoration:underline;text-underline-offset:3px}
 
-.form-footer{text-align:center;font-size:12.5px;color:#94a3b8;margin-top:28px;line-height:1.6}
-.form-footer a{color:#0284c7;text-decoration:none;font-weight:600}
-.form-footer a:hover{text-decoration:underline}
-
-/* FORGOT modal overlay */
-.modal-ov{position:fixed;inset:0;background:rgba(2,132,199,.08);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .25s cubic-bezier(0.32,0.72,0,1)}
+/* Reset dialog */
+.modal-ov{position:fixed;inset:0;background:rgba(11,24,35,.42);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .25s var(--ease)}
 .modal-ov.open{opacity:1;pointer-events:all}
-.modal{background:#fff;border-radius:20px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(2,132,199,.18),0 8px 24px rgba(0,0,0,.08);border:1px solid #e0f2fe;transform:translateY(18px) scale(.97);transition:transform .3s cubic-bezier(0.32,0.72,0,1)}
-.modal-ov.open .modal{transform:translateY(0) scale(1)}
-.modal-hdr{padding:22px 24px 18px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between}
-.modal-ttl{font-size:16px;font-weight:800;color:#0f172a;letter-spacing:-.3px}
-.modal-close{width:30px;height:30px;border-radius:8px;border:1px solid #e2e8f0;background:#f8fafc;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;color:#94a3b8;transition:all .2s;line-height:1}
-.modal-close:hover{background:#fee2e2;color:#dc2626;border-color:#fca5a5}
-.modal-body{padding:20px 24px 24px}
-.modal-desc{font-size:13.5px;color:#64748b;margin-bottom:20px;line-height:1.6}
-.modal-footer{padding:14px 24px 20px;border-top:1px solid #f1f5f9;display:flex;gap:9px;justify-content:flex-end}
-.btn-ghost{padding:0 16px;height:38px;border:1.5px solid #e2e8f0;border-radius:9px;background:transparent;color:#475569;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
-.btn-ghost:hover{background:#f8fafc;border-color:#0284c7;color:#0284c7}
-.btn-sm-primary{padding:0 16px;height:38px;background:#0284c7;border:none;border-radius:9px;color:#fff;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 2px 8px rgba(2,132,199,.3)}
-.btn-sm-primary:hover{background:#0369a1}
+.modal{background:var(--surface);border-radius:var(--r);width:100%;max-width:440px;box-shadow:0 28px 70px rgba(11,24,35,.22);border:1px solid var(--line);transform:translateY(14px);transition:transform .3s var(--ease)}
+.modal-ov.open .modal{transform:none}
+.modal-hdr{padding:26px 28px 6px;display:flex;align-items:flex-start;justify-content:space-between}
+.modal-ttl{font-family:var(--serif);font-size:27px;font-weight:500;color:var(--ink);line-height:1.1}
+.modal-close{width:36px;height:36px;border-radius:var(--r);border:1px solid transparent;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--muted);margin:-4px -8px 0 0;transition:color .2s,border-color .2s}
+.modal-close:hover{color:var(--ink);border-color:var(--line-2)}
+.modal-body{padding:8px 28px 24px}
+.modal-desc{font-size:14.5px;color:var(--ink-2);margin-bottom:20px;line-height:1.6}
+.modal-footer{padding:16px 28px 24px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end}
+.btn-ghost,.btn-sm-primary{height:40px;padding:0 18px;border-radius:var(--r);font-family:var(--sans);font-size:14px;font-weight:500;cursor:pointer;transition:background .2s,border-color .2s}
+.btn-ghost{border:1px solid var(--line-2);background:transparent;color:var(--ink)}
+.btn-ghost:hover{border-color:var(--ink)}
+.btn-sm-primary{border:1px solid var(--ink);background:var(--ink);color:#fff}
+.btn-sm-primary:hover{background:#122433}
+.btn-sm-primary:disabled{opacity:.65;cursor:not-allowed}
 
-/* RESPONSIVE */
-@media(max-width:900px){
+@media(prefers-reduced-motion:no-preference){
+  .form-wrap{animation:rise .6s var(--ease) both}
+  .brand-copy{animation:rise .6s .08s var(--ease) both}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+}
+.mob-logo{display:none;width:200px;max-width:70%}
+@media(max-width:1000px){
   .wrapper{grid-template-columns:1fr}
   .brand{display:none}
-  .form-panel{padding:36px 24px;min-height:100dvh}
+  .form-panel{padding:40px 24px;min-height:100dvh;flex-direction:column;align-items:center;justify-content:center;gap:36px}
+  .mob-logo{display:block}
 }
-@media(max-width:460px){
-  .form-panel{padding:28px 18px}
-  .form-title{font-size:24px}
-}
+@media(max-width:460px){.form-title{font-size:38px}}
 </style>
 </head>
 <body>
 
 <div class="wrapper">
-  <!-- LEFT: BRAND PANEL -->
+  <!-- LEFT: brand -->
   <div class="brand">
-    <div class="brand-top">
-      <div class="brand-logo"><img src="assets/logo-white.png" alt="Bridge Waters — Luxury Suites &amp; Conference Centre" style="width:230px;max-width:100%;height:auto;display:block"></div>
+    <div class="brand-logo"><img src="assets/logo-white.png" alt="Bridge Waters Luxury Suites and Conference Centre"></div>
 
-      <div class="brand-headline">Your workspace,<br><em>all in one place.</em></div>
-      <div class="brand-sub">The Bridge Waters staff portal gives you unified access to event bookings, requisitions, and operations across all properties.</div>
-
-      <div class="brand-features">
-        <div class="feat-item"><div class="feat-dot">📅</div><div class="feat-txt">Event booking &amp; hall management</div></div>
-        <div class="feat-item"><div class="feat-dot">📋</div><div class="feat-txt">Requisitions &amp; procurement</div></div>
-        <div class="feat-item"><div class="feat-dot">📊</div><div class="feat-txt">Revenue &amp; occupancy reporting</div></div>
-        <div class="feat-item"><div class="feat-dot">🔐</div><div class="feat-txt">Role-based access per department</div></div>
-      </div>
+    <div class="brand-copy">
+      <h1 class="brand-headline">Bridge Waters Group</h1>
+      <p class="brand-sub">Event bookings, requisitions and operations across all five properties.</p>
     </div>
 
-    <div class="brand-bottom">
-      <div class="brand-footer">
-        <strong>Bridge Waters Hotel &amp; Conference Group</strong><br>
-        Internal staff portal — authorised access only.<br>
-        &copy; 2026 Bridge Waters Group. All rights reserved.
-      </div>
+    <div>
+      <ul class="brand-props">
+        <li><span>Bridge Waters Hotel</span><span>Abuja</span></li>
+        <li><span>Bridge Waters Hotel</span><span>Enugu</span></li>
+        <li><span>Oakland Hotel</span><span>Enugu</span></li>
+        <li><span>Oakland Amusement Park</span><span>Enugu</span></li>
+        <li><span>Placia Hotel</span><span>Enugu</span></li>
+      </ul>
+      <div class="brand-footer">Authorised staff only. &copy; 2026 Bridge Waters Group.</div>
     </div>
   </div>
 
-  <!-- RIGHT: FORM PANEL -->
+  <!-- RIGHT: form -->
   <div class="form-panel">
+    <img class="mob-logo" src="assets/logo.png" alt="Bridge Waters Luxury Suites and Conference Centre">
     <div class="form-wrap">
-      <div class="form-eyebrow">Staff Portal</div>
-      <div class="form-title">Welcome back</div>
-      <div class="form-subtitle">Sign in with your work credentials to continue.</div>
+      <h2 class="form-title">Sign in</h2>
+      <p class="form-subtitle">Use your work email and password.</p>
 
-      <div class="err-box" id="errBox">
-        <span>⚠</span><span id="errMsg">Invalid email or password. Please try again.</span>
+      <div class="err-box" id="errBox" role="alert">
+        <i class="ph-light ph-warning-circle"></i><span id="errMsg">Incorrect email or password. Please try again.</span>
       </div>
-      <div class="success-box" id="successBox">
-        <span>✓</span><span id="successMsg">Signed in! Redirecting...</span>
+      <div class="success-box" id="successBox" role="status">
+        <i class="ph-light ph-check-circle"></i><span id="successMsg">Signed in. Redirecting.</span>
       </div>
 
       <form id="loginForm" onsubmit="return false">
         <div class="form-grp">
-          <label class="form-lbl" for="email">Work Email</label>
+          <label class="form-lbl" for="email">Work email</label>
           <div class="input-wrap">
-            <span class="input-icon">
-              <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
-            </span>
+            <i class="input-icon ph-light ph-envelope-simple"></i>
             <input class="form-input" type="email" id="email" name="email" autocomplete="email" placeholder="you@bridgewaters.com" required>
           </div>
         </div>
@@ -177,14 +163,9 @@ body{font-family:'Outfit',sans-serif;min-height:100dvh;background:#f0f9ff;-webki
         <div class="form-grp">
           <label class="form-lbl" for="password">Password</label>
           <div class="input-wrap">
-            <span class="input-icon">
-              <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            </span>
+            <i class="input-icon ph-light ph-lock-simple"></i>
             <input class="form-input" type="password" id="password" name="password" autocomplete="current-password" placeholder="Enter your password" required>
-            <button type="button" class="toggle-pw" id="togglePw" aria-label="Show password" onclick="togglePassword()">
-              <svg id="eyeOpen" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-              <svg id="eyeClosed" viewBox="0 0 24 24" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-            </button>
+            <button type="button" class="toggle-pw" id="togglePw" aria-label="Show password" onclick="togglePassword()"><i class="ph-light ph-eye" id="pwIcon"></i></button>
           </div>
         </div>
 
@@ -198,42 +179,39 @@ body{font-family:'Outfit',sans-serif;min-height:100dvh;background:#f0f9ff;-webki
 
         <button type="submit" class="btn-submit" id="submitBtn" onclick="handleLogin()">
           <div class="spinner"></div>
-          <span class="btn-txt">Sign In</span>
+          <span class="btn-txt">Sign in</span>
         </button>
       </form>
 
       <div class="form-footer">
-        Having trouble signing in? Contact your<br>
-        <a href="mailto:admin@bridgewaters.com">system administrator</a>.
+        Trouble signing in? Contact your <a href="mailto:admin@bridgewaters.com">system administrator</a>.
       </div>
     </div>
   </div>
 </div>
 
-<!-- FORGOT PASSWORD MODAL -->
+<!-- Forgot password -->
 <div class="modal-ov" id="forgotModal">
-  <div class="modal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="forgotTtl">
     <div class="modal-hdr">
-      <span class="modal-ttl">Reset Your Password</span>
-      <button class="modal-close" onclick="closeForgot()">&#215;</button>
+      <span class="modal-ttl" id="forgotTtl">Reset your password</span>
+      <button class="modal-close" onclick="closeForgot()" aria-label="Close"><i class="ph-light ph-x"></i></button>
     </div>
     <div class="modal-body">
-      <div class="modal-desc">Enter your work email address and we'll send you a link to reset your password.</div>
-      <div class="err-box" id="forgotErr" style="margin-bottom:12px"><span>⚠</span><span id="forgotErrMsg"></span></div>
-      <div class="success-box" id="forgotSuccess" style="margin-bottom:12px"><span>✓</span><span id="forgotSuccessMsg">Reset link sent! Check your email.</span></div>
+      <div class="modal-desc">Enter your work email and we will send you a link to reset your password.</div>
+      <div class="err-box" id="forgotErr" style="margin-bottom:14px"><i class="ph-light ph-warning-circle"></i><span id="forgotErrMsg"></span></div>
+      <div class="success-box" id="forgotSuccess" style="margin-bottom:14px"><i class="ph-light ph-check-circle"></i><span id="forgotSuccessMsg">Reset link sent. Check your email.</span></div>
       <div class="form-grp" style="margin-bottom:0">
-        <label class="form-lbl">Work Email</label>
+        <label class="form-lbl" for="forgotEmail">Work email</label>
         <div class="input-wrap">
-          <span class="input-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
-          </span>
+          <i class="input-icon ph-light ph-envelope-simple"></i>
           <input class="form-input" type="email" id="forgotEmail" placeholder="you@bridgewaters.com">
         </div>
       </div>
     </div>
     <div class="modal-footer">
       <button class="btn-ghost" onclick="closeForgot()">Cancel</button>
-      <button class="btn-sm-primary" id="resetBtn" onclick="sendReset()">Send Reset Link</button>
+      <button class="btn-sm-primary" id="resetBtn" onclick="sendReset()">Send reset link</button>
     </div>
   </div>
 </div>
@@ -295,7 +273,7 @@ async function handleLogin(){
       else{showErr(error.message||'Sign-in failed. Please try again.')}
       setLoading(false);return;
     }
-    showSuccess('Signed in successfully! Redirecting…');
+    showSuccess('Signed in. Redirecting.');
     setTimeout(()=>{window.location.href=EVENTS_APP_URL;},900);
   }catch(e){
     showErr('An unexpected error occurred. Please try again.');
@@ -309,8 +287,8 @@ function togglePassword(){
   const inp=document.getElementById('password');
   const isHidden=inp.type==='password';
   inp.type=isHidden?'text':'password';
-  document.getElementById('eyeOpen').style.display=isHidden?'none':'block';
-  document.getElementById('eyeClosed').style.display=isHidden?'block':'none';
+  document.getElementById('pwIcon').className='ph-light '+(isHidden?'ph-eye-slash':'ph-eye');
+  document.getElementById('togglePw').setAttribute('aria-label',isHidden?'Hide password':'Show password');
 }
 
 function openForgot(){
@@ -319,23 +297,27 @@ function openForgot(){
   document.getElementById('forgotErr').classList.remove('show');
   document.getElementById('forgotSuccess').classList.remove('show');
   document.getElementById('resetBtn').disabled=false;
+  document.getElementById('resetBtn').textContent='Send reset link';
 }
 function closeForgot(){document.getElementById('forgotModal').classList.remove('open')}
 document.getElementById('forgotModal').addEventListener('click',e=>{if(e.target===document.getElementById('forgotModal'))closeForgot()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeForgot()});
 
 async function sendReset(){
+  const btn=document.getElementById('resetBtn');
+  const fail=m=>{document.getElementById('forgotErrMsg').textContent=m;document.getElementById('forgotErr').classList.add('show');btn.disabled=false;btn.textContent='Send reset link'};
   const email=document.getElementById('forgotEmail').value.trim();
-  if(!email){document.getElementById('forgotErrMsg').textContent='Please enter your email address.';document.getElementById('forgotErr').classList.add('show');return}
-  document.getElementById('resetBtn').disabled=true;document.getElementById('resetBtn').textContent='Sending…';
+  if(!email){fail('Please enter your email address.');return}
+  btn.disabled=true;btn.textContent='Sending';
   document.getElementById('forgotErr').classList.remove('show');
-  if(!sb){document.getElementById('forgotErrMsg').textContent='Cannot connect to authentication service.';document.getElementById('forgotErr').classList.add('show');document.getElementById('resetBtn').disabled=false;document.getElementById('resetBtn').textContent='Send Reset Link';return}
+  if(!sb){fail('Cannot connect to authentication service.');return}
   try{
     const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.href});
-    if(error){document.getElementById('forgotErrMsg').textContent=error.message||'Failed to send reset email.';document.getElementById('forgotErr').classList.add('show');document.getElementById('resetBtn').disabled=false;document.getElementById('resetBtn').textContent='Send Reset Link';return}
+    if(error){fail(error.message||'Failed to send reset email.');return}
     document.getElementById('forgotSuccess').classList.add('show');
-    document.getElementById('resetBtn').textContent='Sent!';
+    btn.textContent='Sent';
     setTimeout(closeForgot,2500);
-  }catch(e){document.getElementById('forgotErrMsg').textContent='An unexpected error occurred.';document.getElementById('forgotErr').classList.add('show');document.getElementById('resetBtn').disabled=false;document.getElementById('resetBtn').textContent='Send Reset Link';}
+  }catch(e){fail('An unexpected error occurred.')}
 }
 </script>
 </body>

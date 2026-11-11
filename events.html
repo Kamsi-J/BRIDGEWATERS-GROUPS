@@ -7,369 +7,489 @@
 <link rel="icon" type="image/png" href="assets/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/light/style.css">
 <style>
-:root {
-  --sky-50: #f0f9ff; --sky-100: #e0f2fe; --sky-200: #bae6fd;
-  --sky-400: #38bdf8; --sky-500: #0ea5e9; --sky-600: #0284c7;
-  --sky-700: #0369a1;
-  --bg: #ffffff; --surface: #ffffff; --surface-2: #f1f5f9;
-  --border: #e2e8f0; --text: #0f172a; --text-2: #334155; --muted: #64748b;
-  --light: #cbd5e1;
-  --sidebar-w: 264px; --sidebar-col: 72px;
-  --ease: cubic-bezier(0.32,0.72,0,1);
-  --shadow-xs: 0 1px 3px rgba(14,165,233,.07),0 1px 2px rgba(0,0,0,.04);
-  --shadow-sm: 0 4px 16px rgba(14,165,233,.10),0 2px 8px rgba(0,0,0,.05);
-  --shadow-md: 0 8px 32px rgba(14,165,233,.14),0 4px 16px rgba(0,0,0,.07);
+/* ============================================================
+   BRIDGE WATERS PORTAL: design system
+   Cold luxury: deep ink, porcelain, one azure accent from the logo.
+   One radius (3px). Hairlines instead of cards. Phosphor Light icons.
+   ============================================================ */
+:root{
+  --serif:'Cormorant Garamond','Times New Roman',serif;
+  --sans:'Geist',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'Geist Mono',ui-monospace,Consolas,monospace;
+
+  --canvas:#f4f6f8; --surface:#ffffff; --surface-2:#eceff2;
+  --line:#dfe5ea; --line-2:#c6cfd7;
+  --ink:#0e1c28; --ink-2:#34454f; --muted:#5a6a74;
+  --deep:#0b1823; --deep-2:#122433;
+  --azure:#2ea6dc; --azure-ink:#12709c; --azure-wash:#e7f3f9;
+  --ok:#1d6445; --ok-bg:#e6f2ec; --warn:#7f5412; --warn-bg:#f6eedb; --bad:#962d2d; --bad-bg:#f7e8e6;
+  --r:3px; --sidebar-w:248px; --ease:cubic-bezier(.22,.7,.2,1);
+  --shadow-sheet:0 28px 70px rgba(11,24,35,.22);
+  --scrim:rgba(11,24,35,.42);
+
+  /* legacy aliases used by inline styles in the JS templates */
+  --bg:var(--canvas); --text:var(--ink); --text-2:var(--ink-2); --border:var(--line); --light:var(--line-2);
+  --sky-50:var(--azure-wash); --sky-100:#d5eaf5; --sky-200:#a9d3e8; --sky-300:#7dbbd9;
+  --sky-400:var(--azure); --sky-500:var(--azure); --sky-600:var(--azure-ink); --sky-700:#0d5b80;
 }
 :root[data-theme="dark"]{
-  --bg:#040d18;--surface:#071525;--surface-2:#0d2039;
-  --border:#1a3554;--text:#f0f9ff;--text-2:#bae6fd;
-  --muted:#6daac8;--light:#1a3554;
-  --shadow-xs:0 1px 3px rgba(0,0,0,.3);
-  --shadow-sm:0 4px 16px rgba(0,0,0,.35);
-  --shadow-md:0 8px 32px rgba(0,0,0,.45);
+  --canvas:#08121a; --surface:#0e1b26; --surface-2:#13232f;
+  --line:#1c2f3f; --line-2:#2c4458;
+  --ink:#e9eff3; --ink-2:#b8c6d0; --muted:#8a9eab;
+  --azure-ink:#5cc0ea; --azure-wash:rgba(46,166,220,.12);
+  --ok:#6fcf9f; --ok-bg:rgba(111,207,159,.12); --warn:#e0b567; --warn-bg:rgba(224,181,103,.12); --bad:#f0948f; --bad-bg:rgba(240,148,143,.12);
+  --shadow-sheet:0 28px 70px rgba(0,0,0,.55);
+  --scrim:rgba(0,0,0,.6);
+  --sky-100:#16384b; --sky-200:#1f506b; --sky-700:#8fd3f0;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background:var(--bg);min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);font-size:14.5px;line-height:1.5;color:var(--ink);background:var(--canvas);min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;font-feature-settings:'tnum' 1}
+i[class*="ph-"]{display:inline-block;line-height:1;vertical-align:-.14em}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--azure);outline-offset:2px}
 #app{display:flex;min-height:100dvh}
 
-/* SIDEBAR — always a drawer overlay */
-#sidebar{width:var(--sidebar-w);min-height:100dvh;background:linear-gradient(160deg,#0369a1,#0284c7);border-right:none;display:flex;flex-direction:column;position:fixed;left:0;top:0;bottom:0;z-index:51;transition:transform .35s var(--ease);overflow:hidden;transform:translateX(-100%)}
-#sidebar.open{transform:translateX(0);box-shadow:4px 0 40px rgba(0,0,0,.18)}
-.sb-header{padding:22px 16px 18px;border-bottom:1px solid rgba(255,255,255,.12);flex-shrink:0;position:relative}
-.logo-row{display:flex;align-items:center;overflow:hidden}
-.sb-logo{width:100%;max-width:188px;height:auto;display:block}
-.logo-mark{width:38px;height:38px;border-radius:11px;flex-shrink:0;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center}
-.logo-mark svg{width:22px;height:22px}
-.logo-text{overflow:hidden;white-space:nowrap;transition:opacity .2s,max-width .35s var(--ease);max-width:220px}
-.logo-text h1{font-size:14.5px;font-weight:800;color:#fff;letter-spacing:-.3px;line-height:1.2}
-.logo-text span{font-size:10.5px;color:rgba(255,255,255,.65);font-weight:400}
+/* ── RAIL / DRAWER ─────────────────────────────────────────── */
+#sidebar{width:var(--sidebar-w);min-height:100dvh;background:var(--deep);display:flex;flex-direction:column;position:fixed;left:0;top:0;bottom:0;z-index:51;transition:transform .35s var(--ease);overflow:hidden;transform:translateX(-100%)}
+#sidebar.open{transform:translateX(0);box-shadow:var(--shadow-sheet)}
+.sb-header{padding:30px 26px 26px;flex-shrink:0}
+.logo-row{display:flex;align-items:center}
+.sb-logo{width:100%;max-width:176px;height:auto;display:block}
 .sb-toggle{display:none}
-.sb-nav{flex:1;padding:14px 10px;overflow-y:auto;overflow-x:hidden}
-.nav-sec-lbl{font-size:10px;font-weight:700;color:rgba(255,255,255,.5);letter-spacing:.12em;text-transform:uppercase;padding:0 10px 8px;white-space:nowrap;overflow:hidden;transition:opacity .2s}
-.dummy-placeholder-x{}
-.nav-item{display:flex;align-items:center;border-radius:11px;cursor:pointer;transition:all .25s var(--ease);color:rgba(255,255,255,.75);margin-bottom:2px;text-decoration:none;overflow:hidden;position:relative}
-.nav-item:hover{background:rgba(255,255,255,.12);color:#fff}
-.nav-item.active{background:rgba(255,255,255,.18);color:#fff}
-.nav-item.active::before{content:'';position:absolute;left:0;top:22%;bottom:22%;width:3px;border-radius:0 2px 2px 0;background:#fff}
-.nav-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s}
-.nav-item.active .nav-icon{background:rgba(255,255,255,.15)}
-.nav-icon svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
-.nav-txt{flex:1;min-width:0;overflow:hidden;white-space:nowrap;font-size:13.5px;font-weight:600;padding-right:4px;display:flex;align-items:center;justify-content:space-between;transition:opacity .2s,max-width .35s var(--ease);max-width:220px}
-.dummy-placeholder-y{}
-.nav-badge{font-size:9.5px;font-weight:700;border-radius:20px;padding:2px 7px;background:rgba(255,255,255,.12);color:rgba(255,255,255,.65)}
-.nav-item.dimmed{opacity:.42;cursor:not-allowed;pointer-events:none}
-.sb-footer{padding:12px 10px 16px;border-top:1px solid rgba(255,255,255,.12);flex-shrink:0}
-.user-card{display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;background:rgba(255,255,255,.1);cursor:default;overflow:hidden;transition:background .2s}
-.user-card:hover{background:rgba(255,255,255,.18)}
-.avatar{width:34px;height:34px;border-radius:10px;flex-shrink:0;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:800;color:#fff;letter-spacing:-.5px}
-.u-info{flex:1;min-width:0;overflow:hidden;transition:opacity .2s,max-width .35s var(--ease);max-width:220px}
-.dummy-placeholder-z{}
-.u-name{font-size:13px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.role-pill{display:inline-flex;align-items:center;font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.18);color:#fff;white-space:nowrap;margin-top:2px}
-.btn-logout{display:none;align-items:center;gap:7px;background:transparent;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;color:rgba(255,255,255,.6);padding:7px 10px;border-radius:8px;width:100%;margin-top:5px;transition:all .2s}
-.btn-logout:hover{background:rgba(255,255,255,.1);color:#fff}
-.btn-logout svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+.sb-nav{flex:1;padding:6px 14px;overflow-y:auto;overflow-x:hidden}
+.nav-sec-lbl{font-size:12px;font-weight:400;color:rgba(201,212,220,.5);padding:20px 12px 8px;letter-spacing:.01em}
+.nav-sec-lbl:first-child{padding-top:6px}
+.nav-item{display:flex;align-items:center;gap:12px;height:42px;padding:0 12px;border-radius:var(--r);cursor:pointer;color:#a9b9c5;position:relative;transition:color .2s,background .2s;margin-bottom:1px}
+.nav-item:hover{background:rgba(255,255,255,.045);color:#fff}
+.nav-item.active{color:#fff;background:rgba(46,166,220,.10)}
+.nav-item.active::before{content:'';position:absolute;left:0;top:9px;bottom:9px;width:2px;background:var(--azure)}
+.nav-icon{width:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:19px}
+.nav-txt{flex:1;min-width:0;white-space:nowrap;font-size:14px;font-weight:400;display:flex;align-items:center;justify-content:space-between}
+.nav-count{font-family:var(--mono);font-size:11.5px;color:#0b1823;background:var(--azure);border-radius:var(--r);min-width:20px;height:20px;padding:0 6px;display:none;align-items:center;justify-content:center;font-weight:500}
+.nav-count.show{display:inline-flex}
+.nav-item.dimmed{opacity:.38;cursor:not-allowed;pointer-events:none}
+.sb-footer{padding:16px 14px 22px;border-top:1px solid rgba(255,255,255,.08);flex-shrink:0}
+.user-card{display:flex;align-items:center;gap:12px;padding:6px 12px}
+.avatar{width:34px;height:34px;border-radius:var(--r);flex-shrink:0;border:1px solid rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:15px;font-weight:600;color:#fff}
+.u-info{flex:1;min-width:0}
+.u-name{font-size:13.5px;font-weight:500;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.role-pill{font-size:12px;color:rgba(201,212,220,.6);white-space:nowrap}
+.btn-logout{display:none;align-items:center;gap:10px;background:transparent;border:none;cursor:pointer;font-size:13px;color:#a9b9c5;padding:10px 12px;border-radius:var(--r);width:100%;margin-top:8px;transition:color .2s,background .2s}
+.btn-logout:hover{background:rgba(255,255,255,.045);color:#fff}
+.btn-logout i{font-size:18px}
 
-/* MAIN — always full width, sidebar is overlay */
-#main{margin-left:0;flex:1;display:flex;flex-direction:column;min-height:100dvh;width:100%;overflow-x:hidden}
-
-/* TOPBAR */
-.topbar{position:sticky;top:0;z-index:40;background:var(--surface);border-bottom:1px solid var(--border);padding:0 28px;height:62px;display:flex;align-items:center;justify-content:space-between;gap:14px}
-.tb-left{display:flex;align-items:center;gap:14px}
-.page-title{font-size:17px;font-weight:800;color:var(--text);letter-spacing:-.45px}
-.demo-badge{display:none;align-items:center;gap:5px;background:#fef3c7;color:#92400e;border:1px solid #fde68a;border-radius:8px;font-size:11px;font-weight:700;padding:4px 10px}
-.demo-badge.show{display:flex}
-.loc-pill{display:none;align-items:center;gap:5px;background:var(--sky-50);color:var(--sky-700);border:1px solid var(--sky-200);border-radius:8px;font-size:11px;font-weight:700;padding:4px 10px;white-space:nowrap}
-.loc-pill.show{display:flex}
-:root[data-theme="dark"] .loc-pill{background:rgba(14,165,233,.12);color:var(--sky-400);border-color:rgba(14,165,233,.2)}
-/* STAFF PAGE */
-.staff-page-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
-.staff-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
-.staff-card{border:1px solid var(--border);background:var(--sky-50);padding:5px;border-radius:18px}
-:root[data-theme="dark"] .staff-card{background:var(--surface-2)}
-.staff-card-inner{background:var(--surface);border-radius:13px;padding:16px 15px;box-shadow:inset 0 1px 0 rgba(255,255,255,.8)}
-:root[data-theme="dark"] .staff-card-inner{box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
-.staff-avatar{width:42px;height:42px;border-radius:12px;background:var(--sky-500);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;letter-spacing:-.5px;flex-shrink:0}
-.staff-name{font-size:14px;font-weight:800;color:var(--text);letter-spacing:-.3px}
-.staff-role-pill{display:inline-flex;align-items:center;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--sky-100);color:var(--sky-700);margin-top:3px}
-:root[data-theme="dark"] .staff-role-pill{background:rgba(14,165,233,.15)}
-.staff-prop{font-size:11.5px;color:var(--muted);margin-top:5px}
-.staff-email{font-size:11px;color:var(--muted);margin-top:2px}
-.month-nav{display:flex;align-items:center;background:var(--surface-2);border-radius:10px;border:1px solid var(--border);overflow:hidden}
-.month-nav button{width:34px;height:34px;border:none;background:transparent;cursor:pointer;color:var(--muted);display:flex;align-items:center;justify-content:center;transition:all .2s}
-.month-nav button:hover{background:var(--sky-50);color:var(--sky-600)}
-.month-nav button svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.month-label{font-size:13px;font-weight:700;color:var(--text);padding:0 14px;min-width:156px;text-align:center;white-space:nowrap}
+/* ── MAIN + TOPBAR ─────────────────────────────────────────── */
+#main{margin-left:0;flex:1;display:flex;flex-direction:column;min-height:100dvh;min-width:0;width:100%}
+.topbar{position:sticky;top:0;z-index:40;background:var(--canvas);border-bottom:1px solid var(--line);padding:0 40px;height:68px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.tb-left{display:flex;align-items:center;gap:16px;min-width:0}
+.page-title{font-family:var(--serif);font-size:30px;font-weight:500;color:var(--ink);letter-spacing:-.01em;line-height:1;white-space:nowrap}
+.loc-pill{display:none;align-items:center;gap:6px;color:var(--muted);font-size:13px;white-space:nowrap}
+.loc-pill.show{display:inline-flex}
+.loc-pill::before{content:'\e316';font-family:'Phosphor-Light';font-size:15px;color:var(--azure-ink)}
 .tb-right{display:flex;align-items:center;gap:8px}
-.role-sel-wrap{display:flex;align-items:center;gap:7px;background:var(--surface-2);border-radius:9px;padding:5px 11px;border:1px solid var(--border)}
-.role-sel-wrap label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.09em}
-.role-sel-wrap select{font-family:'Outfit',sans-serif;font-size:12.5px;font-weight:700;color:var(--text);background:transparent;border:none;outline:none;cursor:pointer}
-.theme-btn{width:36px;height:36px;border-radius:9px;background:var(--surface-2);border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .2s}
-.theme-btn:hover{background:var(--sky-50);border-color:var(--sky-200)}
-.btn-primary{display:inline-flex;align-items:center;gap:8px;background:var(--sky-500);color:#fff;border:none;border-radius:10px;padding:0 15px;height:36px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .3s var(--ease);box-shadow:0 2px 10px rgba(14,165,233,.32);white-space:nowrap}
-.btn-primary:hover{background:var(--sky-600);box-shadow:0 4px 18px rgba(14,165,233,.42);transform:translateY(-1px)}
-.btn-primary:active{transform:scale(.98)}
-.btn-icon{width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:14px;transition:transform .3s var(--ease)}
-.btn-primary:hover .btn-icon{transform:translateX(2px) translateY(-1px) scale(1.08)}
+.theme-btn,.mob-menu-btn{width:38px;height:38px;border-radius:var(--r);background:transparent;border:1px solid var(--line-2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--ink-2);transition:border-color .2s,color .2s;flex-shrink:0}
+.theme-btn:hover,.mob-menu-btn:hover{border-color:var(--ink);color:var(--ink)}
+.mob-menu-btn{display:flex}
+.sb-overlay{display:block;position:fixed;inset:0;background:var(--scrim);z-index:50;opacity:0;pointer-events:none;transition:opacity .3s var(--ease)}
+.sb-overlay.show{opacity:1;pointer-events:all}
+.content{flex:1;width:100%;max-width:1360px;margin:0 auto;padding:36px 40px 72px}
 
-/* CONTENT */
-.content{flex:1;padding:22px 28px}
+/* ── BUTTONS (solid ink / hairline / text) ─────────────────── */
+.btn-primary,.btn-approve,.btn-pay,.btn-save,.btn-ghost,.btn-danger,.btn-reject-r,.btn-query,.btn-del-grey{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 18px;border-radius:var(--r);font-size:14px;font-weight:500;cursor:pointer;white-space:nowrap;transition:background .2s,border-color .2s,color .2s,transform .12s;border:1px solid transparent;letter-spacing:.005em}
+.btn-primary,.btn-approve,.btn-pay{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.btn-primary:hover,.btn-approve:hover,.btn-pay:hover{background:var(--deep-2);border-color:var(--deep-2)}
+:root[data-theme="dark"] .btn-primary,:root[data-theme="dark"] .btn-approve,:root[data-theme="dark"] .btn-pay{background:var(--azure);border-color:var(--azure);color:#06141d}
+:root[data-theme="dark"] .btn-primary:hover,:root[data-theme="dark"] .btn-approve:hover,:root[data-theme="dark"] .btn-pay:hover{background:#4dbbea;border-color:#4dbbea}
+.btn-ghost,.btn-save,.btn-query{background:transparent;color:var(--ink);border-color:var(--line-2)}
+.btn-ghost:hover,.btn-save:hover,.btn-query:hover{border-color:var(--ink)}
+.btn-danger,.btn-reject-r,.btn-del-grey{background:transparent;color:var(--bad);border-color:transparent;padding:0 12px}
+.btn-danger:hover,.btn-reject-r:hover,.btn-del-grey:hover{background:var(--bad-bg)}
+.btn-del-grey{color:var(--muted)}
+.btn-primary:active,.btn-approve:active,.btn-pay:active,.btn-ghost:active,.btn-save:active{transform:translateY(1px)}
+.btn-primary:disabled{opacity:.55;cursor:not-allowed}
+.btn-icon{display:none}
+.btn-primary i,.btn-ghost i{font-size:16px}
 
-/* STATS — Double-Bezel */
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
-.stat-card{border:1px solid var(--sky-100);background:var(--sky-50);padding:5px;border-radius:19px;transition:all .3s var(--ease)}
-:root[data-theme="dark"] .stat-card{border-color:var(--border);background:var(--surface-2)}
-.stat-card:hover{border-color:var(--sky-200);box-shadow:var(--shadow-sm);transform:translateY(-2px)}
-.stat-inner{background:var(--surface);border-radius:14px;padding:15px 17px;box-shadow:inset 0 1px 0 rgba(255,255,255,.9)}
-:root[data-theme="dark"] .stat-inner{box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
-.stat-lbl{font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.09em;margin-bottom:9px}
-.stat-val{font-size:27px;font-weight:800;color:var(--text);letter-spacing:-1.2px;line-height:1;margin-bottom:6px}
-.stat-sub{font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:5px}
-.stat-trend{font-size:10.5px;font-weight:700;color:#059669;background:#d1fae5;border-radius:20px;padding:1.5px 7px}
+/* ── KPI LEDGER (replaces stat cards) ──────────────────────── */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--ink);border-bottom:1px solid var(--line);margin-bottom:44px}
+.stat-card{padding:24px 28px 24px 0;display:block;background:none;border:none}
+.stat-card+.stat-card{padding-left:28px;border-left:1px solid var(--line)}
+.stat-inner{background:none;padding:0}
+.stat-lbl{font-size:13px;color:var(--muted);margin-bottom:14px;font-weight:400}
+.stat-val{font-family:var(--serif);font-size:46px;font-weight:500;color:var(--ink);letter-spacing:-.02em;line-height:.95;margin-bottom:12px;font-feature-settings:'lnum' 1,'tnum' 1}
+.stat-sub{font-size:13px;color:var(--muted)}
+.stat-card.alert .stat-val{color:var(--azure-ink)}
+.stat-card.clickable{cursor:pointer}
+.stat-card.clickable:hover .stat-lbl{color:var(--ink)}
+.stat-trend{display:none}
 
-/* CALENDAR — Double-Bezel */
-.cal-layout{display:grid;grid-template-columns:1fr 274px;gap:18px;align-items:start}
-.cal-card{border:1px solid var(--border);background:var(--sky-50);padding:5px;border-radius:20px}
-:root[data-theme="dark"] .cal-card{background:var(--surface-2)}
-.cal-inner{background:var(--surface);border-radius:15px;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.8)}
-:root[data-theme="dark"] .cal-inner{box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
-.cal-wkdays{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid var(--border)}
-.cal-wkday{padding:9px 4px;text-align:center;font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+/* ── CALENDAR ──────────────────────────────────────────────── */
+.cal-layout{display:grid;grid-template-columns:1fr 300px;gap:40px;align-items:start}
+.cal-card{border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:0}
+.cal-inner{background:none;overflow:hidden}
+.cal-wkdays{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid var(--line)}
+.cal-wkday{padding:12px 4px;text-align:center;font-size:12.5px;font-weight:400;color:var(--muted)}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr)}
-.cal-day{min-height:88px;padding:9px 7px 7px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;position:relative;overflow:hidden}
+.cal-day{min-height:98px;padding:10px 8px 8px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);cursor:pointer;transition:background .15s;position:relative;overflow:hidden}
 .cal-day:nth-child(7n){border-right:none}
-.cal-day.empty{cursor:default;background:var(--surface-2);opacity:.6}
-.cal-day:not(.empty):hover{background:var(--sky-50)}
-.day-num{font-size:12.5px;font-weight:700;color:var(--text-2);display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:7px}
-.cal-day.today .day-num{background:var(--sky-500);color:#fff;box-shadow:0 2px 8px rgba(14,165,233,.4)}
-.day-evts{margin-top:4px;display:flex;flex-direction:column;gap:2px}
-.day-chip{font-size:9.5px;font-weight:700;padding:2px 5px;border-radius:4px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;transition:opacity .15s;max-width:100%;line-height:1.4}
-.day-chip:hover{opacity:.82}
-.day-more{font-size:9.5px;font-weight:700;color:var(--muted);padding:1px 3px}
-#calGrid[data-canbooking="1"] .cal-day:not(.empty):hover::after{content:'+';position:absolute;bottom:5px;right:7px;font-size:16px;font-weight:700;color:var(--sky-400);opacity:.7;line-height:1;pointer-events:none}
+.cal-day.empty{cursor:default;background:var(--surface-2);opacity:.45}
+.cal-day:not(.empty):hover{background:var(--azure-wash)}
+.day-num{font-size:13px;font-weight:500;color:var(--ink-2);display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:26px;border-radius:var(--r);font-family:var(--mono)}
+.cal-day.today .day-num{background:var(--ink);color:var(--surface)}
+:root[data-theme="dark"] .cal-day.today .day-num{background:var(--azure);color:#06141d}
+.day-evts{margin-top:6px;display:flex;flex-direction:column;gap:3px}
+.day-chip{font-size:11.5px;font-weight:500;padding:2px 6px;border-radius:2px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;max-width:100%;line-height:1.45}
+.day-chip:hover{filter:brightness(1.12)}
+.day-more{font-size:11.5px;color:var(--muted);padding:1px 2px}
+#calGrid[data-canbooking="1"] .cal-day:not(.empty):hover::after{content:'\e3d4';font-family:'Phosphor-Light';position:absolute;bottom:8px;right:9px;font-size:16px;color:var(--azure-ink)}
+.month-nav{display:inline-flex;align-items:center;margin-bottom:20px;border:1px solid var(--line-2);border-radius:var(--r);overflow:hidden;background:transparent}
+.month-nav button{width:38px;height:38px;border:none;background:transparent;cursor:pointer;color:var(--ink-2);display:flex;align-items:center;justify-content:center;font-size:16px;transition:background .2s}
+.month-nav button:hover{background:var(--azure-wash)}
+.month-label{font-family:var(--serif);font-size:21px;font-weight:500;color:var(--ink);padding:0 20px;min-width:190px;text-align:center;white-space:nowrap}
 
-/* SIDE PANEL */
-.side-panel{display:flex;flex-direction:column;gap:14px}
-.panel-card{border:1px solid var(--border);background:var(--sky-50);padding:5px;border-radius:19px}
-:root[data-theme="dark"] .panel-card{background:var(--surface-2)}
-.panel-inner{background:var(--surface);border-radius:14px;padding:15px;box-shadow:inset 0 1px 0 rgba(255,255,255,.8)}
-:root[data-theme="dark"] .panel-inner{box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
-.panel-ttl{font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px}
-.upc-item{display:flex;align-items:flex-start;gap:9px;padding:9px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:opacity .15s}
-.upc-item:hover{opacity:.78}
-.upc-item:last-child{border-bottom:none;padding-bottom:0}
-.upc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
-.upc-name{font-size:12.5px;font-weight:700;color:var(--text);line-height:1.3}
-.upc-meta{font-size:11px;color:var(--muted);margin-top:1px}
-.leg-item{display:flex;align-items:center;gap:8px;padding:5px 0}
-.leg-dot{width:9px;height:9px;border-radius:3px;flex-shrink:0}
-.leg-name{font-size:12px;color:var(--text-2);font-weight:500}
+/* ── SECTIONS (replaces panel cards) ───────────────────────── */
+.side-panel{display:flex;flex-direction:column;gap:36px}
+.panel-card{border:none;background:none;padding:0}
+.panel-inner{background:none;padding:0}
+.panel-ttl{font-family:var(--serif);font-size:23px;font-weight:500;color:var(--ink);letter-spacing:-.005em;padding-bottom:12px;margin-bottom:6px;border-bottom:1px solid var(--line-2);line-height:1.1}
+.upc-item{display:flex;align-items:flex-start;gap:12px;padding:13px 0;border-bottom:1px solid var(--line);cursor:pointer;transition:background .15s}
+.upc-item:hover .upc-name{color:var(--azure-ink)}
+.upc-item:last-child{border-bottom:none}
+.upc-dot{width:3px;align-self:stretch;border-radius:1px;flex-shrink:0;min-height:30px}
+.upc-name{font-size:14px;font-weight:500;color:var(--ink);line-height:1.3}
+.upc-meta{font-size:12.5px;color:var(--muted);margin-top:2px}
+.leg-item{display:flex;align-items:center;gap:12px;padding:7px 0}
+.leg-dot{width:3px;height:18px;border-radius:1px;flex-shrink:0}
+.leg-name{font-size:13.5px;color:var(--ink-2)}
 
-/* MODALS */
-.modal-overlay{position:fixed;inset:0;background:rgba(14,165,233,.07);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .25s var(--ease)}
+/* ── MODAL / SHEET / DIALOG ────────────────────────────────── */
+.modal-overlay{position:fixed;inset:0;background:var(--scrim);z-index:100;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .25s var(--ease)}
 .modal-overlay.open{opacity:1;pointer-events:all}
-.modal{background:var(--surface);border-radius:20px;width:100%;max-width:500px;box-shadow:var(--shadow-md);border:1px solid var(--border);transform:translateY(18px) scale(.97);transition:transform .3s var(--ease);max-height:90dvh;overflow-y:auto}
-.modal-overlay.open .modal{transform:translateY(0) scale(1)}
-.modal-hdr{padding:19px 22px 15px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.modal-ttl{font-size:15.5px;font-weight:800;color:var(--text);letter-spacing:-.3px}
-.modal-close{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:var(--surface-2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--muted);transition:all .2s;line-height:1}
-.modal-close:hover{background:#fee2e2;color:#dc2626;border-color:#fca5a5}
-.modal-body{padding:19px 22px}
-.modal-footer{padding:14px 22px 18px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:flex-end;gap:9px}
-.det-hdr{display:flex;align-items:flex-start;gap:13px;margin-bottom:18px}
-.det-badge{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
-.det-name{font-size:17px;font-weight:800;color:var(--text);letter-spacing:-.4px;line-height:1.2;margin-bottom:4px}
-.det-hall{font-size:12.5px;color:var(--muted);font-weight:500}
-.det-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:14px}
-.det-field{background:var(--surface-2);border-radius:11px;padding:11px 13px}
-.det-field-lbl{font-size:9.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px}
-.det-field-val{font-size:14px;font-weight:700;color:var(--text)}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:13px}
-.form-grp{margin-bottom:14px}
-.form-lbl{display:block;font-size:11.5px;font-weight:700;color:var(--text-2);margin-bottom:5px}
-.form-input,.form-sel,.form-ta{width:100%;padding:9px 13px;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text);font-family:'Outfit',sans-serif;font-size:13.5px;outline:none;transition:border-color .2s,box-shadow .2s}
-.form-input:focus,.form-sel:focus,.form-ta:focus{border-color:var(--sky-400);box-shadow:0 0 0 3px rgba(14,165,233,.12)}
-.form-ta{resize:vertical;min-height:76px}
-.btn-ghost{padding:0 15px;height:36px;border:1px solid var(--border);border-radius:9px;background:transparent;color:var(--text-2);font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
-.btn-ghost:hover{background:var(--surface-2);border-color:var(--sky-200)}
-.btn-danger{padding:0 15px;height:36px;background:transparent;border:1px solid #fca5a5;color:#dc2626;border-radius:9px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
-.btn-danger:hover{background:#fee2e2;border-color:#f87171}
-.conflict-warn{background:#fef3c7;border:1px solid #fde68a;color:#92400e;border-radius:9px;padding:9px 12px;font-size:12.5px;font-weight:600;margin-bottom:12px;display:none}
+.modal{background:var(--surface);border-radius:var(--r);width:100%;max-width:520px;box-shadow:var(--shadow-sheet);border:1px solid var(--line);transform:translateY(14px);transition:transform .3s var(--ease);max-height:90dvh;display:flex;flex-direction:column}
+.modal-overlay.open .modal{transform:none}
+.modal-hdr{padding:26px 30px 18px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-shrink:0}
+.modal-ttl{font-family:var(--serif);font-size:27px;font-weight:500;color:var(--ink);letter-spacing:-.01em;line-height:1.1}
+.modal-close{width:36px;height:36px;border-radius:var(--r);border:1px solid transparent;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--muted);transition:color .2s,border-color .2s;flex-shrink:0;margin:-4px -8px 0 0}
+.modal-close:hover{color:var(--ink);border-color:var(--line-2)}
+.modal-body{padding:6px 30px 26px;overflow-y:auto;flex:1}
+.modal-footer{padding:18px 30px 24px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-shrink:0;flex-wrap:wrap}
+.modal-overlay.sheet{justify-content:flex-end;align-items:stretch;padding:0}
+.modal-overlay.sheet .modal{max-width:640px;height:100dvh;max-height:100dvh;border-radius:0;border:none;border-left:1px solid var(--line);transform:translateX(40px)}
+.modal-overlay.sheet.open .modal{transform:none}
+.modal-overlay.dlg-o{z-index:130}
+.modal.dlg{max-width:460px}
+.modal.dlg .modal-hdr{padding-bottom:8px}
+.dlg-msg{font-size:14.5px;color:var(--ink-2);line-height:1.6;margin-bottom:16px}
+.det-hdr{display:flex;align-items:flex-start;gap:16px;margin-bottom:22px}
+.det-badge{width:46px;height:46px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;border:1px solid var(--line-2);color:var(--azure-ink);background:transparent!important}
+.det-name{font-family:var(--serif);font-size:26px;font-weight:500;color:var(--ink);line-height:1.1;margin-bottom:4px}
+.det-hall{font-size:13.5px;color:var(--muted)}
+.det-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-bottom:16px;border-top:1px solid var(--line)}
+.det-field{padding:14px 0;border-bottom:1px solid var(--line)}
+.det-field:nth-child(even){padding-left:20px;border-left:1px solid var(--line)}
+.det-field-lbl{font-size:12.5px;color:var(--muted);margin-bottom:4px}
+.det-field-val{font-size:15.5px;font-weight:500;color:var(--ink)}
+
+/* ── FORMS ─────────────────────────────────────────────────── */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-grp{margin-bottom:18px}
+.form-lbl{display:block;font-size:13px;font-weight:500;color:var(--ink-2);margin-bottom:7px}
+.form-input,.form-sel,.form-ta{width:100%;height:42px;padding:0 14px;border:1px solid var(--line-2);border-radius:var(--r);background:var(--surface);color:var(--ink);font-family:var(--sans);font-size:14.5px;outline:none;transition:border-color .2s,box-shadow .2s}
+.form-input::placeholder,.form-ta::placeholder{color:#66767f;opacity:1}
+.form-input:focus,.form-sel:focus,.form-ta:focus{border-color:var(--azure-ink);box-shadow:0 0 0 3px rgba(46,166,220,.2)}
+.form-ta{height:auto;min-height:92px;padding:11px 14px;resize:vertical;line-height:1.55}
+.form-sel{appearance:none;-webkit-appearance:none;padding-right:36px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%2358686f' stroke-width='1.5'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+.conflict-warn{background:var(--warn-bg);color:var(--warn);border-radius:var(--r);padding:11px 14px;font-size:13.5px;margin-bottom:16px;display:none;border-left:2px solid var(--warn)}
 .conflict-warn.show{display:block}
-.coming-soon{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:62vh;text-align:center;padding:48px}
-.cs-icon{width:80px;height:80px;border-radius:24px;background:var(--sky-50);border:1px solid var(--sky-100);display:flex;align-items:center;justify-content:center;font-size:34px;margin-bottom:22px;box-shadow:var(--shadow-sm)}
-.coming-soon h2{font-size:22px;font-weight:800;color:var(--text);letter-spacing:-.5px;margin-bottom:8px}
-.coming-soon p{font-size:14.5px;color:var(--muted);max-width:360px;line-height:1.65}
-.toast{position:fixed;bottom:22px;right:22px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:11px 16px;box-shadow:var(--shadow-md);z-index:200;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;color:var(--text);transform:translateY(120%);opacity:0;transition:all .35s var(--ease)}
-.toast.show{transform:translateY(0);opacity:1}
+
+/* ── TOAST ─────────────────────────────────────────────────── */
+.toast{position:fixed;bottom:28px;left:50%;background:var(--deep);color:#fff;border-radius:var(--r);padding:13px 20px;box-shadow:var(--shadow-sheet);z-index:200;display:flex;align-items:center;gap:12px;font-size:14px;transform:translate(-50%,24px);opacity:0;pointer-events:none;transition:all .35s var(--ease);max-width:min(92vw,520px)}
+.toast.show{transform:translate(-50%,0);opacity:1}
+.toast i{font-size:19px;color:var(--azure)}
 
 @media(prefers-reduced-motion:no-preference){
-  .stat-card{opacity:0;transform:translateY(14px);animation:fadeUp .5s var(--ease) forwards}
-  .stat-card:nth-child(1){animation-delay:.05s}.stat-card:nth-child(2){animation-delay:.1s}
-  .stat-card:nth-child(3){animation-delay:.15s}.stat-card:nth-child(4){animation-delay:.2s}
-  .cal-card{opacity:0;transform:translateY(14px);animation:fadeUp .5s .22s var(--ease) forwards}
-  @keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+  .stat-card,.req-row,.attn-item{animation:rise .5s var(--ease) both}
+  .stat-card:nth-child(2){animation-delay:.05s}.stat-card:nth-child(3){animation-delay:.1s}.stat-card:nth-child(4){animation-delay:.15s}
+  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 }
-@media(max-width:1120px){.cal-layout{grid-template-columns:1fr}.side-panel{display:none}}
-/* Hamburger — always visible */
-.mob-menu-btn{display:flex;width:36px;height:36px;border-radius:9px;background:var(--surface-2);border:1px solid var(--border);cursor:pointer;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
-.mob-menu-btn:hover{background:var(--sky-50);border-color:var(--sky-200)}
-.mob-menu-btn svg{width:17px;height:17px;stroke:var(--text);fill:none;stroke-width:2;stroke-linecap:round}
-/* Sidebar overlay — always active */
-.sb-overlay{display:block;position:fixed;inset:0;background:rgba(3,105,161,.35);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);z-index:50;opacity:0;pointer-events:none;transition:opacity .3s var(--ease)}
-.sb-overlay.show{opacity:1;pointer-events:all}
+@media(prefers-reduced-motion:reduce){*{transition-duration:.01ms!important;animation-duration:.01ms!important}}
 
-@media(min-width:769px){
-  .content{padding:22px 32px}
-  .topbar{padding:0 32px}
-  .stats-grid{grid-template-columns:repeat(4,1fr);gap:14px}
-  .cal-layout{grid-template-columns:1fr 274px;gap:18px}
+/* ── REQUISITIONS ──────────────────────────────────────────── */
+.req-page-hdr{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:28px;gap:16px}
+.req-page-hdr .page-title{font-size:34px}
+.req-tabs{display:flex;gap:30px;margin-bottom:6px;border-bottom:1px solid var(--line);overflow-x:auto}
+.req-tab{padding:12px 0 14px;border:none;background:none;color:var(--muted);font-size:14.5px;cursor:pointer;position:relative;white-space:nowrap;transition:color .2s}
+.req-tab:hover{color:var(--ink)}
+.req-tab.active{color:var(--ink);font-weight:500}
+.req-tab.active::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--azure)}
+.req-tab span{font-family:var(--mono);font-size:12px;margin-left:4px}
+.req-list{display:flex;flex-direction:column}
+.req-head,.req-row{display:grid;grid-template-columns:128px minmax(0,1fr) 200px 130px 112px;gap:24px;align-items:center}
+.req-head{padding:14px 6px;font-size:12.5px;color:var(--muted);border-bottom:1px solid var(--line)}
+.req-head .r,.req-row .r{text-align:right}
+.req-row{padding:20px 6px;border-bottom:1px solid var(--line);cursor:pointer;transition:background .15s}
+.req-row:hover{background:var(--azure-wash)}
+.req-no{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.req-ttl{font-size:15.5px;font-weight:500;color:var(--ink);line-height:1.3}
+.req-sub{font-size:13px;color:var(--muted);margin-top:3px}
+.req-vendor{font-size:14px;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.req-amt{font-family:var(--serif);font-size:22px;font-weight:500;color:var(--ink);text-align:right;line-height:1}
+.req-query-note{grid-column:2/-1;font-size:13.5px;color:var(--ink-2);border-left:2px solid var(--azure);padding:2px 0 2px 12px;margin-top:2px}
+.req-status{display:inline-flex;align-items:center;font-size:12.5px;font-weight:500;padding:3px 10px;border-radius:var(--r);border:1px solid transparent;white-space:nowrap}
+.req-status.pending{background:var(--warn-bg);color:var(--warn)}
+.req-status.approved{background:var(--ok-bg);color:var(--ok)}
+.req-status.paid{background:var(--azure-wash);color:var(--azure-ink)}
+.req-status.rejected{background:var(--bad-bg);color:var(--bad)}
+.req-status.queried{background:transparent;color:var(--ink-2);border-color:var(--line-2)}
+.req-items{width:100%;border-collapse:collapse;margin:4px 0 0}
+.req-items th{font-size:12.5px;font-weight:400;color:var(--muted);text-align:left;padding:8px 0;border-bottom:1px solid var(--line)}
+.req-items td{font-size:14.5px;padding:12px 0;color:var(--ink);vertical-align:top}
+.req-items .r{text-align:right;padding-left:12px}
+.req-total-row{display:flex;justify-content:space-between;gap:14px;align-items:baseline;padding:14px 0 0;border-top:1px solid var(--ink);margin-top:6px}
+.req-total-lbl{font-size:13.5px;color:var(--muted)}
+.req-total-val{font-family:var(--serif);font-size:30px;font-weight:500;color:var(--ink);line-height:1}
+.item-row{display:grid;grid-template-columns:1fr 76px 126px 36px;gap:8px;align-items:center;margin-bottom:8px}
+.item-row .form-input{height:40px}
+.item-del-btn{width:36px;height:36px;border-radius:var(--r);border:1px solid transparent;background:transparent;color:var(--muted);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:color .2s,background .2s}
+.item-del-btn:hover{background:var(--bad-bg);color:var(--bad)}
+.add-item-btn{font-size:14px;font-weight:500;color:var(--azure-ink);background:transparent;border:none;padding:8px 0;cursor:pointer;width:auto;margin:2px 0 14px;display:inline-flex;align-items:center;gap:6px}
+.add-item-btn:hover{text-decoration:underline;text-underline-offset:3px}
+.req-sec-lbl{font-family:var(--serif);font-size:21px;font-weight:500;color:var(--ink);margin:30px 0 10px;line-height:1.1;letter-spacing:0;text-transform:none}
+.req-sec-lbl span{font-family:var(--sans);font-size:13px;color:var(--muted)!important}
+.detail-box{border-top:1px solid var(--line);margin-bottom:10px}
+.detail-box-row{display:flex;justify-content:space-between;gap:20px;font-size:14px;padding:11px 0;border-bottom:1px solid var(--line)}
+.detail-box-row:last-child{border-bottom:none}
+.detail-box-lbl{color:var(--muted);white-space:nowrap}
+.detail-box-val{color:var(--ink);font-weight:500;text-align:right}
+.edit-log{font-size:13.5px;color:var(--ink-2);border-left:2px solid var(--line-2);padding:2px 0 2px 14px;margin-bottom:12px;line-height:1.6}
+.edit-log small{color:var(--muted)}
+.empty-req{padding:72px 20px;color:var(--muted);max-width:420px}
+.empty-req i{font-size:36px;color:var(--line-2);display:block;margin-bottom:16px}
+.empty-req .t{font-family:var(--serif);font-size:25px;font-weight:500;color:var(--ink);margin-bottom:6px;line-height:1.1}
+.qnote{border-left:2px solid var(--azure);padding:4px 0 4px 14px;margin:14px 0;font-size:14.5px;color:var(--ink-2);line-height:1.55}
+.qnote b{font-weight:500;color:var(--ink)}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:3px}::-webkit-scrollbar-thumb:hover{background:var(--muted)}
+
+/* ── STAFF ─────────────────────────────────────────────────── */
+.staff-page-hdr{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:16px}
+.staff-page-hdr .page-title{font-size:34px}
+.staff-grid{display:flex;flex-direction:column;border-top:1px solid var(--ink)}
+.staff-row{display:grid;grid-template-columns:48px minmax(0,1.3fr) minmax(0,1fr) minmax(0,1.4fr);gap:20px;align-items:center;padding:18px 6px;border-bottom:1px solid var(--line)}
+.staff-avatar{width:40px;height:40px;border-radius:var(--r);border:1px solid var(--line-2);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:17px;font-weight:600;color:var(--ink-2)}
+.staff-name{font-size:15.5px;font-weight:500;color:var(--ink)}
+.staff-role{font-size:13px;color:var(--muted);margin-top:2px}
+.staff-prop,.staff-email{font-size:14px;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ── PROPERTY MAP ──────────────────────────────────────────── */
+.map-layout{display:grid;grid-template-columns:1fr 310px;gap:40px;align-items:start}
+.map-card{border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:0;overflow:hidden}
+.map-inner{background:none}
+#propertyMap{height:380px;z-index:1}
+.map-sidebar{border:none;background:none;padding:0}
+.map-sidebar-inner{background:none;padding:0;min-height:0}
+.prop-list-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;cursor:pointer;border-bottom:1px solid var(--line)}
+.prop-list-item:hover .prop-list-name{color:var(--azure-ink)}
+.prop-list-name{font-size:14.5px;font-weight:500;color:var(--ink);line-height:1.25}
+.prop-list-sub{font-size:12.5px;color:var(--muted);margin-top:2px}
+.prop-today{font-size:12.5px;color:var(--azure-ink);font-family:var(--mono);flex-shrink:0}
+.prop-detail-hdr{margin-bottom:6px;padding-bottom:12px;border-bottom:1px solid var(--line-2)}
+.prop-detail-name{font-family:var(--serif);font-size:25px;font-weight:500;color:var(--ink);line-height:1.1}
+.prop-detail-city{font-size:13.5px;color:var(--muted);margin-top:4px}
+.prop-hall-card{padding:14px 0;border-bottom:1px solid var(--line)}
+.prop-hall-hdr{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:3px}
+.prop-hall-name{font-size:14.5px;font-weight:500;color:var(--ink)}
+.prop-hall-cap{font-size:12.5px;color:var(--muted)}
+.prop-hall-meta{font-size:13px;color:var(--ink-2)}
+.prop-hall-next{font-size:12.5px;color:var(--muted);margin-top:3px}
+.prop-back-btn{display:inline-flex;align-items:center;gap:6px;background:transparent;border:none;cursor:pointer;font-size:13.5px;color:var(--azure-ink);padding:0;margin-bottom:16px}
+.prop-back-btn:hover{text-decoration:underline;text-underline-offset:3px}
+.leaflet-container{font-family:var(--sans)!important;background:var(--surface-2)!important}
+/* Desaturate stock OSM tiles so the map sits inside the palette */
+.leaflet-tile-pane{filter:grayscale(1) contrast(.92) brightness(1.06)}
+:root[data-theme="dark"] .leaflet-tile-pane{filter:grayscale(1) invert(1) contrast(.85) brightness(.9)}
+.leaflet-tooltip{border-radius:var(--r)!important;border:1px solid var(--line-2)!important;box-shadow:none!important;color:var(--ink)!important;background:var(--surface)!important;font-size:13px}
+
+/* ── MD DASHBOARD ──────────────────────────────────────────── */
+.dash-grid2{display:grid;grid-template-columns:1.35fr 1fr;gap:56px;margin-bottom:48px}
+.bar-row{display:grid;grid-template-columns:250px 1fr 84px;gap:16px;align-items:center;padding:11px 0;font-size:14px}
+.bar-lbl{color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{height:6px;background:none}
+.bar-fill{height:6px;border-radius:1px;background:var(--azure-ink);transition:width .6s var(--ease)}
+.bar-val{text-align:right;font-family:var(--mono);font-size:13px;color:var(--ink)}
+.pipe-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);font-size:14.5px;cursor:pointer}
+.pipe-row:last-child{border-bottom:none}
+.pipe-row:hover{background:var(--azure-wash)}
+.pipe-row strong{font-weight:500;font-family:var(--mono);font-size:13.5px}
+.attn-item{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:15px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.attn-item:last-child{border-bottom:none}
+.attn-item:hover .attn-t{color:var(--azure-ink)}
+.attn-t{font-size:15px;font-weight:500;color:var(--ink);line-height:1.3}
+.attn-m{font-size:13px;color:var(--muted);margin-top:3px}
+.attn-amt{font-family:var(--serif);font-size:21px;font-weight:500;color:var(--ink);white-space:nowrap}
+.flag{display:inline-block;font-size:12px;font-weight:500;padding:1px 8px;border-radius:var(--r);background:var(--bad-bg);color:var(--bad);margin-left:8px;vertical-align:1px}
+.flag.age{background:var(--warn-bg);color:var(--warn)}
+
+/* ── RESPONSIVE ────────────────────────────────────────────── */
+@media(min-width:1024px){
+  #sidebar{transform:none}
+  #main{margin-left:var(--sidebar-w);width:calc(100% - var(--sidebar-w))}
+  .mob-menu-btn,.sb-overlay{display:none!important}
+}
+@media(max-width:1120px){.cal-layout{grid-template-columns:1fr}.side-panel{display:none}.map-layout{grid-template-columns:1fr}.dash-grid2{grid-template-columns:1fr;gap:44px}}
+@media(max-width:1023px){
+  .topbar,.content{padding-left:28px;padding-right:28px}
 }
 @media(max-width:900px){
-  .stats-grid{grid-template-columns:repeat(2,1fr);gap:11px}
-  .stat-val{font-size:23px}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .stat-card:nth-child(3){padding-left:0;border-left:none}
+  .stat-card:nth-child(n+3){border-top:1px solid var(--line)}
+  .req-head{display:none}
+  .req-row{grid-template-columns:1fr auto;gap:6px 16px;padding:18px 4px}
+  .req-no{grid-column:1}
+  .req-row .req-status-cell{grid-column:2;grid-row:1;justify-self:end}
+  .req-row .req-main{grid-column:1/-1;grid-row:2}
+  .req-row .req-vendor{grid-column:1;grid-row:3}
+  .req-amt{grid-column:2;grid-row:3}
+  .req-query-note{grid-column:1/-1}
+  .staff-row{grid-template-columns:44px 1fr;gap:6px 16px}
+  .staff-row .staff-prop,.staff-row .staff-email{grid-column:2}
+  .bar-row{grid-template-columns:130px 1fr 70px}
 }
 @media(max-width:768px){
-  .content{padding:14px 14px 20px}
-  .topbar{padding:0 14px;height:56px}
-  .stats-grid{grid-template-columns:1fr 1fr;gap:9px}
-  .stat-val{font-size:21px}
-  .role-sel-wrap{display:none}
-  .month-label{min-width:0;font-size:12px;padding:0 8px}
-  .cal-layout{grid-template-columns:1fr}
-  .side-panel{display:none}
-  .cal-day{min-height:68px;padding:7px 4px 4px}
-  .day-num{font-size:11.5px;width:23px;height:23px;border-radius:6px}
-  .day-chip{font-size:8.5px;padding:2px 4px}
-  .cal-wkday{font-size:9.5px;padding:7px 2px}
-  .modal-overlay{align-items:flex-end;padding:0}
-  .modal{border-radius:22px 22px 0 0;max-width:100%;max-height:92dvh;transform:translateY(100%)}
-  .modal-overlay.open .modal{transform:translateY(0)}
-  .modal-hdr::before{content:'';display:block;position:absolute;top:10px;left:50%;transform:translateX(-50%);width:36px;height:4px;border-radius:2px;background:var(--border)}
-  .modal-hdr{position:relative;padding-top:26px}
+  .content{padding:24px 20px 64px}
+  .topbar{padding:0 20px;height:60px}
+  .page-title{font-size:25px}
+  .req-page-hdr .page-title,.staff-page-hdr .page-title{font-size:28px}
+  .stat-card{padding:18px 16px 18px 0}
+  .stat-card+.stat-card{padding-left:16px}
+  .stat-val{font-size:36px}
+  .month-label{min-width:0;font-size:19px;padding:0 12px}
+  .cal-day{min-height:70px;padding:7px 4px 4px}
+  .day-num{font-size:12px;min-width:23px;height:23px}
+  .day-chip{font-size:10.5px;padding:1px 4px}
+  .cal-wkday{font-size:11.5px;padding:9px 2px}
+  .modal-overlay,.modal-overlay.sheet{align-items:flex-end;padding:0}
+  .modal,.modal-overlay.sheet .modal{max-width:100%;width:100%;height:auto;max-height:92dvh;border-radius:6px 6px 0 0;border:none;border-top:1px solid var(--line);transform:translateY(40px)}
+  .modal-hdr{padding:22px 20px 14px}
+  .modal-body{padding:4px 20px 22px}
+  .modal-footer{padding:14px 20px 20px}
+  .modal-ttl{font-size:24px}
   .form-row{grid-template-columns:1fr}
-  .toast{bottom:82px;right:14px;left:14px;text-align:left}
-  .demo-badge{font-size:10px;padding:3px 7px}
-  .page-title{font-size:15px}
+  .item-row{grid-template-columns:1fr 64px 100px 34px}
+  .toast{bottom:20px}
+  .map-layout{gap:24px}
+  #propertyMap{height:300px}
 }
-@media(max-width:400px){
-  .stats-grid{grid-template-columns:1fr 1fr;gap:7px}
-  .stat-val{font-size:18px}
-  .cal-day{min-height:54px}
-}
-/* ── REQUISITIONS ───────────────────────────────────────────── */
-.req-page-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;gap:12px}
-.req-tabs{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap}
-.req-tab{padding:7px 15px;border-radius:9px;border:1px solid var(--border);background:var(--surface-2);color:var(--muted);font-size:12.5px;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Outfit',sans-serif}
-.req-tab.active{background:var(--sky-600);color:#fff;border-color:var(--sky-600)}
-.req-list{display:flex;flex-direction:column;gap:11px}
-.req-card{border:1px solid var(--border);background:var(--surface);border-radius:16px;padding:15px 18px;cursor:pointer;transition:all .25s var(--ease)}
-.req-card:hover{border-color:var(--sky-200);box-shadow:var(--shadow-sm);transform:translateY(-1px)}
-.req-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:7px}
-.req-card-title{font-size:14px;font-weight:800;color:var(--text)}
-.req-card-meta{font-size:11.5px;color:var(--muted);margin-top:2px}
-.req-card-right{text-align:right;flex-shrink:0}
-.req-card-amount{font-size:15.5px;font-weight:900;color:var(--sky-700);margin-bottom:4px}
-.req-status{display:inline-block;font-size:10px;font-weight:800;padding:2px 9px;border-radius:20px;letter-spacing:.04em;text-transform:uppercase}
-.req-status.pending{background:#fef3c7;color:#92400e}
-.req-status.approved{background:#d1fae5;color:#065f46}
-.req-status.paid{background:#dbeafe;color:#1e40af}
-.req-status.rejected{background:#fee2e2;color:#991b1b}
-.req-status.queried{background:#ede9fe;color:#5b21b6}
-.req-query-note{font-size:11.5px;color:#5b21b6;background:#ede9fe;border-radius:7px;padding:5px 9px;margin-top:7px}
-/* Items table */
-.req-items{width:100%;border-collapse:collapse;margin:10px 0 0}
-.req-items th{font-size:10.5px;font-weight:700;color:var(--muted);text-align:left;padding:5px 8px;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.04em}
-.req-items td{font-size:12.5px;padding:7px 8px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top}
-.req-items tr:last-child td{border-bottom:none}
-.req-items .r{text-align:right}
-.req-total-row{display:flex;justify-content:flex-end;gap:14px;align-items:center;padding:10px 8px 0;border-top:2px solid var(--border);margin-top:2px}
-.req-total-lbl{font-size:12px;font-weight:700;color:var(--muted)}
-.req-total-val{font-size:17px;font-weight:900;color:var(--sky-700)}
-/* Item rows in create form */
-.item-row{display:grid;grid-template-columns:1fr 72px 120px 28px;gap:7px;align-items:center;margin-bottom:7px}
-.item-del-btn{width:28px;height:28px;border-radius:7px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
-.item-del-btn:hover{background:#fee2e2;border-color:#fca5a5;color:#dc2626}
-.add-item-btn{font-size:12px;font-weight:700;color:var(--sky-600);background:transparent;border:1.5px dashed var(--sky-300);border-radius:9px;padding:7px;cursor:pointer;width:100%;margin:4px 0 10px;font-family:'Outfit',sans-serif;transition:all .2s}
-.add-item-btn:hover{background:var(--sky-50)}
-.req-sec-lbl{font-size:10.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 8px}
-/* Detail boxes */
-.detail-box{background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:11px 14px;margin-bottom:12px}
-.detail-box-row{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;padding:3px 0}
-.detail-box-lbl{color:var(--muted);font-weight:600;white-space:nowrap}
-.detail-box-val{color:var(--text);font-weight:700;text-align:right}
-/* Action buttons */
-.btn-approve{background:#059669;color:#fff;border:none;padding:9px 18px;border-radius:10px;font-weight:800;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;transition:all .2s}
-.btn-approve:hover{background:#047857}
-.btn-reject-r{background:#dc2626;color:#fff;border:none;padding:9px 18px;border-radius:10px;font-weight:800;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;transition:all .2s}
-.btn-reject-r:hover{background:#b91c1c}
-.btn-pay{background:var(--sky-600);color:#fff;border:none;padding:9px 18px;border-radius:10px;font-weight:800;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;transition:all .2s}
-.btn-pay:hover{background:var(--sky-700)}
-.btn-query{background:#7c3aed;color:#fff;border:none;padding:9px 18px;border-radius:10px;font-weight:800;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;transition:all .2s}
-.btn-query:hover{background:#6d28d9}
-.btn-del-grey{background:#6b7280;color:#fff;border:none;padding:9px 18px;border-radius:10px;font-weight:800;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;transition:all .2s}
-.btn-del-grey:hover{background:#4b5563}
-.empty-req{text-align:center;padding:52px 20px;color:var(--muted)}
-.empty-req svg{width:38px;height:38px;stroke:var(--light);fill:none;margin-bottom:12px;stroke-width:1.5}
-::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--light);border-radius:3px}::-webkit-scrollbar-thumb:hover{background:var(--muted)}
+.btn-primary.dlg-danger{background:var(--bad);border-color:var(--bad);color:#fff}
+.btn-primary.dlg-danger:hover{filter:brightness(.92)}
+.dlg-err{font-size:13px;color:var(--bad);margin-top:6px}
 
-/* ── PROPERTY MAP (Admin / MD dashboard) ───────────────────── */
-.map-layout{display:grid;grid-template-columns:1fr 290px;gap:18px;align-items:start}
-.map-card{border:1px solid var(--border);background:var(--sky-50);padding:5px;border-radius:20px}
-:root[data-theme="dark"] .map-card{background:var(--surface-2)}
-.map-inner{background:var(--surface);border-radius:15px;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.8)}
-:root[data-theme="dark"] .map-inner{box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
-#propertyMap{height:360px;z-index:1}
-.map-sidebar{border:1px solid var(--border);background:var(--sky-50);padding:5px;border-radius:20px}
-:root[data-theme="dark"] .map-sidebar{background:var(--surface-2)}
-.map-sidebar-inner{background:var(--surface);border-radius:15px;padding:14px;min-height:360px;box-shadow:inset 0 1px 0 rgba(255,255,255,.8)}
-:root[data-theme="dark"] .map-sidebar-inner{box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
-.prop-list-item{display:flex;align-items:center;justify-content:space-between;padding:10px 11px;border-radius:11px;cursor:pointer;transition:all .2s;margin-bottom:6px;border:1px solid transparent}
-.prop-list-item:hover{background:var(--sky-50);border-color:var(--sky-100)}
-.prop-list-name{font-size:13px;font-weight:800;color:var(--text);line-height:1.2}
-.prop-list-sub{font-size:11px;color:var(--muted);margin-top:1px}
-.prop-detail-hdr{margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border)}
-.prop-detail-name{font-size:15px;font-weight:800;color:var(--text);letter-spacing:-.3px}
-.prop-detail-city{font-size:12px;color:var(--muted);margin-top:2px}
-.prop-hall-card{padding:10px 12px;border-radius:11px;border:1px solid var(--border);margin-bottom:8px;transition:all .2s}
-.prop-hall-card:hover{border-color:var(--sky-200);background:var(--sky-50)}
-.prop-hall-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
-.prop-hall-name{font-size:12.5px;font-weight:800;color:var(--text)}
-.prop-hall-cap{font-size:10.5px;color:var(--muted);font-weight:600}
-.prop-hall-meta{font-size:11px;color:var(--muted);margin-top:2px}
-.prop-hall-next{font-size:10.5px;color:var(--sky-600);margin-top:3px;font-weight:600}
-.prop-back-btn{display:flex;align-items:center;gap:5px;background:transparent;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;color:var(--muted);padding:0;margin-bottom:12px;transition:color .2s}
-.prop-back-btn:hover{color:var(--text)}
-@media(max-width:900px){.map-layout{grid-template-columns:1fr}}
-.leaflet-container{font-family:'Outfit',sans-serif!important}
-.leaflet-popup-content-wrapper{border-radius:11px!important}
-/* MD DASHBOARD */
-.dash-sec{margin-bottom:22px}
-.dash-grid2{display:grid;grid-template-columns:1.4fr 1fr;gap:14px;margin-bottom:22px}
-.dash-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:22px}
-.stat-card.alert{border-color:#fcd34d;background:#fffbeb}
-.stat-card.clickable{cursor:pointer}
-.bar-row{display:grid;grid-template-columns:130px 1fr 70px;gap:10px;align-items:center;margin-bottom:9px;font-size:12px}
-.bar-lbl{color:var(--text-2);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bar-track{height:10px;background:var(--surface-2);border-radius:6px;overflow:hidden}
-.bar-fill{height:100%;border-radius:6px;background:var(--sky-500);transition:width .5s var(--ease)}
-.bar-val{text-align:right;font-weight:800;color:var(--text)}
-.pipe-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:12.5px;cursor:pointer}
-.pipe-row:last-child{border-bottom:none}
-.pipe-row:hover{background:var(--surface-2)}
-.attn-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);cursor:pointer}
-.attn-item:last-child{border-bottom:none}
-.attn-t{font-size:13px;font-weight:700;color:var(--text)}
-.attn-m{font-size:11px;color:var(--muted);margin-top:2px}
-.flag{display:inline-block;font-size:9.5px;font-weight:800;padding:1px 7px;border-radius:20px;background:#fee2e2;color:#991b1b;margin-left:6px;text-transform:uppercase}
-.flag.age{background:#fef3c7;color:#92400e}
-.edit-log{font-size:11.5px;color:var(--text-2);border-left:3px solid var(--sky-200);padding:2px 0 2px 10px;margin-bottom:8px;line-height:1.5}
-.edit-log small{color:var(--muted)}
-.btn-save{background:var(--sky-500);color:#fff;border:none;padding:9px 18px;border-radius:10px;font-weight:800;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px}
-.btn-save:hover{background:var(--sky-600)}
-@media(max-width:900px){.dash-grid2,.dash-grid3{grid-template-columns:1fr}.bar-row{grid-template-columns:100px 1fr 60px}}
+/* ── MD DASHBOARD v2: panels, KPI tiles, charts ────────────── */
+.dgrid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:20px;margin-bottom:20px}
+.s3{grid-column:span 3}.s4{grid-column:span 4}.s5{grid-column:span 5}.s6{grid-column:span 6}.s7{grid-column:span 7}.s8{grid-column:span 8}
+.dcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px 24px;box-shadow:0 1px 2px rgba(11,24,35,.04);min-width:0;display:flex;flex-direction:column}
+.dcard-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:18px}
+.dcard-t{font-size:15px;font-weight:500;color:var(--ink)}
+.dcard-m{font-size:13px;color:var(--muted);white-space:nowrap}
+.dcard-m b{font-weight:500;color:var(--ink)}
+.dcard .link{background:none;border:none;color:var(--azure-ink);font-size:13px;cursor:pointer;padding:0}
+.dcard .link:hover{text-decoration:underline;text-underline-offset:3px}
+
+/* KPI tiles */
+.kt{position:relative;padding:20px 22px 18px}
+.kt.alert{border-color:var(--azure);box-shadow:inset 3px 0 0 var(--azure),0 1px 2px rgba(11,24,35,.04)}
+.kt.clickable{cursor:pointer;transition:border-color .2s}
+.kt.clickable:hover{border-color:var(--line-2)}
+.kt.alert.clickable:hover{border-color:var(--azure)}
+.kt-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.kt-lbl{font-size:13.5px;color:var(--muted)}
+.kt-ico{width:34px;height:34px;border-radius:var(--r);background:var(--azure-wash);color:var(--azure-ink);display:flex;align-items:center;justify-content:center;font-size:18px}
+.kt-val{font-family:var(--serif);font-size:42px;font-weight:500;color:var(--ink);letter-spacing:-.02em;line-height:1;font-feature-settings:'lnum' 1,'tnum' 1}
+.kt.alert .kt-val{color:var(--azure-ink)}
+.kt-foot{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-top:16px;min-height:38px;font-size:12.5px;color:var(--muted)}
+.kt-fl{display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-width:0}
+.delta{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;font-weight:500;padding:2px 7px;border-radius:var(--r);white-space:nowrap}
+.delta.up{color:var(--ok);background:var(--ok-bg)}
+.delta.down{color:var(--bad);background:var(--bad-bg)}
+.delta.flat{color:var(--muted);background:var(--surface-2)}
+.delta i{font-size:12px}
+.kt-sub{display:block;margin-top:6px;color:var(--muted);font-size:12.5px}
+.spark{width:96px;height:34px;flex-shrink:0;overflow:visible}
+.spark .ln{fill:none;stroke:var(--azure-ink);stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round}
+.spark .ar{fill:var(--azure);opacity:.12}
+.spark .dt{fill:var(--azure-ink)}
+
+/* charts */
+.chart-box{position:relative;height:270px}
+.chart-box.tall{height:300px}
+.chart-box canvas{max-width:100%}
+.donut-wrap{position:relative;height:190px;margin:0 auto 18px;max-width:190px;width:100%}
+.donut-mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+.donut-mid .n{font-family:var(--serif);font-size:38px;font-weight:500;line-height:1;color:var(--ink)}
+.donut-mid .l{font-size:12.5px;color:var(--muted);margin-top:4px}
+.legend{display:flex;flex-direction:column}
+.lg-row{display:grid;grid-template-columns:10px 1fr auto auto;gap:10px;align-items:center;padding:9px 0;font-size:13.5px;cursor:pointer;border-top:1px solid var(--line)}
+.lg-row:first-child{border-top:none}
+.lg-row:hover .lg-n{color:var(--azure-ink)}
+.lg-sw{width:10px;height:10px;border-radius:2px}
+.lg-n{color:var(--ink);transition:color .15s}
+.lg-c{font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+.lg-a{font-family:var(--mono);font-size:12.5px;color:var(--ink);min-width:70px;text-align:right}
+.d-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:180px;color:var(--muted);font-size:14px;text-align:center;border:1px dashed var(--line-2);border-radius:var(--r)}
+.d-empty i{font-size:28px;color:var(--line-2)}
+
+/* attention table */
+.dtable{width:100%}
+.dtr{display:grid;grid-template-columns:minmax(0,1fr) 100px 88px 68px;gap:14px;align-items:center;padding:13px 0;border-top:1px solid var(--line)}
+.dtr.head{border-top:none;padding:0 0 10px;font-size:12.5px;color:var(--muted)}
+.dtr .r{text-align:right}
+.dtr-t{font-size:14.5px;font-weight:500;color:var(--ink);line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.dtr-s{font-size:12.5px;color:var(--muted);margin-top:3px}
+.dtr-s .flag{margin-left:8px}
+.dtr-a{font-family:var(--serif);font-size:20px;font-weight:500;color:var(--ink);text-align:right;white-space:nowrap}
+.btn-sm{height:32px;padding:0 12px;font-size:13px;border-radius:var(--r);border:1px solid var(--line-2);background:transparent;color:var(--ink);cursor:pointer;transition:border-color .2s}
+.btn-sm:hover{border-color:var(--ink)}
+
+/* events + activity */
+.ev-row{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:16px;align-items:center;padding:12px 0;border-top:1px solid var(--line);cursor:pointer}
+.ev-row:first-child{border-top:none;padding-top:0}
+.ev-date{width:48px;height:52px;border:1px solid var(--line);border-radius:var(--r);display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--canvas)}
+.ev-date .d{font-family:var(--serif);font-size:22px;font-weight:600;line-height:1;color:var(--ink)}
+.ev-date .m{font-size:11.5px;color:var(--muted);margin-top:3px}
+.ev-n{font-size:14.5px;font-weight:500;color:var(--ink);line-height:1.3}
+.ev-s{font-size:12.5px;color:var(--muted);margin-top:2px}
+.ev-a{font-family:var(--serif);font-size:19px;font-weight:500;color:var(--ink);white-space:nowrap}
+.ev-row:hover .ev-n{color:var(--azure-ink)}
+.ac-row{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:14px;align-items:center;padding:12px 0;border-top:1px solid var(--line);cursor:pointer}
+.ac-row:first-child{border-top:none;padding-top:0}
+.ac-ico{width:34px;height:34px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:17px;background:var(--surface-2);color:var(--ink-2)}
+.ac-ico.pending{background:var(--warn-bg);color:var(--warn)}.ac-ico.approved{background:var(--ok-bg);color:var(--ok)}.ac-ico.paid{background:var(--azure-wash);color:var(--azure-ink)}.ac-ico.rejected{background:var(--bad-bg);color:var(--bad)}
+.ac-t{font-size:14px;font-weight:500;color:var(--ink);line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ac-s{font-size:12.5px;color:var(--muted);margin-top:2px}
+.ac-row:hover .ac-t{color:var(--azure-ink)}
+
+@media(max-width:1180px){.s3{grid-column:span 6}.s4,.s5,.s6,.s7,.s8{grid-column:span 12}}
+@media(max-width:700px){
+  .dgrid{gap:14px}
+  .s3{grid-column:span 6}
+  .dcard{padding:18px}
+  .kt{padding:16px}
+  .kt-val{font-size:30px}
+  .kt-lbl{font-size:12.5px}
+  .kt-ico{display:none}
+  .kt-top{margin-bottom:12px}
+  .spark{display:none}
+  .kt-foot{min-height:0;margin-top:12px}
+  .dtr{grid-template-columns:minmax(0,1fr) auto;gap:6px 12px}
+  .dtr.head{display:none}
+  .dtr .st-c{grid-column:1;grid-row:2}
+  .dtr .act-c{grid-column:2;grid-row:2;text-align:right}
+  .dtr-a{grid-column:2;grid-row:1}
+}
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css"/>
 </head>
@@ -378,7 +498,7 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
 
 <aside id="sidebar">
   <div class="sb-header">
-    <div class="logo-row"><img src="assets/logo-white.png" alt="Bridge Waters — Luxury Suites &amp; Conference Centre" class="sb-logo"></div>
+    <div class="logo-row"><img src="assets/logo-white.png" alt="Bridge Waters Luxury Suites and Conference Centre" class="sb-logo"></div>
     <button class="sb-toggle" id="sbToggle" title="Toggle sidebar">
       <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
         <polyline id="sbChev" points="4,2 8,6 4,10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
@@ -388,29 +508,29 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
   <nav class="sb-nav">
     <div class="nav-sec-lbl">Operations</div>
     <div class="nav-item" id="navDash" data-page="dashboard" style="display:none" onclick="switchPage('dashboard');closeMobSidebar()">
-      <div class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg></div>
-      <div class="nav-txt"><span>MD Dashboard</span></div>
+      <div class="nav-icon"><i class="ph-light ph-squares-four"></i></div>
+      <div class="nav-txt"><span>MD dashboard</span></div>
     </div>
     <div class="nav-item active" data-page="events" onclick="switchPage('events');closeMobSidebar()">
-      <div class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
-      <div class="nav-txt"><span>Event Booking</span></div>
+      <div class="nav-icon"><i class="ph-light ph-calendar-blank"></i></div>
+      <div class="nav-txt"><span>Event booking</span></div>
     </div>
     <div class="nav-item" data-page="requisitions" onclick="switchPage('requisitions');closeMobSidebar()">
-      <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
-      <div class="nav-txt"><span>Requisitions</span></div>
+      <div class="nav-icon"><i class="ph-light ph-file-text"></i></div>
+      <div class="nav-txt"><span>Requisitions</span><span class="nav-count" id="reqNavCount"></span></div>
     </div>
-    <div style="margin-top:16px" class="nav-sec-lbl">Coming Soon</div>
+    <div class="nav-sec-lbl">Coming soon</div>
     <div class="nav-item dimmed">
-      <div class="nav-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+      <div class="nav-icon"><i class="ph-light ph-desktop"></i></div>
       <div class="nav-txt"><span>ERP</span></div>
     </div>
     <div class="nav-item dimmed">
-      <div class="nav-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+      <div class="nav-icon"><i class="ph-light ph-chart-line-up"></i></div>
       <div class="nav-txt"><span>Reports</span></div>
     </div>
     <div class="nav-item dimmed" id="navStaff">
-      <div class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg></div>
-      <div class="nav-txt"><span>HR &amp; Staff</span></div>
+      <div class="nav-icon"><i class="ph-light ph-users-three"></i></div>
+      <div class="nav-txt"><span>HR and staff</span></div>
     </div>
   </nav>
   <div class="sb-footer">
@@ -421,32 +541,26 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
         <div class="role-pill" id="uRolePill">Banqueting Manager</div>
       </div>
     </div>
-    <button class="btn-logout" id="logoutBtn" onclick="logout()">
-      <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-      <span>Sign out</span>
-    </button>
+    <button class="btn-logout" id="logoutBtn" onclick="logout()"><i class="ph-light ph-sign-out"></i><span>Sign out</span></button>
   </div>
 </aside>
 
 <main id="main">
   <header class="topbar">
     <div class="tb-left">
-      <button class="mob-menu-btn" id="mobMenuBtn" onclick="toggleMobSidebar()" aria-label="Menu">
-        <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-      </button>
-      <span class="page-title" id="pageTitle">Event Booking</span>
+      <button class="mob-menu-btn" id="mobMenuBtn" onclick="toggleMobSidebar()" aria-label="Menu"><i class="ph-light ph-list"></i></button>
+      <span class="page-title" id="pageTitle">Event booking</span>
       <span class="loc-pill" id="locPill"></span>
     </div>
     <div class="tb-right">
-      <button class="theme-btn" onclick="toggleTheme()" title="Toggle theme"><span id="themeIcon">🌙</span></button>
+      <button class="theme-btn" onclick="toggleTheme()" title="Toggle theme" aria-label="Toggle theme"><i class="ph-light ph-moon" id="themeIcon"></i></button>
     </div>
   </header>
 
   <div class="content" id="pageDash" style="display:none">
     <div class="req-page-hdr">
       <div>
-        <div class="page-title" style="margin-bottom:3px">Executive Overview</div>
-        <div style="font-size:12px;color:var(--muted)" id="dashSubtitle"></div>
+                <div style="font-size:15px;color:var(--muted)" id="dashSubtitle"></div>
       </div>
     </div>
     <div id="dashBody"></div>
@@ -455,7 +569,7 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
   <div class="content" id="pageEvents">
     <div class="stats-grid" id="statsGrid"></div>
 
-    <!-- Property Map — visible for Admin & MD only -->
+    <!-- Property map: visible for Admin and MD only -->
     <div id="mapSection" style="display:none;margin-bottom:22px">
       <div class="map-layout">
         <div class="map-card">
@@ -470,9 +584,9 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
     </div>
 
     <div class="month-nav" id="monthNav" style="margin-bottom:16px">
-      <button onclick="changeMonth(-1)" title="Previous"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <button onclick="changeMonth(-1)" title="Previous month" aria-label="Previous month"><i class="ph-light ph-caret-left"></i></button>
       <span class="month-label" id="monthLabel">November 2026</span>
-      <button onclick="changeMonth(1)" title="Next"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+      <button onclick="changeMonth(1)" title="Next month" aria-label="Next month"><i class="ph-light ph-caret-right"></i></button>
     </div>
     <div class="cal-layout">
       <div class="cal-card">
@@ -502,12 +616,9 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
   <div class="content" id="pageReq" style="display:none">
     <div class="req-page-hdr">
       <div>
-        <div class="page-title" style="margin-bottom:3px">Requisitions</div>
-        <div style="font-size:12px;color:var(--muted)" id="reqSubtitle"></div>
+                <div style="font-size:15px;color:var(--muted)" id="reqSubtitle"></div>
       </div>
-      <button class="btn-primary" id="newReqBtn" onclick="openNewReq()" style="display:none;align-items:center;gap:6px">
-        <span style="font-size:16px;line-height:1">+</span> New Requisition
-      </button>
+      <button class="btn-primary" id="newReqBtn" onclick="openNewReq()" style="display:none"><i class="ph-light ph-plus"></i> New requisition</button>
     </div>
     <div class="req-tabs" id="reqTabs"></div>
     <div class="req-list" id="reqList"></div>
@@ -516,10 +627,9 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
   <div class="content" id="pageStaff" style="display:none">
     <div class="staff-page-hdr">
       <div>
-        <div class="page-title" style="margin-bottom:3px">HR &amp; Staff</div>
-        <div style="font-size:12px;color:var(--muted)">Manage staff accounts across all properties</div>
+                <div style="font-size:15px;color:var(--muted)">Manage staff accounts across all properties</div>
       </div>
-      <button class="btn-primary" onclick="openAddStaff()"><span style="font-size:16px;line-height:1">+</span> Add Staff Member</button>
+      <button class="btn-primary" onclick="openAddStaff()"><i class="ph-light ph-plus"></i> Add staff member</button>
     </div>
     <div class="staff-grid" id="staffGrid"></div>
   </div>
@@ -527,41 +637,41 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
 </div>
 
 <!-- Requisition Create Modal -->
-<div class="modal-overlay" id="reqModal">
-  <div class="modal" style="max-width:580px">
-    <div class="modal-hdr"><span class="modal-ttl">New Requisition</span><button class="modal-close" onclick="closeModal('reqModal')">&#215;</button></div>
+<div class="modal-overlay sheet" id="reqModal">
+  <div class="modal">
+    <div class="modal-hdr"><span class="modal-ttl">New requisition</span><button class="modal-close" onclick="closeModal('reqModal')" aria-label="Close"><i class="ph-light ph-x"></i></button></div>
     <div class="modal-body">
       <div class="form-grp"><label class="form-lbl">Purpose / Title *</label><input class="form-input" id="rq-purpose" type="text" placeholder="e.g. Food items for Zenith Bank AGM dinner"></div>
       <div class="req-sec-lbl">Items</div>
-      <div style="font-size:10.5px;color:var(--muted);margin-bottom:8px;display:grid;grid-template-columns:1fr 72px 120px 28px;gap:7px;padding:0 2px"><span>Description</span><span style="text-align:center">Qty</span><span style="text-align:right">Unit Cost (₦)</span><span></span></div>
+      <div style="font-size:10.5px;color:var(--muted);margin-bottom:8px;display:grid;grid-template-columns:1fr 72px 120px 28px;gap:7px;padding:0 2px"><span>Description</span><span style="text-align:center">Qty</span><span style="text-align:right">Unit cost (₦)</span><span></span></div>
       <div id="rqItemRows"></div>
-      <button class="add-item-btn" onclick="addReqItem()">+ Add Item</button>
+      <button class="add-item-btn" onclick="addReqItem()"><i class="ph-light ph-plus"></i> Add item</button>
       <div class="req-total-row" style="border-top:1px solid var(--border);padding-top:8px">
         <span class="req-total-lbl">Total</span>
         <span class="req-total-val" id="rqTotalDisp">₦0</span>
       </div>
-      <div class="req-sec-lbl">Vendor &amp; Payment Details</div>
+      <div class="req-sec-lbl">Vendor and payment</div>
       <div class="form-row">
-        <div class="form-grp"><label class="form-lbl">Vendor Name *</label><input class="form-input" id="rq-vendor" type="text" placeholder="e.g. Fresh Mart Supplies Ltd"></div>
-        <div class="form-grp"><label class="form-lbl">Bank Name</label><input class="form-input" id="rq-bank" type="text" placeholder="e.g. Access Bank"></div>
+        <div class="form-grp"><label class="form-lbl">Vendor name *</label><input class="form-input" id="rq-vendor" type="text" placeholder="e.g. Fresh Mart Supplies Ltd"></div>
+        <div class="form-grp"><label class="form-lbl">Bank</label><input class="form-input" id="rq-bank" type="text" placeholder="e.g. Access Bank"></div>
       </div>
       <div class="form-row">
-        <div class="form-grp"><label class="form-lbl">Account Number</label><input class="form-input" id="rq-accno" type="text" placeholder="0123456789"></div>
-        <div class="form-grp"><label class="form-lbl">Account Name</label><input class="form-input" id="rq-accname" type="text" placeholder="Fresh Mart Supplies Ltd"></div>
+        <div class="form-grp"><label class="form-lbl">Account number</label><input class="form-input" id="rq-accno" type="text" placeholder="0123456789"></div>
+        <div class="form-grp"><label class="form-lbl">Account name</label><input class="form-input" id="rq-accname" type="text" placeholder="Fresh Mart Supplies Ltd"></div>
       </div>
       <div class="form-grp"><label class="form-lbl">Notes (optional)</label><textarea class="form-ta" id="rq-notes" placeholder="Additional details, deadlines, delivery instructions..."></textarea></div>
     </div>
     <div class="modal-footer">
       <button class="btn-ghost" onclick="closeModal('reqModal')">Cancel</button>
-      <button class="btn-primary" onclick="submitReq()">Submit Requisition</button>
+      <button class="btn-primary" onclick="submitReq()">Submit requisition</button>
     </div>
   </div>
 </div>
 
 <!-- Requisition Detail Modal -->
-<div class="modal-overlay" id="reqDetailModal">
-  <div class="modal" style="max-width:560px">
-    <div class="modal-hdr"><span class="modal-ttl" id="reqDetailTtl">Requisition</span><button class="modal-close" onclick="closeModal('reqDetailModal')">&#215;</button></div>
+<div class="modal-overlay sheet" id="reqDetailModal">
+  <div class="modal">
+    <div class="modal-hdr"><span class="modal-ttl" id="reqDetailTtl">Requisition</span><button class="modal-close" onclick="closeModal('reqDetailModal')" aria-label="Close"><i class="ph-light ph-x"></i></button></div>
     <div class="modal-body" id="reqDetailBody"></div>
     <div class="modal-footer" id="reqDetailFooter"></div>
   </div>
@@ -570,7 +680,7 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
 <!-- Detail Modal -->
 <div class="modal-overlay" id="detailModal">
   <div class="modal">
-    <div class="modal-hdr"><span class="modal-ttl">Event Details</span><button class="modal-close" onclick="closeModal('detailModal')">&#215;</button></div>
+    <div class="modal-hdr"><span class="modal-ttl">Event details</span><button class="modal-close" onclick="closeModal('detailModal')" aria-label="Close"><i class="ph-light ph-x"></i></button></div>
     <div class="modal-body" id="detailBody"></div>
     <div class="modal-footer" id="detailFooter"></div>
   </div>
@@ -579,7 +689,7 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
 <!-- Day Modal -->
 <div class="modal-overlay" id="dayModal">
   <div class="modal">
-    <div class="modal-hdr"><span class="modal-ttl" id="dayModalTtl">Events</span><button class="modal-close" onclick="closeModal('dayModal')">&#215;</button></div>
+    <div class="modal-hdr"><span class="modal-ttl" id="dayModalTtl">Events</span><button class="modal-close" onclick="closeModal('dayModal')" aria-label="Close"><i class="ph-light ph-x"></i></button></div>
     <div class="modal-body" id="dayModalBody"></div>
   </div>
 </div>
@@ -587,28 +697,28 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
 <!-- Booking Modal -->
 <div class="modal-overlay" id="bookingModal">
   <div class="modal">
-    <div class="modal-hdr"><span class="modal-ttl">Book a Hall</span><button class="modal-close" onclick="closeModal('bookingModal')">&#215;</button></div>
+    <div class="modal-hdr"><span class="modal-ttl">Book a hall</span><button class="modal-close" onclick="closeModal('bookingModal')" aria-label="Close"><i class="ph-light ph-x"></i></button></div>
     <div class="modal-body">
-      <div class="conflict-warn" id="conflictWarn">⚠️ This hall is already booked for the selected date.</div>
+      <div class="conflict-warn" id="conflictWarn">This hall is already booked for the selected date.</div>
       <form id="bookingForm" onsubmit="return false">
         <div class="form-row">
-          <div class="form-grp"><label class="form-lbl">Event Name *</label><input class="form-input" id="f-name" type="text" placeholder="e.g. Annual Gala Dinner"></div>
-          <div class="form-grp"><label class="form-lbl">Client / Organisation *</label><input class="form-input" id="f-client" type="text" placeholder="e.g. Zenith Bank PLC"></div>
+          <div class="form-grp"><label class="form-lbl">Event name *</label><input class="form-input" id="f-name" type="text" placeholder="e.g. Annual Gala Dinner"></div>
+          <div class="form-grp"><label class="form-lbl">Client or organisation *</label><input class="form-input" id="f-client" type="text" placeholder="e.g. Zenith Bank PLC"></div>
         </div>
         <div class="form-row">
-          <div class="form-grp"><label class="form-lbl">Event Date *</label><input class="form-input" id="f-date" type="date" onchange="checkFormConflict()"></div>
+          <div class="form-grp"><label class="form-lbl">Event date *</label><input class="form-input" id="f-date" type="date" onchange="checkFormConflict()"></div>
           <div class="form-grp"><label class="form-lbl">Hall *</label><select class="form-sel" id="f-hall" onchange="checkFormConflict()"></select></div>
         </div>
         <div class="form-row">
-          <div class="form-grp"><label class="form-lbl">Expected Guests</label><input class="form-input" id="f-guests" type="number" placeholder="e.g. 200" min="1"></div>
-          <div class="form-grp"><label class="form-lbl">Amount Paid (&#8358;) *</label><input class="form-input" id="f-amount" type="number" placeholder="e.g. 1500000" min="0"></div>
+          <div class="form-grp"><label class="form-lbl">Expected guests</label><input class="form-input" id="f-guests" type="number" placeholder="e.g. 200" min="1"></div>
+          <div class="form-grp"><label class="form-lbl">Amount paid (&#8358;) *</label><input class="form-input" id="f-amount" type="number" placeholder="e.g. 1500000" min="0"></div>
         </div>
         <div class="form-grp"><label class="form-lbl">Notes (optional)</label><textarea class="form-ta" id="f-notes" placeholder="Setup requirements, special instructions..."></textarea></div>
       </form>
     </div>
     <div class="modal-footer">
       <button class="btn-ghost" onclick="closeModal('bookingModal')">Cancel</button>
-      <button class="btn-primary" onclick="submitBooking()"><span class="btn-icon">&#10003;</span><span>Confirm Booking</span></button>
+      <button class="btn-primary" onclick="submitBooking()"><i class="ph-light ph-check"></i><span>Confirm booking</span></button>
     </div>
   </div>
 </div>
@@ -616,11 +726,11 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
 <!-- Add Staff Modal -->
 <div class="modal-overlay" id="staffModal">
   <div class="modal" style="max-width:520px">
-    <div class="modal-hdr"><span class="modal-ttl">Add Staff Member</span><button class="modal-close" onclick="closeModal('staffModal')">&#215;</button></div>
+    <div class="modal-hdr"><span class="modal-ttl">Add staff member</span><button class="modal-close" onclick="closeModal('staffModal')" aria-label="Close"><i class="ph-light ph-x"></i></button></div>
     <div class="modal-body">
       <div class="form-row">
-        <div class="form-grp"><label class="form-lbl">Full Name *</label><input class="form-input" id="st-name" type="text" placeholder="e.g. Chukwuemeka Obi"></div>
-        <div class="form-grp"><label class="form-lbl">Email Address *</label><input class="form-input" id="st-email" type="email" placeholder="e.g. c.obi@bridgewaters.ng"></div>
+        <div class="form-grp"><label class="form-lbl">Full name *</label><input class="form-input" id="st-name" type="text" placeholder="e.g. Chukwuemeka Obi"></div>
+        <div class="form-grp"><label class="form-lbl">Email address *</label><input class="form-input" id="st-email" type="email" placeholder="e.g. c.obi@bridgewaters.ng"></div>
       </div>
       <div class="form-row">
         <div class="form-grp"><label class="form-lbl">Role *</label>
@@ -633,32 +743,44 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
             <option value="cashier">Cashier</option>
           </select>
         </div>
-        <div class="form-grp"><label class="form-lbl">Property Assignment</label>
+        <div class="form-grp"><label class="form-lbl">Property assignment</label>
           <select class="form-sel" id="st-prop">
-            <option value="">All Properties (Admin / MD)</option>
-            <option value="bw_hotel">Bridge Waters Hotel · Abuja</option>
-            <option value="bw_enugu">Bridge Waters Hotel · Enugu</option>
-            <option value="oak_enugu">Oakland Hotel · Enugu</option>
-            <option value="oak_park">Oakland Amusement Park · Enugu</option>
-            <option value="placia">Placia Hotel · Enugu</option>
+            <option value="">All properties (Admin and MD)</option>
+            <option value="bw_hotel">Bridge Waters Hotel, Abuja</option>
+            <option value="bw_enugu">Bridge Waters Hotel, Enugu</option>
+            <option value="oak_enugu">Oakland Hotel, Enugu</option>
+            <option value="oak_park">Oakland Amusement Park, Enugu</option>
+            <option value="placia">Placia Hotel, Enugu</option>
           </select>
         </div>
       </div>
-      <div class="form-grp"><label class="form-lbl">Temporary Password *</label><input class="form-input" id="st-pass" type="password" placeholder="Minimum 8 characters" autocomplete="new-password"></div>
+      <div class="form-grp"><label class="form-lbl">Temporary password *</label><input class="form-input" id="st-pass" type="password" placeholder="Minimum 8 characters" autocomplete="new-password"></div>
       <div style="font-size:11px;color:var(--muted);margin-top:8px;padding:9px 11px;background:var(--sky-50);border-radius:8px;border:1px solid var(--sky-100);line-height:1.6">The staff member will receive a confirmation email to activate their account. Ask them to change their password after first login.</div>
     </div>
     <div class="modal-footer">
       <button class="btn-ghost" onclick="closeModal('staffModal')">Cancel</button>
-      <button class="btn-primary" id="staffSubmitBtn" onclick="submitNewStaff()">Create Account</button>
+      <button class="btn-primary" id="staffSubmitBtn" onclick="submitNewStaff()">Create account</button>
     </div>
   </div>
 </div>
 
 <div class="sb-overlay" id="sbOverlay" onclick="toggleMobSidebar()"></div>
 
-<div class="toast" id="toast"><span id="toastIcon">&#10003;</span><span id="toastMsg">Done!</span></div>
+<div class="modal-overlay dlg-o" id="dlgModal">
+  <div class="modal dlg" role="dialog" aria-modal="true" aria-labelledby="dlgTitle">
+    <div class="modal-hdr"><span class="modal-ttl" id="dlgTitle"></span></div>
+    <div class="modal-body">
+      <p class="dlg-msg" id="dlgMsg"></p>
+      <div id="dlgInputWrap" class="form-grp" style="margin-bottom:0"><label class="form-lbl" id="dlgInputLbl" for="dlgInput"></label><textarea class="form-ta" id="dlgInput"></textarea><div class="dlg-err" id="dlgErr" style="display:none">This field is required.</div></div>
+    </div>
+    <div class="modal-footer"><button class="btn-ghost" id="dlgCancel" type="button">Cancel</button><button class="btn-primary" id="dlgOk" type="button">Confirm</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status"><i id="toastIcon" class="ph-light ph-check-circle"></i><span id="toastMsg">Done</span></div>
 
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.js"></script>
 <script>
 // ── SUPABASE CONFIG ───────────────────────────────────────────
@@ -674,19 +796,19 @@ try { sb = window.supabase?.createClient(SB_URL, SB_ANON); } catch(e) {}
 // Properties (locations) under Bridge Waters Groups
 // Coordinates are approximate — update with exact GPS coordinates when available
 const PROPERTIES=[
-  {id:'bw_hotel',  name:'Bridge Waters Hotel',   city:'Abuja', state:'FCT',   lat:9.0795, lng:7.4858, color:'#0ea5e9'},
-  {id:'bw_enugu',  name:'Bridge Waters Hotel',   city:'Enugu', state:'Enugu', lat:6.4529, lng:7.5094, color:'#f59e0b'},
-  {id:'oak_enugu', name:'Oakland Hotel',          city:'Enugu', state:'Enugu', lat:6.3987, lng:7.5058, color:'#7c3aed'},
-  {id:'oak_park',  name:'Oakland Amusement Park', city:'Enugu', state:'Enugu', lat:6.3993, lng:7.5065, color:'#059669'},
-  {id:'placia',    name:'Placia Hotel',           city:'Enugu', state:'Enugu', lat:6.4350, lng:7.5004, color:'#dc2626'},
+  {id:'bw_hotel',  name:'Bridge Waters Hotel',   city:'Abuja', state:'FCT',   lat:9.0795, lng:7.4858, color:'#12709c'},
+  {id:'bw_enugu',  name:'Bridge Waters Hotel',   city:'Enugu', state:'Enugu', lat:6.4529, lng:7.5094, color:'#13293b'},
+  {id:'oak_enugu', name:'Oakland Hotel',          city:'Enugu', state:'Enugu', lat:6.3987, lng:7.5058, color:'#3f5d70'},
+  {id:'oak_park',  name:'Oakland Amusement Park', city:'Enugu', state:'Enugu', lat:6.3993, lng:7.5065, color:'#1f6b6f'},
+  {id:'placia',    name:'Placia Hotel',           city:'Enugu', state:'Enugu', lat:6.4350, lng:7.5004, color:'#5b6f7c'},
 ];
-// Halls per property — capacities are placeholders, update with actual figures
+// Halls per property. Capacities are placeholders: replace with the real figures.
 const HALLS=[
-  {id:'william',    name:'William Hall',    cap:500, color:'#0ea5e9',emoji:'🏛️',propId:'bw_hotel'},
-  {id:'seraphina',  name:'Seraphina Hall',  cap:300, color:'#0284c7',emoji:'💎',propId:'bw_hotel'},
-  {id:'anambra',    name:'Anambra Hall',    cap:400, color:'#7c3aed',emoji:'🏢',propId:'oak_enugu'},
-  {id:'delta',      name:'Delta Hall',      cap:600, color:'#059669',emoji:'✨',propId:'oak_park'},
-  {id:'conference', name:'Conference Hall', cap:200, color:'#d97706',emoji:'📋',propId:'oak_park'},
+  {id:'william',    name:'William Hall',    cap:500, color:'#12709c',propId:'bw_hotel'},
+  {id:'seraphina',  name:'Seraphina Hall',  cap:300, color:'#13293b',propId:'bw_hotel'},
+  {id:'anambra',    name:'Anambra Hall',    cap:400, color:'#3f5d70',propId:'oak_enugu'},
+  {id:'delta',      name:'Delta Hall',      cap:600, color:'#1f6b6f',propId:'oak_park'},
+  {id:'conference', name:'Conference Hall', cap:200, color:'#5b6f7c',propId:'oak_park'},
 ];
 const HM=Object.fromEntries(HALLS.map(h=>[h.id,h]));
 const PM=Object.fromEntries(PROPERTIES.map(p=>[p.id,p]));
@@ -778,7 +900,7 @@ function checkFormConflict(){
   const hallId=document.getElementById('f-hall').value;
   const warn=document.getElementById('conflictWarn');
   if(date&&hallId&&hasConflict(date,hallId)){
-    warn.textContent=`⚠️ ${HM[hallId]?.name||'This hall'} is already booked for ${new Date(date+'T00:00:00').toLocaleDateString('en-NG',{weekday:'long',day:'numeric',month:'long'})}.`;
+    warn.textContent=`${HM[hallId]?.name||'This hall'} is already booked for ${new Date(date+'T00:00:00').toLocaleDateString('en-NG',{weekday:'long',day:'numeric',month:'long'})}.`;
     warn.classList.add('show');
   }else{
     warn.classList.remove('show');
@@ -809,7 +931,7 @@ function switchPage(p){
   document.getElementById('pageStaff').style.display=p==='staff'?'':'none';
   document.getElementById('monthNav').style.display=p==='events'?'':'none';
   document.getElementById('calGrid').dataset.canbooking=ROLES[S.role].canBook&&p==='events'?'1':'';
-  const titles={dashboard:'MD Dashboard',events:'Event Booking',requisitions:'Requisitions',staff:'HR & Staff'};
+  const titles={dashboard:'Executive overview',events:'Event booking',requisitions:'Requisitions',staff:'HR and staff'};
   if(p==='dashboard')renderDashboard();
   document.getElementById('pageTitle').textContent=titles[p]||'Event Booking';
   if(p==='events'){showMapSection(S.role==='admin'||S.role==='md');}
@@ -840,7 +962,7 @@ function updateLocPill(){
   if(!S.propertyId||S.role==='admin'||S.role==='md'){pill.classList.remove('show');return;}
   const prop=PM[S.propertyId];
   if(!prop){pill.classList.remove('show');return;}
-  pill.textContent=prop.name+' · '+prop.city;
+  pill.textContent=prop.name+', '+prop.city;
   pill.classList.add('show');
 }
 
@@ -880,15 +1002,8 @@ function renderStaffPage(){
   el.innerHTML=staffList.map(p=>{
     const role=ROLES[p.role]||{label:p.role||'Unknown',initials:'??'};
     const prop=p.property_id?PM[p.property_id]:null;
-    const initials=role.initials||(p.full_name?p.full_name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2):'??');
-    return`<div class="staff-card"><div class="staff-card-inner">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
-        <div class="staff-avatar">${initials}</div>
-        <div><div class="staff-name">${p.full_name||'—'}</div><div class="staff-role-pill">${role.label}</div></div>
-      </div>
-      ${p.email?`<div class="staff-email">✉ ${p.email}</div>`:''}
-      <div class="staff-prop">${prop?'📍 '+prop.name+' · '+prop.city:'🌐 All Properties'}</div>
-    </div></div>`;
+    const initials=(p.full_name||'').split(' ').filter(Boolean).map(w=>w[0]).join('').toUpperCase().slice(0,2)||role.initials;
+    return`<div class="staff-row"><div class="staff-avatar">${esc(initials)}</div><div><div class="staff-name">${esc(p.full_name||'Unnamed')}</div><div class="staff-role">${esc(role.label)}</div></div><div class="staff-prop">${prop?esc(prop.name+', '+prop.city):'All properties'}</div><div class="staff-email">${esc(p.email||'')}</div></div>`;
   }).join('');
 }
 
@@ -907,8 +1022,8 @@ async function submitNewStaff(){
   const role=document.getElementById('st-role').value;
   const propId=document.getElementById('st-prop').value||null;
   const pass=document.getElementById('st-pass').value;
-  if(!name||!email||!role||!pass){showToast('Please fill in all required fields.','⚠️');return;}
-  if(pass.length<8){showToast('Password must be at least 8 characters.','⚠️');return;}
+  if(!name||!email||!role||!pass){showToast('Please fill in all required fields.','warn');return;}
+  if(pass.length<8){showToast('Password must be at least 8 characters.','warn');return;}
   const btn=document.getElementById('staffSubmitBtn');
   btn.disabled=true;btn.textContent='Creating...';
   try{
@@ -922,9 +1037,9 @@ async function submitNewStaff(){
     await fetchStaff();
     renderStaffPage();
     closeModal('staffModal');
-    showToast(name+' added — confirmation email sent ✓','✅');
+    showToast(name+' added. A confirmation email has been sent','ok');
   }catch(e){
-    showToast('Error: '+(e.message||'Could not create account'),'❌');
+    showToast('Error: '+(e.message||'Could not create account'),'err');
   }finally{
     btn.disabled=false;btn.textContent='Create Account';
   }
@@ -940,7 +1055,8 @@ function changeMonth(d){
 function toggleTheme(){
   const r=document.documentElement,dark=r.getAttribute('data-theme')==='dark';
   r.setAttribute('data-theme',dark?'light':'dark');
-  document.getElementById('themeIcon').textContent=dark?'🌙':'☀️';
+  document.getElementById('themeIcon').className='ph-light '+(dark?'ph-moon':'ph-sun');
+  if(S.page==='dashboard')renderDashboard();
 }
 
 function renderStats(){
@@ -1017,7 +1133,7 @@ function renderUpcoming(){
   const list=S.events.filter(e=>e.date>=ts).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,7);
   const el=document.getElementById('upcList');
   if(!list.length){el.innerHTML='<p style="color:var(--muted);font-size:12px">No upcoming events.</p>';return}
-  el.innerHTML=list.map(e=>{const h=HM[e.hallId];const d=new Date(e.date+'T00:00:00');const ds=d.toLocaleDateString('en-NG',{day:'numeric',month:'short'});return`<div class="upc-item" onclick="openDetail('${e.id}')"><div class="upc-dot" style="background:${h.color}"></div><div><div class="upc-name">${e.name}</div><div class="upc-meta">${ds} · ${h.name}</div></div></div>`;}).join('');
+  el.innerHTML=list.map(e=>{const h=HM[e.hallId];const d=new Date(e.date+'T00:00:00');const ds=d.toLocaleDateString('en-NG',{day:'numeric',month:'short'});return`<div class="upc-item" onclick="openDetail('${e.id}')"><div class="upc-dot" style="background:${h.color}"></div><div><div class="upc-name">${e.name}</div><div class="upc-meta">${ds}, ${h.name}</div></div></div>`;}).join('');
 }
 
 function renderLegend(){
@@ -1031,36 +1147,38 @@ function clickDay(day){
   if(!evts.length){if(ROLES[S.role].canBook){const ds=y+'-'+String(m+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');openBookingModal(ds)}return}
   if(evts.length===1){openDetail(evts[0].id);return}
   document.getElementById('dayModalTtl').textContent=lbl;
-  document.getElementById('dayModalBody').innerHTML=evts.map(e=>{const h=HM[e.hallId];return`<div class="upc-item" onclick="openDetail('${e.id}')"><div class="upc-dot" style="background:${h.color};width:10px;height:10px;border-radius:3px;margin-top:5px"></div><div><div class="upc-name">${e.name}</div><div class="upc-meta">${h.name} · ${fmtMoney(e.amount)}${e.guests?' · '+e.guests.toLocaleString()+' guests':''}</div></div></div>`;}).join('');
+  document.getElementById('dayModalBody').innerHTML=evts.map(e=>{const h=HM[e.hallId];return`<div class="upc-item" onclick="openDetail('${e.id}')"><div class="upc-dot" style="background:${h.color}"></div><div><div class="upc-name">${e.name}</div><div class="upc-meta">${h.name}, ${fmtMoney(e.amount)}${e.guests?', '+e.guests.toLocaleString()+' guests':''}</div></div></div>`;}).join('');
   openModal('dayModal');
 }
 
 function openDetail(id){
   const e=S.events.find(x=>x.id===id);if(!e)return;
   const h=HM[e.hallId];
-  document.getElementById('detailBody').innerHTML=`<div class="det-hdr"><div class="det-badge" style="background:${h.color}20">${h.emoji}</div><div><div class="det-name">${e.name}</div><div class="det-hall">${h.name}</div></div></div><div class="det-grid"><div class="det-field"><div class="det-field-lbl">Client</div><div class="det-field-val">${e.client}</div></div><div class="det-field"><div class="det-field-lbl">Date</div><div class="det-field-val">${fmtDate(e.date)}</div></div><div class="det-field"><div class="det-field-lbl">Amount Paid</div><div class="det-field-val" style="color:var(--sky-600)">${fmtMoney(e.amount)}</div></div><div class="det-field"><div class="det-field-lbl">Guests</div><div class="det-field-val">${e.guests?e.guests.toLocaleString():'Not specified'}</div></div></div>${e.notes?'<div class="det-field"><div class="det-field-lbl">Notes</div><div class="det-field-val" style="font-weight:500;font-size:13px;color:var(--text-2);line-height:1.55">'+e.notes+'</div></div>':''}`;
+  document.getElementById('detailBody').innerHTML=`<div class="det-hdr"><div class="det-badge"><i class="ph-light ph-buildings"></i></div><div><div class="det-name">${e.name}</div><div class="det-hall">${h.name}</div></div></div><div class="det-grid"><div class="det-field"><div class="det-field-lbl">Client</div><div class="det-field-val">${e.client}</div></div><div class="det-field"><div class="det-field-lbl">Date</div><div class="det-field-val">${fmtDate(e.date)}</div></div><div class="det-field"><div class="det-field-lbl">Amount Paid</div><div class="det-field-val" style="color:var(--azure-ink)">${fmtMoney(e.amount)}</div></div><div class="det-field"><div class="det-field-lbl">Guests</div><div class="det-field-val">${e.guests?e.guests.toLocaleString():'Not specified'}</div></div></div>${e.notes?'<div class="det-field"><div class="det-field-lbl">Notes</div><div class="det-field-val" style="font-weight:500;font-size:13px;color:var(--text-2);line-height:1.55">'+e.notes+'</div></div>':''}`;
   const footer=document.getElementById('detailFooter');
   footer.innerHTML=ROLES[S.role].canBook
-    ?`<button class="btn-danger" onclick="confirmDelete('${e.id}')">🗑 Delete Booking</button><button class="btn-ghost" onclick="closeModal('detailModal')">Close</button>`
+    ?`<button class="btn-danger" style="margin-right:auto" onclick="confirmDelete('${e.id}')">Delete booking</button><button class="btn-ghost" onclick="closeModal('detailModal')">Close</button>`
     :`<button class="btn-ghost" onclick="closeModal('detailModal')">Close</button>`;
   closeModal('dayModal');openModal('detailModal');
 }
 
 async function confirmDelete(id){
-  if(!confirm('Delete this booking? This cannot be undone.'))return;
+  const ev=S.events.find(x=>x.id===id);
+  const ok=await askDialog({title:'Delete booking',message:(ev?'"'+ev.name+'" will be':'This booking will be')+' permanently deleted. This cannot be undone.',confirmLabel:'Delete',danger:true});
+  if(!ok)return;
   await deleteEvtFromDB(id);
   S.events=S.events.filter(e=>e.id!==id);
   saveEvts(S.events);
   closeModal('detailModal');
   renderCal();renderStats();renderUpcoming();
-  showToast('Booking deleted','🗑️');
+  showToast('Booking deleted','del');
 }
 
 function openBookingModal(prefill){
   if(!ROLES[S.role].canBook)return;
   document.getElementById('bookingForm').reset();
   document.getElementById('conflictWarn').classList.remove('show');
-  document.getElementById('f-hall').innerHTML='<option value="">Select a hall...</option>'+PROPERTIES.map(p=>{const halls=HALLS.filter(h=>h.propId===p.id);return`<optgroup label="${p.name} · ${p.city}">${halls.map(h=>`<option value="${h.id}">${h.emoji} ${h.name} (cap. ${h.cap.toLocaleString()})</option>`).join('')}</optgroup>`;}).join('');
+  document.getElementById('f-hall').innerHTML='<option value="">Select a hall...</option>'+PROPERTIES.map(p=>{const halls=HALLS.filter(h=>h.propId===p.id);return`<optgroup label="${p.name}, ${p.city}">${halls.map(h=>`<option value="${h.id}">${h.name} (capacity ${h.cap.toLocaleString()})</option>`).join('')}</optgroup>`;}).join('');
   if(prefill)document.getElementById('f-date').value=prefill;
   openModal('bookingModal');
 }
@@ -1073,8 +1191,8 @@ async function submitBooking(){
   const guests=parseInt(document.getElementById('f-guests').value)||null;
   const amount=parseFloat(document.getElementById('f-amount').value)||0;
   const notes=document.getElementById('f-notes').value.trim();
-  if(!name||!client||!date||!hallId||!amount){showToast('Please fill in all required fields.','⚠️');return}
-  if(hasConflict(date,hallId)){showToast(`${HM[hallId].name} is already booked for this date.`,'⚠️');return}
+  if(!name||!client||!date||!hallId||!amount){showToast('Please fill in all required fields.','warn');return}
+  if(hasConflict(date,hallId)){showToast(`${HM[hallId].name} is already booked for this date.`,'warn');return}
   const ev={id:'e'+Date.now(),name,client,date,hallId,guests,amount,notes};
   S.events.push(ev);saveEvts(S.events);
   await saveEvtToDB(ev);
@@ -1082,19 +1200,20 @@ async function submitBooking(){
   const d=new Date(date+'T00:00:00');
   if(d.getFullYear()===S.year&&d.getMonth()===S.month)renderCal();
   renderUpcoming();renderStats();
-  showToast('"'+name+'" booked!','✅');
+  showToast('"'+name+'" booked!','ok');
 }
 
 function openModal(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden'}
-function closeModal(id){document.getElementById(id).classList.remove('open');document.body.style.overflow=''}
+function closeModal(id){if(id==='dlgModal'){if(window._dlgCancel)window._dlgCancel();return}document.getElementById(id).classList.remove('open');if(!document.querySelector('.modal-overlay.open'))document.body.style.overflow=''}
 document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeModal(o.id)}));
-document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-overlay.open').forEach(m=>closeModal(m.id))});
+document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(window._dlgCancel){window._dlgCancel();return}document.querySelectorAll('.modal-overlay.open').forEach(m=>closeModal(m.id))});
 
-function showToast(msg,icon){
+const TOAST_ICONS={ok:'check-circle',warn:'warning',err:'x-circle',info:'info',del:'trash'};
+function showToast(msg,kind){
   const t=document.getElementById('toast');
   document.getElementById('toastMsg').textContent=msg;
-  document.getElementById('toastIcon').textContent=icon||'✅';
-  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3400);
+  document.getElementById('toastIcon').className='ph-light ph-'+(TOAST_ICONS[kind]||'check-circle');
+  t.classList.add('show');clearTimeout(showToast._t);showToast._t=setTimeout(()=>t.classList.remove('show'),3400);
 }
 
 // ── REQUISITIONS MODULE ───────────────────────────────────────
@@ -1169,34 +1288,41 @@ function renderReqTabs(){
 
 function switchReqTab(tab){currentReqTab=tab;renderReqPage();}
 
+function updateNavCount(){
+  const el=document.getElementById('reqNavCount');if(!el)return;
+  let n=0;
+  if(S.role==='admin'||S.role==='md')n=reqs.filter(r=>r.status==='pending'||r.status==='queried').length;
+  else if(S.role==='cashier')n=reqs.filter(r=>r.status==='approved').length;
+  el.textContent=n;el.classList.toggle('show',n>0);
+}
+
 function renderReqPage(){
   const role=S.role;
+  const raiser=role==='banqueting_manager'||role==='storekeeper';
   const btn=document.getElementById('newReqBtn');
-  if(btn)btn.style.display=(role==='banqueting_manager'||role==='storekeeper')?'flex':'none';
+  if(btn)btn.style.display=raiser?'inline-flex':'none';
   const sub=document.getElementById('reqSubtitle');
-  if(sub){const m={banqueting_manager:'Your procurement requests for events',storekeeper:'Your kitchen & supplies requests',admin:'Review, edit and approve incoming requisitions',cashier:'Process payments for approved requests',md:'Oversee, edit, approve, query or reject requisitions',bdm:'Requisition overview'};sub.textContent=m[role]||'';}
+  if(sub){const m={banqueting_manager:'Your procurement requests for events',storekeeper:'Your kitchen and supplies requests',admin:'Review, edit and approve incoming requisitions',cashier:'Process payments for approved requests',md:'Oversee, edit, approve, query or reject requisitions',bdm:'Requisition overview'};sub.textContent=m[role]||'';}
   renderReqTabs();
+  updateNavCount();
   const list=getFilteredReqs(currentReqTab);
   const el=document.getElementById('reqList');if(!el)return;
   if(!list.length){
-    el.innerHTML=`<div class="empty-req"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><div style="font-weight:800;margin-bottom:5px;color:var(--text)">No ${currentReqTab==='all'?'':currentReqTab+' '}requisitions</div><div style="font-size:12px">${(role==='banqueting_manager'||role==='storekeeper')?'Tap "+ New Requisition" to raise one.':'Nothing here yet.'}</div></div>`;
+    const what=currentReqTab==='all'?'':currentReqTab+' ';
+    el.innerHTML=`<div class="empty-req"><i class="ph-light ph-files"></i><div class="t">No ${what}requisitions</div><div style="font-size:14px">${raiser?'Select New requisition to raise one.':'Nothing here yet.'}</div></div>`;
     return;
   }
-  el.innerHTML=list.map(r=>{
+  el.innerHTML=`<div class="req-head"><span>Number</span><span>Requisition</span><span>Vendor</span><span class="r">Amount</span><span>Status</span></div>`+list.map(r=>{
     const total=r.items?.reduce((s,it)=>s+(it.qty||0)*(it.unit_cost||0),0)||r.total_amount||0;
     const date=r.created_at?new Date(r.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';
-    return`<div class="req-card" onclick="openReqDetail('${r.id}')">
-      <div class="req-card-top">
-        <div>
-          <div class="req-card-title"><span style="color:var(--sky-600);font-weight:800;margin-right:8px;font-size:12px">${esc(reqNo(r))}</span>${esc(r.purpose||'Untitled')}</div>
-          <div class="req-card-meta">${r.raised_by_name||r.raised_by_role||''}${date?' · '+date:''} · ${r.vendor_name||'No vendor'}</div>
-        </div>
-        <div class="req-card-right">
-          <div class="req-card-amount">${nairaFull(total)}</div>
-          <span class="req-status ${r.status||'pending'}">${REQ_STATUS[r.status||'pending']?.label||r.status}</span>
-        </div>
-      </div>
-      ${r.md_query?`<div class="req-query-note">MD Query: ${r.md_query}</div>`:''}
+    const st=r.status||'pending';
+    return`<div class="req-row" onclick="openReqDetail('${esc(r.id)}')">
+      <span class="req-no">${esc(reqNo(r))}</span>
+      <div class="req-main"><div class="req-ttl">${esc(r.purpose||'Untitled')}</div><div class="req-sub">${esc(r.raised_by_name||r.raised_by_role||'')}${date?', '+date:''}</div></div>
+      <span class="req-vendor">${esc(r.vendor_name||'No vendor')}</span>
+      <span class="req-amt">${nairaFull(total)}</span>
+      <span class="req-status-cell"><span class="req-status ${esc(st)}">${esc(REQ_STATUS[st]?.label||st)}</span></span>
+      ${r.md_query?`<div class="req-query-note">Query from the MD: ${esc(r.md_query)}</div>`:''}
     </div>`;
   }).join('');
 }
@@ -1214,7 +1340,7 @@ function addReqItem(){
   const id='ri'+Date.now()+Math.random().toString(36).slice(2,5);
   const div=document.createElement('div');
   div.className='item-row';div.id=id;
-  div.innerHTML=`<input class="form-input" placeholder="Description" oninput="calcReqTotal()"><input class="form-input" placeholder="1" type="number" min="1" value="1" oninput="calcReqTotal()" style="text-align:center"><input class="form-input" placeholder="0" type="number" min="0" oninput="calcReqTotal()" style="text-align:right"><button class="item-del-btn" onclick="document.getElementById('${id}').remove();calcReqTotal()">&#215;</button>`;
+  div.innerHTML=`<input class="form-input" placeholder="Description" oninput="calcReqTotal()"><input class="form-input" placeholder="1" type="number" min="1" value="1" oninput="calcReqTotal()" style="text-align:center"><input class="form-input" placeholder="0" type="number" min="0" oninput="calcReqTotal()" style="text-align:right"><button class="item-del-btn" type="button" aria-label="Remove item" onclick="document.getElementById('${id}').remove();calcReqTotal()"><i class="ph-light ph-x"></i></button>`;
   document.getElementById('rqItemRows').appendChild(div);
 }
 
@@ -1237,13 +1363,13 @@ async function submitReq(){
   const purpose=document.getElementById('rq-purpose').value.trim();
   const items=getReqItems();
   const vendor=document.getElementById('rq-vendor').value.trim();
-  if(!purpose){showToast('Enter a purpose/title','⚠️');return;}
-  if(!items.length){showToast('Add at least one item','⚠️');return;}
-  if(!vendor){showToast('Enter vendor name','⚠️');return;}
+  if(!purpose){showToast('Enter a purpose/title','warn');return;}
+  if(!items.length){showToast('Add at least one item','warn');return;}
+  if(!vendor){showToast('Enter vendor name','warn');return;}
   const total=items.reduce((s,it)=>s+it.total,0);
   const payload={purpose,items,total_amount:total,vendor_name:vendor,vendor_bank:document.getElementById('rq-bank').value.trim(),vendor_account_no:document.getElementById('rq-accno').value.trim(),vendor_account_name:document.getElementById('rq-accname').value.trim(),notes:document.getElementById('rq-notes').value.trim(),raised_by:currentUser?.id||null,raised_by_name:document.getElementById('uName').textContent,raised_by_role:S.role,status:'pending',admin_notes:'',md_query:''};
-  try{await createReqDB(payload);closeModal('reqModal');showToast('Requisition submitted ✓','✅');renderReqPage();}
-  catch(e){showToast('Error: '+e.message,'❌');}
+  try{await createReqDB(payload);closeModal('reqModal');showToast('Requisition submitted','ok');renderReqPage();}
+  catch(e){showToast('Error: '+e.message,'err');}
 }
 
 // ── DETAIL VIEW ───────────────────────────────────────────────
@@ -1271,7 +1397,7 @@ function calcEdTotal(){
 function logHtml(r){
   const log=Array.isArray(r.edit_log)?r.edit_log:[];
   if(!log.length)return'';
-  return`<div class="req-sec-lbl">Edit History</div>`+log.slice().reverse().map(l=>`<div class="edit-log"><strong>${esc(l.by||'—')}</strong> <small>(${esc(ROLES[l.role]?.label||l.role||'')}) · ${l.at?new Date(l.at).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):''}</small><br>${(l.summary||[]).map(esc).join('<br>')}</div>`).join('');
+  return`<div class="req-sec-lbl">Edit History</div>`+log.slice().reverse().map(l=>`<div class="edit-log"><strong>${esc(l.by||'Unknown')}</strong> <small>(${esc(ROLES[l.role]?.label||l.role||'')}), ${l.at?new Date(l.at).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):''}</small><br>${(l.summary||[]).map(esc).join('<br>')}</div>`).join('');
 }
 
 function openReqDetail(id){
@@ -1279,73 +1405,75 @@ function openReqDetail(id){
   _reqId=id;
   const role=S.role;
   const total=r.items?.reduce((s,it)=>s+(it.qty||0)*(it.unit_cost||0),0)||r.total_amount||0;
-  document.getElementById('reqDetailTtl').textContent=reqNo(r)+' · '+(r.purpose||'Requisition');
+  document.getElementById('reqDetailTtl').innerHTML=`<span class="req-no" style="display:block;margin-bottom:8px">${esc(reqNo(r))}</span>${esc(r.purpose||'Requisition')}`;
   const statusBadge=`<span class="req-status ${esc(r.status)}">${esc(REQ_STATUS[r.status]?.label||r.status)}</span>`;
   const editable=canEditReq(r);
+  const dash=v=>v?esc(v):'None';
 
-  const queryHtml=r.md_query?`<div style="background:#ede9fe;border:1px solid #c4b5fd;border-radius:10px;padding:10px 13px;margin:10px 0;font-size:12.5px;color:#5b21b6"><strong>MD Query:</strong> ${esc(r.md_query)}</div>`:'';
+  const queryHtml=r.md_query?`<div class="qnote"><b>Query from the MD.</b> ${esc(r.md_query)}</div>`:'';
 
   const infoHtml=`<div class="req-sec-lbl">Details</div>
   <div class="detail-box">
-    <div class="detail-box-row"><span class="detail-box-lbl">Req. No.</span><span class="detail-box-val">${esc(reqNo(r))}</span></div>
-    <div class="detail-box-row"><span class="detail-box-lbl">Raised By</span><span class="detail-box-val">${esc(r.raised_by_name||r.raised_by_role||'—')}</span></div>
-    <div class="detail-box-row"><span class="detail-box-lbl">Date</span><span class="detail-box-val">${r.created_at?new Date(r.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}):'—'}</span></div>
+    <div class="detail-box-row"><span class="detail-box-lbl">Raised by</span><span class="detail-box-val">${dash(r.raised_by_name||r.raised_by_role)}</span></div>
+    <div class="detail-box-row"><span class="detail-box-lbl">Date</span><span class="detail-box-val">${r.created_at?new Date(r.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}):'None'}</span></div>
     <div class="detail-box-row"><span class="detail-box-lbl">Status</span><span class="detail-box-val">${statusBadge}</span></div>
-    ${r.notes?`<div class="detail-box-row"><span class="detail-box-lbl">Notes</span><span class="detail-box-val" style="font-weight:500">${esc(r.notes)}</span></div>`:''}
-    ${r.admin_notes&&!editable?`<div class="detail-box-row"><span class="detail-box-lbl">Reviewer Notes</span><span class="detail-box-val" style="font-weight:500">${esc(r.admin_notes)}</span></div>`:''}
-    ${r.rejection_reason?`<div class="detail-box-row"><span class="detail-box-lbl">Rejection Reason</span><span class="detail-box-val" style="color:#dc2626">${esc(r.rejection_reason)}</span></div>`:''}
+    ${r.notes?`<div class="detail-box-row"><span class="detail-box-lbl">Notes</span><span class="detail-box-val" style="font-weight:400">${esc(r.notes)}</span></div>`:''}
+    ${r.admin_notes&&!editable?`<div class="detail-box-row"><span class="detail-box-lbl">Reviewer notes</span><span class="detail-box-val" style="font-weight:400">${esc(r.admin_notes)}</span></div>`:''}
+    ${r.rejection_reason?`<div class="detail-box-row"><span class="detail-box-lbl">Rejection reason</span><span class="detail-box-val" style="color:var(--bad);font-weight:400">${esc(r.rejection_reason)}</span></div>`:''}
   </div>`;
 
   let body;
   if(editable){
     body=`${queryHtml}
-    <div class="form-grp"><label class="form-lbl">Purpose / Title</label><input class="form-input" id="ed-purpose" value="${esc(r.purpose)}"></div>
-    <div class="req-sec-lbl">Items <span style="font-weight:500;text-transform:none;letter-spacing:0;color:var(--sky-600)">(editable — add, remove or adjust)</span></div>
-    <div style="font-size:10.5px;color:var(--muted);display:grid;grid-template-columns:1fr 72px 120px 28px;gap:7px;padding:0 2px;margin-bottom:6px"><span>Description</span><span style="text-align:center">Qty</span><span style="text-align:right">Unit Cost</span><span></span></div>
+    <div class="form-grp" style="margin-top:8px"><label class="form-lbl" for="ed-purpose">Title</label><input class="form-input" id="ed-purpose" value="${esc(r.purpose)}"></div>
+    <div class="req-sec-lbl" style="margin-top:22px">Items <span>Add, remove or adjust</span></div>
+    <div style="font-size:12.5px;color:var(--muted);display:grid;grid-template-columns:1fr 76px 126px 36px;gap:8px;padding:0 2px;margin-bottom:6px"><span>Description</span><span style="text-align:center">Qty</span><span style="text-align:right">Unit cost</span><span></span></div>
     <div id="edItems">${(r.items||[]).map(edRowHtml).join('')}</div>
-    <button class="add-item-btn" type="button" onclick="addEdItem()">+ Add Item</button>
+    <button class="add-item-btn" type="button" onclick="addEdItem()"><i class="ph-light ph-plus"></i> Add item</button>
     <div class="req-total-row"><span class="req-total-lbl">Total</span><span class="req-total-val" id="edTotalDisp">${nairaFull(total)}</span></div>
-    <div class="req-sec-lbl">Vendor &amp; Payment Details</div>
+    <div class="req-sec-lbl">Vendor and payment</div>
     <div class="form-row">
-      <div class="form-grp"><label class="form-lbl">Vendor</label><input class="form-input" id="ed-vendor" value="${esc(r.vendor_name)}"></div>
-      <div class="form-grp"><label class="form-lbl">Bank</label><input class="form-input" id="ed-bank" value="${esc(r.vendor_bank)}"></div>
+      <div class="form-grp"><label class="form-lbl" for="ed-vendor">Vendor</label><input class="form-input" id="ed-vendor" value="${esc(r.vendor_name)}"></div>
+      <div class="form-grp"><label class="form-lbl" for="ed-bank">Bank</label><input class="form-input" id="ed-bank" value="${esc(r.vendor_bank)}"></div>
     </div>
     <div class="form-row">
-      <div class="form-grp"><label class="form-lbl">Account No.</label><input class="form-input" id="ed-accno" value="${esc(r.vendor_account_no)}"></div>
-      <div class="form-grp"><label class="form-lbl">Account Name</label><input class="form-input" id="ed-accname" value="${esc(r.vendor_account_name)}"></div>
+      <div class="form-grp"><label class="form-lbl" for="ed-accno">Account number</label><input class="form-input" id="ed-accno" value="${esc(r.vendor_account_no)}"></div>
+      <div class="form-grp"><label class="form-lbl" for="ed-accname">Account name</label><input class="form-input" id="ed-accname" value="${esc(r.vendor_account_name)}"></div>
     </div>
-    <div class="form-grp"><label class="form-lbl">${role==='md'?'MD':'Admin'} Notes ${role==='admin'&&r.status==='queried'?'(reply to the MD query here)':'(optional)'}</label><textarea class="form-ta" id="ed-notes" placeholder="Adjustments, reasons, notes for cashier...">${esc(r.admin_notes)}</textarea></div>
+    <div class="form-grp"><label class="form-lbl" for="ed-notes">${role==='md'?'MD':'Admin'} note${role==='admin'&&r.status==='queried'?' (reply to the MD query here)':''}</label><textarea class="form-ta" id="ed-notes" placeholder="Adjustments, reasons, notes for the cashier">${esc(r.admin_notes)}</textarea></div>
     ${infoHtml}${logHtml(r)}`;
   }else{
-    body=`<div class="req-sec-lbl">Items</div>
-    <table class="req-items"><thead><tr><th>Description</th><th class="r">Qty</th><th class="r">Unit Cost</th><th class="r">Total</th></tr></thead>
+    body=`<div class="req-sec-lbl" style="margin-top:8px">Items</div>
+    <table class="req-items"><thead><tr><th>Description</th><th class="r">Qty</th><th class="r">Unit cost</th><th class="r">Total</th></tr></thead>
     <tbody>${(r.items||[]).map(it=>`<tr><td>${esc(it.description)}</td><td class="r">${esc(it.qty)}</td><td class="r">${nairaFull(it.unit_cost)}</td><td class="r">${nairaFull(it.qty*it.unit_cost)}</td></tr>`).join('')}</tbody></table>
     <div class="req-total-row"><span class="req-total-lbl">Total</span><span class="req-total-val">${nairaFull(total)}</span></div>
-    <div class="req-sec-lbl">Vendor &amp; Payment Details</div>
+    <div class="req-sec-lbl">Vendor and payment</div>
     <div class="detail-box">
-      <div class="detail-box-row"><span class="detail-box-lbl">Vendor</span><span class="detail-box-val">${esc(r.vendor_name)||'—'}</span></div>
-      <div class="detail-box-row"><span class="detail-box-lbl">Bank</span><span class="detail-box-val">${esc(r.vendor_bank)||'—'}</span></div>
-      <div class="detail-box-row"><span class="detail-box-lbl">Account No.</span><span class="detail-box-val">${esc(r.vendor_account_no)||'—'}</span></div>
-      <div class="detail-box-row"><span class="detail-box-lbl">Account Name</span><span class="detail-box-val">${esc(r.vendor_account_name)||'—'}</span></div>
+      <div class="detail-box-row"><span class="detail-box-lbl">Vendor</span><span class="detail-box-val">${dash(r.vendor_name)}</span></div>
+      <div class="detail-box-row"><span class="detail-box-lbl">Bank</span><span class="detail-box-val">${dash(r.vendor_bank)}</span></div>
+      <div class="detail-box-row"><span class="detail-box-lbl">Account number</span><span class="detail-box-val" style="font-family:var(--mono)">${dash(r.vendor_account_no)}</span></div>
+      <div class="detail-box-row"><span class="detail-box-lbl">Account name</span><span class="detail-box-val">${dash(r.vendor_account_name)}</span></div>
     </div>${queryHtml}${infoHtml}${logHtml(r)}`;
   }
   document.getElementById('reqDetailBody').innerHTML=body;
 
-  let footer=`<button class="btn-ghost" onclick="closeModal('reqDetailModal')">Close</button>`;
+  let footer='';
   if(role==='admin'&&editable){
-    footer+=`<button class="btn-reject-r" onclick="rejectReq()">Reject</button>`;
-    footer+=`<button class="btn-save" onclick="saveReqEdit()">Save Changes</button>`;
-    footer+=`<button class="btn-approve" onclick="approveReq()">Approve &rarr; Cashier</button>`;
+    footer+=`<button class="btn-reject-r" style="margin-right:auto" onclick="rejectReq()">Reject</button>`;
+    footer+=`<button class="btn-save" onclick="saveReqEdit()">Save changes</button>`;
+    footer+=`<button class="btn-approve" onclick="approveReq()">Approve</button>`;
   }else if(role==='cashier'&&r.status==='approved'){
-    footer+=`<button class="btn-pay" onclick="markPaid()">Mark as Paid ✓</button>`;
+    footer+=`<button class="btn-ghost" onclick="closeModal('reqDetailModal')">Close</button><button class="btn-pay" onclick="markPaid()">Mark as paid</button>`;
   }else if(role==='md'){
+    footer+=`<button class="btn-del-grey" style="margin-right:auto" onclick="deleteReqMD()">Delete</button>`;
     if(editable){
-      footer+=`<button class="btn-query" onclick="queryReqMD()">Query</button>`;
       footer+=`<button class="btn-reject-r" onclick="rejectReqMD()">Reject</button>`;
-      footer+=`<button class="btn-save" onclick="saveReqEdit()">Save Changes</button>`;
-      if(r.status!=='approved')footer+=`<button class="btn-approve" onclick="approveReq()">Approve &rarr; Cashier</button>`;
+      footer+=`<button class="btn-query" onclick="queryReqMD()">Query</button>`;
+      footer+=`<button class="btn-save" onclick="saveReqEdit()">Save changes</button>`;
+      if(r.status!=='approved')footer+=`<button class="btn-approve" onclick="approveReq()">Approve</button>`;
     }
-    footer+=`<button class="btn-del-grey" onclick="deleteReqMD()">Delete</button>`;
+  }else{
+    footer+=`<button class="btn-ghost" onclick="closeModal('reqDetailModal')">Close</button>`;
   }
   document.getElementById('reqDetailFooter').innerHTML=footer;
   openModal('reqDetailModal');
@@ -1388,9 +1516,9 @@ function diffReq(r,p){
 }
 
 function validateEditor(p){
-  if(!p.purpose){showToast('Title cannot be empty','⚠️');return false;}
-  if(!p.items.length){showToast('Keep at least one item','⚠️');return false;}
-  if(!p.vendor_name){showToast('Vendor name cannot be empty','⚠️');return false;}
+  if(!p.purpose){showToast('Title cannot be empty','warn');return false;}
+  if(!p.items.length){showToast('Keep at least one item','warn');return false;}
+  if(!p.vendor_name){showToast('Vendor name cannot be empty','warn');return false;}
   return true;
 }
 
@@ -1404,9 +1532,9 @@ function withLog(r,p,extra){
 async function saveReqEdit(){
   const r=reqs.find(x=>x.id===_reqId);if(!r)return;
   const p=collectEditor();if(!validateEditor(p))return;
-  if(!diffReq(r,p).length){showToast('No changes to save','ℹ️');return;}
-  try{await updateReqDB(_reqId,withLog(r,p));closeModal('reqDetailModal');showToast('Changes saved ✓','✅');renderReqPage();if(S.page==='dashboard')renderDashboard();}
-  catch(e){showToast('Error: '+e.message,'❌');}
+  if(!diffReq(r,p).length){showToast('No changes to save','info');return;}
+  try{await updateReqDB(_reqId,withLog(r,p));closeModal('reqDetailModal');showToast('Changes saved','ok');renderReqPage();if(S.page==='dashboard')renderDashboard();}
+  catch(e){showToast('Error: '+e.message,'err');}
 }
 
 async function approveReq(){
@@ -1414,132 +1542,194 @@ async function approveReq(){
   const p=collectEditor();if(!validateEditor(p))return;
   try{
     await updateReqDB(_reqId,{...withLog(r,p,['Approved by '+(ROLES[S.role]?.label||S.role)+' → sent to cashier']),status:'approved',approved_by:currentUser?.id||null,approved_at:new Date().toISOString()});
-    closeModal('reqDetailModal');showToast('Requisition approved — sent to cashier ✓','✅');renderReqPage();
-  }catch(e){showToast('Error: '+e.message,'❌');}
+    closeModal('reqDetailModal');showToast('Requisition approved and sent to the cashier','ok');renderReqPage();
+  }catch(e){showToast('Error: '+e.message,'err');}
+}
+
+// In-app dialog (replaces the browser's prompt() and confirm()).
+// Resolves to the typed text (input dialogs), true (confirm dialogs) or null when cancelled.
+function askDialog({title,message='',input=null,confirmLabel='Confirm',danger=false,required=false}){
+  return new Promise(resolve=>{
+    const ov=document.getElementById('dlgModal');
+    const ta=document.getElementById('dlgInput'),err=document.getElementById('dlgErr');
+    const ok=document.getElementById('dlgOk'),cancel=document.getElementById('dlgCancel');
+    document.getElementById('dlgTitle').textContent=title;
+    const msg=document.getElementById('dlgMsg');msg.textContent=message;msg.style.display=message?'':'none';
+    document.getElementById('dlgInputWrap').style.display=input?'':'none';
+    document.getElementById('dlgInputLbl').textContent=input?.label||'';
+    ta.value='';ta.placeholder=input?.placeholder||'';err.style.display='none';
+    ok.textContent=confirmLabel;ok.className='btn-primary'+(danger?' dlg-danger':'');
+    const finish=v=>{ov.classList.remove('open');ok.onclick=cancel.onclick=null;window._dlgCancel=null;resolve(v)};
+    ok.onclick=()=>{const v=ta.value.trim();if(input&&required&&!v){err.style.display='block';ta.focus();return}finish(input?v:true)};
+    cancel.onclick=()=>finish(null);
+    window._dlgCancel=()=>finish(null);
+    ov.classList.add('open');
+    setTimeout(()=>(input?ta:ok).focus(),60);
+  });
 }
 
 async function rejectReq(){
-  const reason=prompt('Reason for rejection (optional):');if(reason===null)return;
-  try{await updateReqDB(_reqId,{status:'rejected',rejection_reason:reason||'',rejected_by:currentUser?.id||null,rejected_at:new Date().toISOString()});closeModal('reqDetailModal');showToast('Requisition rejected','✓');renderReqPage();}
-  catch(e){showToast('Error: '+e.message,'❌');}
+  const reason=await askDialog({title:'Reject requisition',message:'The person who raised it will see your reason.',input:{label:'Reason',placeholder:'Optional'},confirmLabel:'Reject',danger:true});
+  if(reason===null)return;
+  try{await updateReqDB(_reqId,{status:'rejected',rejection_reason:reason||'',rejected_by:currentUser?.id||null,rejected_at:new Date().toISOString()});closeModal('reqDetailModal');showToast('Requisition rejected','ok');renderReqPage();if(S.page==='dashboard')renderDashboard();}
+  catch(e){showToast('Error: '+e.message,'err');}
 }
+const rejectReqMD=rejectReq;
 
 async function markPaid(){
-  if(!confirm('Confirm you have made this payment?'))return;
-  try{await updateReqDB(_reqId,{status:'paid',paid_by:currentUser?.id||null,paid_at:new Date().toISOString()});closeModal('reqDetailModal');showToast('Payment confirmed ✓','✅');renderReqPage();}
-  catch(e){showToast('Error: '+e.message,'❌');}
+  const r=reqs.find(x=>x.id===_reqId);
+  const ok=await askDialog({title:'Confirm payment',message:`Confirm that ${r?reqNo(r):'this requisition'} (${nairaFull(r?reqTotal(r):0)}) has been paid.`,confirmLabel:'Mark as paid'});
+  if(!ok)return;
+  try{await updateReqDB(_reqId,{status:'paid',paid_by:currentUser?.id||null,paid_at:new Date().toISOString()});closeModal('reqDetailModal');showToast('Payment recorded','ok');renderReqPage();}
+  catch(e){showToast('Error: '+e.message,'err');}
 }
 
 async function queryReqMD(){
-  const q=prompt('Enter your query:');if(!q?.trim())return;
-  try{await updateReqDB(_reqId,{md_query:q.trim(),status:'queried'});closeModal('reqDetailModal');showToast('Query sent','✓');renderReqPage();}
-  catch(e){showToast('Error: '+e.message,'❌');}
-}
-
-async function rejectReqMD(){
-  const reason=prompt('Reason for rejection (optional):');if(reason===null)return;
-  try{await updateReqDB(_reqId,{status:'rejected',rejection_reason:reason||'',rejected_by:currentUser?.id||null,rejected_at:new Date().toISOString()});closeModal('reqDetailModal');showToast('Requisition rejected','✓');renderReqPage();}
-  catch(e){showToast('Error: '+e.message,'❌');}
+  const q=await askDialog({title:'Query requisition',message:'Your question goes back to the Admin, who can reply and approve.',input:{label:'Your question',placeholder:'What would you like clarified?'},confirmLabel:'Send query',required:true});
+  if(!q)return;
+  try{await updateReqDB(_reqId,{md_query:q,status:'queried'});closeModal('reqDetailModal');showToast('Query sent','ok');renderReqPage();if(S.page==='dashboard')renderDashboard();}
+  catch(e){showToast('Error: '+e.message,'err');}
 }
 
 async function deleteReqMD(){
-  if(!confirm('Permanently delete this requisition? This cannot be undone.'))return;
-  try{await deleteReqDB(_reqId);closeModal('reqDetailModal');showToast('Deleted','✓');renderReqPage();}
-  catch(e){showToast('Error: '+e.message,'❌');}
+  const r=reqs.find(x=>x.id===_reqId);
+  const ok=await askDialog({title:'Delete requisition',message:`${r?reqNo(r)+' will be': 'This requisition will be'} permanently deleted. This cannot be undone.`,confirmLabel:'Delete',danger:true});
+  if(!ok)return;
+  try{await deleteReqDB(_reqId);closeModal('reqDetailModal');showToast('Requisition deleted','del');renderReqPage();if(S.page==='dashboard')renderDashboard();}
+  catch(e){showToast('Error: '+e.message,'err');}
 }
 
 // ── MD DASHBOARD ──────────────────────────────────────────────
 function reqTotal(r){return r.total_amount||r.items?.reduce((s,it)=>s+(it.qty||0)*(it.unit_cost||0),0)||0}
 function ageDays(r){return r.created_at?Math.floor((Date.now()-new Date(r.created_at).getTime())/864e5):0}
-function barRows(rows,color){
-  const max=Math.max(1,...rows.map(r=>r.v));
-  return rows.map(r=>`<div class="bar-row"><div class="bar-lbl" title="${esc(r.l)}">${esc(r.l)}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.round(r.v/max*100)}%;background:${r.c||color||'var(--sky-500)'}"></div></div><div class="bar-val">${fmtMoney(r.v)}</div></div>`).join('');
-}
 function openReqFromDash(id){switchPage('requisitions');currentReqTab=(reqs.find(r=>r.id===id)||{}).status||'pending';renderReqPage();openReqDetail(id);}
 function goReqTab(tab){switchPage('requisitions');currentReqTab=tab;renderReqPage();}
+function moneyShort(n){n=Number(n)||0;if(n>=1e9)return'₦'+(n/1e9).toFixed(1)+'B';if(n>=1e6)return'₦'+(n/1e6).toFixed(1)+'M';if(n>=1e3)return'₦'+Math.round(n/1e3)+'K';return'₦'+Math.round(n)}
+
+let _dashCharts=[];
+function cssv(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim()}
+
+function sparkSvg(vals){
+  const w=96,h=34,p=3,n=vals.length,max=Math.max(...vals,0),min=Math.min(...vals,0);
+  const x=i=>p+(n<2?0:i*(w-2*p)/(n-1));
+  const y=v=>max===min?h-p:h-p-((v-min)/(max-min))*(h-2*p);
+  const pts=vals.map((v,i)=>x(i).toFixed(1)+','+y(v).toFixed(1));
+  return`<svg class="spark" viewBox="0 0 ${w} ${h}" aria-hidden="true"><polygon class="ar" points="${p},${h-p} ${pts.join(' ')} ${x(n-1).toFixed(1)},${h-p}"/><polyline class="ln" points="${pts.join(' ')}"/><circle class="dt" cx="${x(n-1).toFixed(1)}" cy="${y(vals[n-1]).toFixed(1)}" r="2.4"/></svg>`;
+}
+function deltaFoot(cur,prev){
+  if(!prev)return`<span class="kt-sub" style="margin:0">No comparison yet</span>`;
+  const pct=Math.round((cur-prev)/prev*100);
+  const cls=pct>0?'up':pct<0?'down':'flat';
+  const ic=pct>0?'ph-arrow-up-right':pct<0?'ph-arrow-down-right':'ph-minus';
+  return`<span class="delta ${cls}"><i class="ph-light ${ic}"></i>${Math.abs(pct)}%</span><span class="kt-sub" style="margin:0">vs last month</span>`;
+}
 
 function renderDashboard(){
   const el=document.getElementById('dashBody');if(!el)return;
+  _dashCharts.forEach(c=>{try{c.destroy()}catch{}});_dashCharts=[];
   const now=new Date(),ts=todayStr();
   const sub=document.getElementById('dashSubtitle');
-  if(sub)sub.textContent=now.toLocaleDateString('en-NG',{weekday:'long',day:'numeric',month:'long',year:'numeric'})+' · all properties';
+  if(sub)sub.textContent=now.toLocaleDateString('en-NG',{weekday:'long',day:'numeric',month:'long',year:'numeric'})+', all properties';
 
-  // ── events / revenue
+  // ---- month buckets (last 12)
+  const keyOf=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+  const months=[];
+  for(let i=11;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1);months.push({k:keyOf(d),short:MONTHS[d.getMonth()].slice(0,3),full:MONTHS[d.getMonth()]+' '+d.getFullYear()});}
+  const evByMonth=months.map(m=>S.events.filter(e=>e.date.slice(0,7)===m.k));
+  const revByMonth=evByMonth.map(l=>l.reduce((s,e)=>s+e.amount,0));
+  const evCount=evByMonth.map(l=>l.length);
+  const paid=reqs.filter(r=>r.status==='paid');
+  const paidByMonth=months.map(m=>paid.filter(r=>(r.paid_at||'').slice(0,7)===m.k).reduce((s,r)=>s+reqTotal(r),0));
+  const L=months.length-1;
   const totRev=S.events.reduce((s,e)=>s+e.amount,0);
-  const mKey=e=>e.date.slice(0,7);
-  const curKey=ts.slice(0,7);
-  const mRev=S.events.filter(e=>mKey(e)===curKey).reduce((s,e)=>s+e.amount,0);
   const occH=new Set(S.events.filter(e=>e.date===ts).map(e=>e.hallId)).size;
   const upc=S.events.filter(e=>e.date>=ts).sort((a,b)=>a.date.localeCompare(b.date));
-  const propRows=PROPERTIES.map(p=>{
-    const hallIds=HALLS.filter(h=>h.propId===p.id).map(h=>h.id);
-    return{l:p.name+' · '+p.city,v:S.events.filter(e=>hallIds.includes(e.hallId)).reduce((s,e)=>s+e.amount,0),c:p.color};
-  });
-  const months=[];
-  for(let i=5;i>=0;i--){
-    const d=new Date(now.getFullYear(),now.getMonth()-i,1);
-    const k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
-    months.push({l:MONTHS[d.getMonth()].slice(0,3)+' '+d.getFullYear(),v:S.events.filter(e=>mKey(e)===k).reduce((s,e)=>s+e.amount,0)});
-  }
 
-  // ── requisitions
+  // ---- requisitions
   const by=st=>reqs.filter(r=>r.status===st);
   const sum=l=>l.reduce((s,r)=>s+reqTotal(r),0);
-  const pend=by('pending'),qry=by('queried'),appr=by('approved'),paid=by('paid'),rej=by('rejected');
-  const paidMonth=paid.filter(r=>r.paid_at&&r.paid_at.slice(0,7)===curKey);
+  const pend=by('pending'),qry=by('queried'),appr=by('approved'),rej=by('rejected');
+  const review=[...pend,...qry];
+  const oldest=review.length?Math.max(...review.map(ageDays)):0;
   const attention=[...pend,...qry,...appr].map(r=>({r,big:reqTotal(r)>=MD_FLAG_AMOUNT,old:r.status!=='approved'&&ageDays(r)>=MD_FLAG_DAYS}))
-    .sort((a,b)=>(b.big+b.old)-(a.big+a.old)||reqTotal(b.r)-reqTotal(a.r)).slice(0,6);
-  const recent=[...reqs].sort((a,b)=>(b.updated_at||b.created_at||'').localeCompare(a.updated_at||a.created_at||'')).slice(0,6);
+    .sort((a,b)=>(b.big+b.old)-(a.big+a.old)||reqTotal(b.r)-reqTotal(a.r)).slice(0,5);
+  const recent=[...reqs].sort((a,b)=>(b.updated_at||b.created_at||'').localeCompare(a.updated_at||a.created_at||'')).slice(0,5);
+  const plural=(n,w)=>n+' '+w+(n===1?'':'s');
+  const statusMeta={pending:{l:'Pending',c:'#c79a3e',ic:'ph-clock'},queried:{l:'Queried',c:'#5b6f7c',ic:'ph-chat-circle-text'},approved:{l:'Approved',c:'#2f8f64',ic:'ph-check-circle'},paid:{l:'Paid',c:'#12709c',ic:'ph-bank'},rejected:{l:'Rejected',c:'#b4504d',ic:'ph-x-circle'}};
 
-  const card=(lbl,val,sub,opts='')=>`<div class="stat-card ${opts}"><div class="stat-inner"><div class="stat-lbl">${lbl}</div><div class="stat-val">${val}</div><div class="stat-sub"><span>${sub}</span></div></div></div>`;
-  const pipe=(st,label,list)=>`<div class="pipe-row" onclick="goReqTab('${st}')"><span><span class="req-status ${st}">${label}</span> <span style="color:var(--muted);margin-left:6px">${list.length} request${list.length===1?'':'s'}</span></span><strong>${nairaFull(sum(list))}</strong></div>`;
+  const tile=({label,icon,val,foot,spark,alert=false,go=''})=>`<div class="dcard kt s3${alert?' alert':''}${go?' clickable':''}"${go?` onclick="goReqTab('${go}')"`:''}>
+    <div class="kt-top"><span class="kt-lbl">${label}</span><span class="kt-ico"><i class="ph-light ${icon}"></i></span></div>
+    <div class="kt-val">${val}</div>
+    <div class="kt-foot"><div class="kt-fl">${foot}</div>${spark?sparkSvg(spark):''}</div></div>`;
+
+  const hasRev=revByMonth.some(v=>v>0);
+  const propRows=PROPERTIES.map(p=>{const hid=HALLS.filter(h=>h.propId===p.id).map(h=>h.id);return{l:p.name+', '+p.city,lab:[p.name,p.city],v:S.events.filter(e=>hid.includes(e.hallId)).reduce((s,e)=>s+e.amount,0)}}).sort((a,b)=>b.v-a.v);
+  const hasProp=propRows.some(r=>r.v>0);
+  const reqTotalCount=pend.length+qry.length+appr.length+paid.length+rej.length;
+
+  const empty=(icon,msg)=>`<div class="d-empty"><i class="ph-light ${icon}"></i><span>${msg}</span></div>`;
 
   el.innerHTML=`
-  <div class="stats-grid">
-    ${card('Total Revenue',fmtMoney(totRev),'all bookings, all properties')}
-    ${card('Revenue This Month',fmtMoney(mRev),S.events.filter(e=>mKey(e)===curKey).length+' events')}
-    ${card('Halls Occupied Today',occH+' / '+HALLS.length,Math.round(occH/HALLS.length*100)+'% occupancy')}
-    ${card('Upcoming Events',upc.length,'pipeline '+fmtMoney(upc.reduce((s,e)=>s+e.amount,0)))}
-  </div>
-  <div class="stats-grid">
-    ${card('Awaiting Admin',pend.length+qry.length,nairaFull(sum(pend)+sum(qry))+' in review','clickable'+((pend.length+qry.length)?' alert':'')).replace('class="stat-card','onclick="goReqTab(\'pending\')" class="stat-card')}
-    ${card('Approved · Unpaid',appr.length,nairaFull(sum(appr))+' with cashier','clickable').replace('class="stat-card','onclick="goReqTab(\'approved\')" class="stat-card')}
-    ${card('Paid This Month',nairaFull(sum(paidMonth)),paidMonth.length+(paidMonth.length===1?' payment':' payments')+' made')}
-    ${card('Total Paid Out',fmtMoney(sum(paid)),paid.length+(paid.length===1?' requisition':' requisitions')+', all time')}
+  <div class="dgrid">
+    ${tile({label:'Revenue this month',icon:'ph-trend-up',val:fmtMoney(revByMonth[L]),foot:deltaFoot(revByMonth[L],revByMonth[L-1]),spark:revByMonth.slice(-6)})}
+    ${tile({label:'Events this month',icon:'ph-calendar-check',val:evCount[L],foot:`<span style="color:var(--ink-2)">${occH} of ${HALLS.length} halls busy today</span><span class="kt-sub" style="margin:0">${plural(upc.length,'event')} ahead</span>`,spark:evCount.slice(-6)})}
+    ${tile({label:'Awaiting your review',icon:'ph-hourglass-medium',val:review.length,foot:`<span style="color:var(--ink-2)">${nairaFull(sum(review))} in review</span><span class="kt-sub" style="margin:0">${review.length?'Oldest '+plural(oldest,'day'):'All cleared'}</span>`,alert:review.length>0,go:'pending'})}
+    ${tile({label:'Paid out this month',icon:'ph-bank',val:fmtMoney(paidByMonth[L]),foot:deltaFoot(paidByMonth[L],paidByMonth[L-1])+`<span class="kt-sub" style="margin:0">${moneyShort(sum(appr))} approved, unpaid</span>`,spark:paidByMonth.slice(-6)})}
   </div>
 
-  <div class="dash-grid2">
-    <div class="panel-card"><div class="panel-inner">
-      <div class="panel-ttl">Needs your attention</div>
-      ${attention.length?attention.map(({r,big,old})=>`<div class="attn-item" onclick="openReqFromDash('${r.id}')"><div><div class="attn-t"><span style="color:var(--sky-600);font-size:11px;margin-right:6px">${esc(reqNo(r))}</span>${esc(r.purpose||'Untitled')}${big?'<span class="flag">High value</span>':''}${old?`<span class="flag age">${ageDays(r)}d old</span>`:''}</div><div class="attn-m">${esc(r.raised_by_name||r.raised_by_role||'')} · ${esc(r.vendor_name||'No vendor')} · <span class="req-status ${r.status}">${esc(REQ_STATUS[r.status]?.label||r.status)}</span></div></div><strong style="color:var(--sky-700)">${nairaFull(reqTotal(r))}</strong></div>`).join(''):'<p style="color:var(--muted);font-size:12px">Nothing waiting. All requisitions are cleared.</p>'}
-    </div></div>
-    <div class="panel-card"><div class="panel-inner">
-      <div class="panel-ttl">Requisition pipeline</div>
-      ${pipe('pending','Pending',pend)}${pipe('queried','Queried',qry)}${pipe('approved','Approved',appr)}${pipe('paid','Paid',paid)}${pipe('rejected','Rejected',rej)}
-    </div></div>
+  <div class="dgrid">
+    <div class="dcard s8">
+      <div class="dcard-h"><span class="dcard-t">Revenue, last 12 months</span><span class="dcard-m">All time <b>${fmtMoney(totRev)}</b></span></div>
+      ${hasRev?'<div class="chart-box"><canvas id="chRev" aria-label="Monthly revenue" role="img"></canvas></div>':empty('ph-chart-line-up','No bookings recorded yet. Revenue appears here as events are booked.')}
+    </div>
+    <div class="dcard s4">
+      <div class="dcard-h"><span class="dcard-t">Requisition pipeline</span><button class="link" onclick="goReqTab('all')">View all</button></div>
+      ${reqTotalCount?`<div class="donut-wrap"><canvas id="chPipe" aria-label="Requisitions by status" role="img"></canvas><div class="donut-mid"><span class="n">${reqTotalCount}</span><span class="l">requisitions</span></div></div>
+      <div class="legend">${['pending','queried','approved','paid','rejected'].map(st=>{const l=by(st);return`<div class="lg-row" onclick="goReqTab('${st}')"><span class="lg-sw" style="background:${statusMeta[st].c}"></span><span class="lg-n">${statusMeta[st].l}</span><span class="lg-c">${l.length}</span><span class="lg-a">${moneyShort(sum(l))}</span></div>`}).join('')}</div>`:empty('ph-files','No requisitions yet.')}
+    </div>
   </div>
 
-  <div class="dash-grid2">
-    <div class="panel-card"><div class="panel-inner">
-      <div class="panel-ttl">Revenue by property</div>
-      ${barRows(propRows)}
-    </div></div>
-    <div class="panel-card"><div class="panel-inner">
-      <div class="panel-ttl">Revenue · last 6 months</div>
-      ${barRows(months,'var(--sky-600)')}
-    </div></div>
+  <div class="dgrid">
+    <div class="dcard s7">
+      <div class="dcard-h"><span class="dcard-t">Needs your attention</span><span class="dcard-m">${attention.length?plural(attention.length,'item'):''}</span></div>
+      ${attention.length?`<div class="dtable"><div class="dtr head"><span>Requisition</span><span class="r">Amount</span><span>Status</span><span></span></div>${attention.map(({r,big,old})=>`<div class="dtr"><div style="min-width:0"><div class="dtr-t">${esc(r.purpose||'Untitled')}</div><div class="dtr-s">${esc(reqNo(r))}, ${esc(r.raised_by_name||r.raised_by_role||'')}${big?'<span class="flag">High value</span>':''}${old?`<span class="flag age">${ageDays(r)} days old</span>`:''}</div></div><div class="dtr-a">${nairaFull(reqTotal(r))}</div><div class="st-c"><span class="req-status ${esc(r.status)}">${esc(REQ_STATUS[r.status]?.label||r.status)}</span></div><div class="act-c"><button class="btn-sm" onclick="openReqFromDash('${esc(r.id)}')">Review</button></div></div>`).join('')}</div>`:empty('ph-check-circle','Nothing is waiting. Every requisition is cleared.')}
+    </div>
+    <div class="dcard s5">
+      <div class="dcard-h"><span class="dcard-t">Revenue by property</span><span class="dcard-m">All time</span></div>
+      ${hasProp?'<div class="chart-box"><canvas id="chProp" aria-label="Revenue by property" role="img"></canvas></div>':empty('ph-buildings','Property revenue appears once events are booked.')}
+    </div>
   </div>
 
-  <div class="dash-grid2">
-    <div class="panel-card"><div class="panel-inner">
-      <div class="panel-ttl">Recent requisition activity</div>
-      ${recent.length?recent.map(r=>`<div class="attn-item" onclick="openReqFromDash('${r.id}')"><div><div class="attn-t"><span style="color:var(--sky-600);font-size:11px;margin-right:6px">${esc(reqNo(r))}</span>${esc(r.purpose||'Untitled')}</div><div class="attn-m">${esc(r.raised_by_name||r.raised_by_role||'')} · ${new Date(r.updated_at||r.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</div></div><div style="text-align:right"><div style="font-weight:800;font-size:13px">${nairaFull(reqTotal(r))}</div><span class="req-status ${r.status}">${esc(REQ_STATUS[r.status]?.label||r.status)}</span></div></div>`).join(''):'<p style="color:var(--muted);font-size:12px">No requisitions yet.</p>'}
-    </div></div>
-    <div class="panel-card"><div class="panel-inner">
-      <div class="panel-ttl">Next events</div>
-      ${upc.slice(0,6).map(e=>{const h=HM[e.hallId];const pr=PM[h?.propId];return`<div class="upc-item" onclick="switchPage('events');openDetail('${e.id}')"><div class="upc-dot" style="background:${h?.color}"></div><div><div class="upc-name">${esc(e.name)}</div><div class="upc-meta">${new Date(e.date+'T00:00:00').toLocaleDateString('en-NG',{day:'numeric',month:'short'})} · ${esc(h?.name)} · ${esc(pr?.city||'')} · ${fmtMoney(e.amount)}</div></div></div>`}).join('')||'<p style="color:var(--muted);font-size:12px">No upcoming events.</p>'}
-    </div></div>
+  <div class="dgrid">
+    <div class="dcard s6">
+      <div class="dcard-h"><span class="dcard-t">Upcoming events</span><button class="link" onclick="switchPage('events')">Open calendar</button></div>
+      ${upc.length?upc.slice(0,5).map(e=>{const h=HM[e.hallId];const pr=PM[h?.propId];const d=new Date(e.date+'T00:00:00');return`<div class="ev-row" onclick="switchPage('events');openDetail('${esc(e.id)}')"><div class="ev-date"><span class="d">${d.getDate()}</span><span class="m">${MONTHS[d.getMonth()].slice(0,3)}</span></div><div style="min-width:0"><div class="ev-n">${esc(e.name)}</div><div class="ev-s">${esc(h?.name||'')}, ${esc(pr?.city||'')}${e.guests?', '+e.guests.toLocaleString()+' guests':''}</div></div><div class="ev-a">${fmtMoney(e.amount)}</div></div>`}).join(''):empty('ph-calendar-blank','No upcoming events.')}
+    </div>
+    <div class="dcard s6">
+      <div class="dcard-h"><span class="dcard-t">Recent requisition activity</span><button class="link" onclick="goReqTab('all')">View all</button></div>
+      ${recent.length?recent.map(r=>`<div class="ac-row" onclick="openReqFromDash('${esc(r.id)}')"><div class="ac-ico ${esc(r.status)}"><i class="ph-light ${statusMeta[r.status]?.ic||'ph-file-text'}"></i></div><div style="min-width:0"><div class="ac-t">${esc(r.purpose||'Untitled')}</div><div class="ac-s">${esc(reqNo(r))}, ${new Date(r.updated_at||r.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</div></div><div style="text-align:right"><div class="ev-a" style="font-size:18px">${nairaFull(reqTotal(r))}</div><span class="req-status ${esc(r.status)}" style="margin-top:4px">${esc(REQ_STATUS[r.status]?.label||r.status)}</span></div></div>`).join(''):empty('ph-files','No requisitions yet.')}
+    </div>
   </div>`;
+
+  // ---- charts (skipped quietly if the library did not load)
+  if(!window.Chart)return;
+  const ink=cssv('--ink'),muted=cssv('--muted'),line=cssv('--line'),az=cssv('--azure-ink'),surf=cssv('--surface'),deep='#0b1823';
+  Chart.defaults.font.family="'Geist',system-ui,sans-serif";Chart.defaults.font.size=12;Chart.defaults.color=muted;
+  const tip={backgroundColor:deep,titleColor:'#fff',bodyColor:'#dbe5ec',padding:11,cornerRadius:3,displayColors:false,titleFont:{weight:'500',size:12.5},bodyFont:{size:12.5}};
+  const c1=document.getElementById('chRev');
+  if(c1){
+    const ctx=c1.getContext('2d'),g=ctx.createLinearGradient(0,0,0,270);g.addColorStop(0,'rgba(46,166,220,.22)');g.addColorStop(1,'rgba(46,166,220,0)');
+    _dashCharts.push(new Chart(c1,{type:'line',data:{labels:months.map(m=>m.short),datasets:[{data:revByMonth,borderColor:az,backgroundColor:g,fill:true,tension:.35,borderWidth:2,pointRadius:0,pointHoverRadius:5,pointHoverBackgroundColor:az,pointHoverBorderColor:surf,pointHoverBorderWidth:2}]},
+      options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{...tip,callbacks:{title:i=>months[i[0].dataIndex].full,label:i=>nairaFull(i.parsed.y)+' from '+plural(evCount[i.dataIndex],'event')}}},
+        scales:{x:{grid:{display:false},border:{display:false}},y:{beginAtZero:true,border:{display:false},grid:{color:line},ticks:{callback:v=>moneyShort(v),maxTicksLimit:5}}}}}));
+  }
+  const c2=document.getElementById('chPipe');
+  if(c2){_dashCharts.push(new Chart(c2,{type:'doughnut',data:{labels:['pending','queried','approved','paid','rejected'].map(s=>statusMeta[s].l),datasets:[{data:[pend.length,qry.length,appr.length,paid.length,rej.length],backgroundColor:['pending','queried','approved','paid','rejected'].map(s=>statusMeta[s].c),borderColor:surf,borderWidth:2,hoverOffset:3}]},
+      options:{responsive:true,maintainAspectRatio:false,cutout:'74%',plugins:{legend:{display:false},tooltip:{...tip,callbacks:{label:i=>plural(i.parsed,'requisition')}}}}}));}
+  const c3=document.getElementById('chProp');
+  if(c3){_dashCharts.push(new Chart(c3,{type:'bar',data:{labels:propRows.map(r=>r.lab),datasets:[{data:propRows.map(r=>r.v),backgroundColor:az,borderRadius:2,barThickness:14}]},
+      options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{...tip,callbacks:{label:i=>nairaFull(i.parsed.x)}}},
+        scales:{x:{beginAtZero:true,border:{display:false},grid:{color:line},ticks:{callback:v=>moneyShort(v),maxTicksLimit:4}},y:{grid:{display:false},border:{display:false},ticks:{color:ink,font:{size:12.5}}}}}}));}
 }
 
 // ── PROPERTY MAP (Admin / MD dashboard) ──────────────────────
@@ -1563,7 +1753,7 @@ function initPropertyMap(){
   }).addTo(_leafletMap);
   PROPERTIES.forEach(prop=>{
     const mk=L.circleMarker([prop.lat,prop.lng],{
-      radius:12,fillColor:prop.color,color:'#fff',weight:2.5,opacity:1,fillOpacity:.9
+      radius:9,fillColor:prop.color,color:'#fff',weight:2,opacity:1,fillOpacity:1
     }).addTo(_leafletMap);
     mk.bindTooltip(`<strong>${prop.name}</strong><br>${prop.city}, ${prop.state}`,{sticky:true,direction:'top'});
     mk.on('click',()=>showPropertyDetail(prop.id));
@@ -1575,19 +1765,16 @@ function initPropertyMap(){
 function renderMapSidebar(){
   const ts=todayStr();
   document.getElementById('mapSidebar').innerHTML=`
-    <div class="panel-ttl" style="margin-bottom:12px">Group Properties</div>
+    <div class="panel-ttl">Group properties</div>
     ${PROPERTIES.map(prop=>{
       const halls=HALLS.filter(h=>h.propId===prop.id);
       const todayEvts=S.events.filter(e=>halls.some(h=>h.id===e.hallId)&&e.date===ts);
       return`<div class="prop-list-item" onclick="showPropertyDetail('${prop.id}')">
-        <div style="display:flex;align-items:center;gap:9px">
-          <div style="width:11px;height:11px;border-radius:3px;background:${prop.color};flex-shrink:0"></div>
-          <div>
-            <div class="prop-list-name">${prop.name}</div>
-            <div class="prop-list-sub">${prop.city}, ${prop.state} · ${halls.length} hall${halls.length>1?'s':''}</div>
-          </div>
+        <div>
+          <div class="prop-list-name">${esc(prop.name)}</div>
+          <div class="prop-list-sub">${esc(prop.city)}, ${halls.length} hall${halls.length===1?'':'s'}</div>
         </div>
-        ${todayEvts.length?`<span style="font-size:10px;background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:12px;font-weight:800;flex-shrink:0">${todayEvts.length} today</span>`:''}
+        ${todayEvts.length?`<span class="prop-today">${todayEvts.length} today</span>`:''}
       </div>`;
     }).join('')}`;
 }
@@ -1601,42 +1788,27 @@ function showPropertyDetail(propId){
     const todayBk=S.events.filter(e=>e.hallId===hall.id&&e.date===ts);
     const upcoming=S.events.filter(e=>e.hallId===hall.id&&e.date>=ts).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,2);
     return`<div class="prop-hall-card">
-      <div class="prop-hall-hdr">
-        <div style="display:flex;align-items:center;gap:7px">
-          <div style="width:9px;height:9px;border-radius:50%;background:${hall.color};flex-shrink:0"></div>
-          <span class="prop-hall-name">${hall.name}</span>
-        </div>
-        <span class="prop-hall-cap">Cap. ${hall.cap.toLocaleString()}</span>
-      </div>
-      <div class="prop-hall-meta">${todayBk.length?`<span style="color:#059669;font-weight:700">${todayBk.length} booking${todayBk.length>1?'s':''} today</span> · ${todayBk.map(e=>e.name).join(', ')}`:'Available today'}</div>
-      ${upcoming.length?`<div class="prop-hall-next">Next: ${upcoming.map(e=>`${e.name} (${new Date(e.date+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'})})`).join(' · ')}</div>`:''}
-      <!-- FUTURE: Add occupancy rate (%) for this hall here -->
-      <!-- FUTURE: Add revenue contribution for this hall here -->
+      <div class="prop-hall-hdr"><span class="prop-hall-name">${esc(hall.name)}</span><span class="prop-hall-cap">Capacity ${hall.cap.toLocaleString()}</span></div>
+      <div class="prop-hall-meta">${todayBk.length?`${plural1(todayBk.length,'booking')} today: ${esc(todayBk.map(e=>e.name).join(', '))}`:'Available today'}</div>
+      ${upcoming.length?`<div class="prop-hall-next">Next: ${upcoming.map(e=>`${esc(e.name)} on ${new Date(e.date+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'})}`).join('; ')}</div>`:''}
     </div>`;
   }).join('');
   document.getElementById('mapSidebar').innerHTML=`
-    <button class="prop-back-btn" onclick="renderMapSidebar()">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-      All Properties
-    </button>
+    <button class="prop-back-btn" onclick="renderMapSidebar()"><i class="ph-light ph-arrow-left"></i> All properties</button>
     <div class="prop-detail-hdr">
-      <div class="prop-detail-name">${prop.name}</div>
-      <div class="prop-detail-city">${prop.city}, ${prop.state}</div>
+      <div class="prop-detail-name">${esc(prop.name)}</div>
+      <div class="prop-detail-city">${esc(prop.city)}, ${esc(prop.state)}</div>
     </div>
-    <div class="panel-ttl" style="margin-bottom:10px">Halls</div>
-    ${hallsHtml}
-    <!-- FUTURE: Add property-level occupancy rate here -->
-    <!-- FUTURE: Add property-level total revenue here -->
-    <!-- FUTURE: Add event trend chart for this property here -->
-  `;
+    ${hallsHtml}`;
 }
+function plural1(n,w){return n+' '+w+(n===1?'':'s')}
 
 // ── INIT ──────────────────────────────────────────────────────
 (async function init(){
   document.getElementById('monthLabel').textContent=MONTHS[S.month]+' '+S.year;
   await initSupabase();
   await fetchReqs();
-  renderStats();renderCal();renderUpcoming();renderLegend();
+  renderStats();renderCal();renderUpcoming();renderLegend();updateNavCount();
   if(S.page==='dashboard')renderDashboard();
   if(S.page==='requisitions')renderReqPage();
 })();
