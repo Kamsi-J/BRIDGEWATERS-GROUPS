@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bridge Waters</title>
+<link rel="icon" type="image/png" href="assets/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -37,7 +38,8 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
 #sidebar{width:var(--sidebar-w);min-height:100dvh;background:linear-gradient(160deg,#0369a1,#0284c7);border-right:none;display:flex;flex-direction:column;position:fixed;left:0;top:0;bottom:0;z-index:51;transition:transform .35s var(--ease);overflow:hidden;transform:translateX(-100%)}
 #sidebar.open{transform:translateX(0);box-shadow:4px 0 40px rgba(0,0,0,.18)}
 .sb-header{padding:22px 16px 18px;border-bottom:1px solid rgba(255,255,255,.12);flex-shrink:0;position:relative}
-.logo-row{display:flex;align-items:center;gap:11px;overflow:hidden}
+.logo-row{display:flex;align-items:center;overflow:hidden}
+.sb-logo{width:100%;max-width:188px;height:auto;display:block}
 .logo-mark{width:38px;height:38px;border-radius:11px;flex-shrink:0;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center}
 .logo-mark svg{width:22px;height:22px}
 .logo-text{overflow:hidden;white-space:nowrap;transition:opacity .2s,max-width .35s var(--ease);max-width:220px}
@@ -343,6 +345,31 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
 @media(max-width:900px){.map-layout{grid-template-columns:1fr}}
 .leaflet-container{font-family:'Outfit',sans-serif!important}
 .leaflet-popup-content-wrapper{border-radius:11px!important}
+/* MD DASHBOARD */
+.dash-sec{margin-bottom:22px}
+.dash-grid2{display:grid;grid-template-columns:1.4fr 1fr;gap:14px;margin-bottom:22px}
+.dash-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:22px}
+.stat-card.alert{border-color:#fcd34d;background:#fffbeb}
+.stat-card.clickable{cursor:pointer}
+.bar-row{display:grid;grid-template-columns:130px 1fr 70px;gap:10px;align-items:center;margin-bottom:9px;font-size:12px}
+.bar-lbl{color:var(--text-2);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{height:10px;background:var(--surface-2);border-radius:6px;overflow:hidden}
+.bar-fill{height:100%;border-radius:6px;background:var(--sky-500);transition:width .5s var(--ease)}
+.bar-val{text-align:right;font-weight:800;color:var(--text)}
+.pipe-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:12.5px;cursor:pointer}
+.pipe-row:last-child{border-bottom:none}
+.pipe-row:hover{background:var(--surface-2)}
+.attn-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.attn-item:last-child{border-bottom:none}
+.attn-t{font-size:13px;font-weight:700;color:var(--text)}
+.attn-m{font-size:11px;color:var(--muted);margin-top:2px}
+.flag{display:inline-block;font-size:9.5px;font-weight:800;padding:1px 7px;border-radius:20px;background:#fee2e2;color:#991b1b;margin-left:6px;text-transform:uppercase}
+.flag.age{background:#fef3c7;color:#92400e}
+.edit-log{font-size:11.5px;color:var(--text-2);border-left:3px solid var(--sky-200);padding:2px 0 2px 10px;margin-bottom:8px;line-height:1.5}
+.edit-log small{color:var(--muted)}
+.btn-save{background:var(--sky-500);color:#fff;border:none;padding:9px 18px;border-radius:10px;font-weight:800;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px}
+.btn-save:hover{background:var(--sky-600)}
+@media(max-width:900px){.dash-grid2,.dash-grid3{grid-template-columns:1fr}.bar-row{grid-template-columns:100px 1fr 60px}}
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css"/>
 </head>
@@ -351,18 +378,7 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
 
 <aside id="sidebar">
   <div class="sb-header">
-    <div class="logo-row">
-      <div class="logo-mark">
-        <svg viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M3 4.5H8C10.2 4.5 11.5 5.7 11.5 7.4C11.5 9.1 10.2 9.6 10.2 9.6C11.5 9.6 13.2 10.8 13.2 12.8C13.2 14.9 11.5 16.5 8.5 16.5H3V4.5Z" fill="white" fill-opacity=".95"/>
-          <path d="M14 4.5L16.3 11.8L19.2 4.5H20.3L15.8 17.5L13 10.2L14 4.5Z" fill="white" fill-opacity=".95"/>
-        </svg>
-      </div>
-      <div class="logo-text">
-        <h1>Bridge Waters</h1>
-        <span>Hotel &amp; Conference Group</span>
-      </div>
-    </div>
+    <div class="logo-row"><img src="assets/logo-white.png" alt="Bridge Waters — Luxury Suites &amp; Conference Centre" class="sb-logo"></div>
     <button class="sb-toggle" id="sbToggle" title="Toggle sidebar">
       <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
         <polyline id="sbChev" points="4,2 8,6 4,10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
@@ -371,6 +387,10 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
   </div>
   <nav class="sb-nav">
     <div class="nav-sec-lbl">Operations</div>
+    <div class="nav-item" id="navDash" data-page="dashboard" style="display:none" onclick="switchPage('dashboard');closeMobSidebar()">
+      <div class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg></div>
+      <div class="nav-txt"><span>MD Dashboard</span></div>
+    </div>
     <div class="nav-item active" data-page="events" onclick="switchPage('events');closeMobSidebar()">
       <div class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
       <div class="nav-txt"><span>Event Booking</span></div>
@@ -421,6 +441,16 @@ body{font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background
       <button class="theme-btn" onclick="toggleTheme()" title="Toggle theme"><span id="themeIcon">🌙</span></button>
     </div>
   </header>
+
+  <div class="content" id="pageDash" style="display:none">
+    <div class="req-page-hdr">
+      <div>
+        <div class="page-title" style="margin-bottom:3px">Executive Overview</div>
+        <div style="font-size:12px;color:var(--muted)" id="dashSubtitle"></div>
+      </div>
+    </div>
+    <div id="dashBody"></div>
+  </div>
 
   <div class="content" id="pageEvents">
     <div class="stats-grid" id="statsGrid"></div>
@@ -698,6 +728,10 @@ async function initSupabase(){
       if(S.role==='storekeeper'||S.role==='cashier'){
         setTimeout(()=>switchPage('requisitions'),0);
       }
+      // MD lands on the executive dashboard
+      if(S.role==='md'){
+        setTimeout(()=>switchPage('dashboard'),0);
+      }
       // Load events from DB; fall back to localStorage cache on network error
       const{data:evts}=await sb.from('events').select('*').order('date');
       if(evts?.length){
@@ -769,12 +803,14 @@ function closeMobSidebar(){
 function switchPage(p){
   S.page=p;
   document.querySelectorAll('.nav-item[data-page]').forEach(el=>el.classList.toggle('active',el.dataset.page===p));
+  document.getElementById('pageDash').style.display=p==='dashboard'?'':'none';
   document.getElementById('pageEvents').style.display=p==='events'?'':'none';
   document.getElementById('pageReq').style.display=p==='requisitions'?'':'none';
   document.getElementById('pageStaff').style.display=p==='staff'?'':'none';
   document.getElementById('monthNav').style.display=p==='events'?'':'none';
   document.getElementById('calGrid').dataset.canbooking=ROLES[S.role].canBook&&p==='events'?'1':'';
-  const titles={events:'Event Booking',requisitions:'Requisitions',staff:'HR & Staff'};
+  const titles={dashboard:'MD Dashboard',events:'Event Booking',requisitions:'Requisitions',staff:'HR & Staff'};
+  if(p==='dashboard')renderDashboard();
   document.getElementById('pageTitle').textContent=titles[p]||'Event Booking';
   if(p==='events'){showMapSection(S.role==='admin'||S.role==='md');}
   else{showMapSection(false);}
@@ -793,7 +829,9 @@ function changeRole(r){
   document.getElementById('calGrid').dataset.canbooking=rl.canBook&&S.page==='events'?'1':'';
   showMapSection(S.page==='events'&&(r==='admin'||r==='md'));
   renderStats();
+  updateNavForRole(r);
   if(S.page==='requisitions')renderReqPage();
+  if(S.page==='dashboard')renderDashboard();
 }
 
 function updateLocPill(){
@@ -807,6 +845,8 @@ function updateLocPill(){
 }
 
 function updateNavForRole(role){
+  const navDash=document.getElementById('navDash');
+  if(navDash)navDash.style.display=role==='md'?'':'none';
   const navStaff=document.getElementById('navStaff');
   if(!navStaff)return;
   if(role==='admin'){
@@ -1082,10 +1122,20 @@ async function createReqDB(payload){
 
 async function updateReqDB(id,patch){
   const idx=reqs.findIndex(r=>r.id===id);
-  const{data,error}=await sb.from('requisitions').update({...patch,updated_at:new Date().toISOString()}).eq('id',id).select().single();
-  if(error)throw error;
-  if(idx>=0)reqs[idx]=data;return data;
+  let res=await sb.from('requisitions').update({...patch,updated_at:new Date().toISOString()}).eq('id',id).select().single();
+  // Fallback if the edit_log column hasn't been added yet (run migration_md_workflow.sql)
+  if(res.error&&/edit_log/i.test(res.error.message||'')){
+    const{edit_log,...rest}=patch;
+    res=await sb.from('requisitions').update({...rest,updated_at:new Date().toISOString()}).eq('id',id).select().single();
+  }
+  if(res.error)throw res.error;
+  if(idx>=0)reqs[idx]=res.data;return res.data;
 }
+
+function reqNo(r){return r.req_number||('REQ-'+String(r.id||'').slice(0,6).toUpperCase())}
+function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+const MD_FLAG_AMOUNT=500000;   // requisitions at/above this are flagged on the MD dashboard
+const MD_FLAG_DAYS=3;          // pending longer than this many days are flagged as ageing
 
 async function deleteReqDB(id){
   reqs=reqs.filter(r=>r.id!==id);
@@ -1102,15 +1152,14 @@ function getFilteredReqs(tab){
     list=list.filter(r=>r.raised_by_role===role||(currentUser&&r.raised_by===currentUser.id));
   }
   if(tab==='all')return list;
-  if(tab==='rejected')return list.filter(r=>r.status==='rejected'||r.status==='queried');
   return list.filter(r=>r.status===tab);
 }
 
 function getReqTabs(){
   const role=S.role;
   if(role==='cashier')return[{id:'approved',label:'For Payment'},{id:'paid',label:'Paid'}];
-  if(role==='banqueting_manager'||role==='storekeeper')return[{id:'pending',label:'Pending'},{id:'approved',label:'Approved'},{id:'paid',label:'Paid'},{id:'rejected',label:'Rejected'}];
-  return[{id:'pending',label:'Pending'},{id:'approved',label:'Approved'},{id:'paid',label:'Paid'},{id:'rejected',label:'Rejected'},{id:'all',label:'All'}];
+  if(role==='banqueting_manager'||role==='storekeeper')return[{id:'pending',label:'Pending'},{id:'queried',label:'Queried'},{id:'approved',label:'Approved'},{id:'paid',label:'Paid'},{id:'rejected',label:'Rejected'}];
+  return[{id:'pending',label:'Pending'},{id:'queried',label:'Queried'},{id:'approved',label:'Approved'},{id:'paid',label:'Paid'},{id:'rejected',label:'Rejected'},{id:'all',label:'All'}];
 }
 
 function renderReqTabs(){
@@ -1125,7 +1174,7 @@ function renderReqPage(){
   const btn=document.getElementById('newReqBtn');
   if(btn)btn.style.display=(role==='banqueting_manager'||role==='storekeeper')?'flex':'none';
   const sub=document.getElementById('reqSubtitle');
-  if(sub){const m={banqueting_manager:'Your procurement requests for events',storekeeper:'Your kitchen & supplies requests',admin:'Review and approve incoming requisitions',cashier:'Process payments for approved requests',md:'Overview of all requisitions',bdm:'Requisition overview'};sub.textContent=m[role]||'';}
+  if(sub){const m={banqueting_manager:'Your procurement requests for events',storekeeper:'Your kitchen & supplies requests',admin:'Review, edit and approve incoming requisitions',cashier:'Process payments for approved requests',md:'Oversee, edit, approve, query or reject requisitions',bdm:'Requisition overview'};sub.textContent=m[role]||'';}
   renderReqTabs();
   const list=getFilteredReqs(currentReqTab);
   const el=document.getElementById('reqList');if(!el)return;
@@ -1139,7 +1188,7 @@ function renderReqPage(){
     return`<div class="req-card" onclick="openReqDetail('${r.id}')">
       <div class="req-card-top">
         <div>
-          <div class="req-card-title">${r.purpose||'Untitled'}</div>
+          <div class="req-card-title"><span style="color:var(--sky-600);font-weight:800;margin-right:8px;font-size:12px">${esc(reqNo(r))}</span>${esc(r.purpose||'Untitled')}</div>
           <div class="req-card-meta">${r.raised_by_name||r.raised_by_role||''}${date?' · '+date:''} · ${r.vendor_name||'No vendor'}</div>
         </div>
         <div class="req-card-right">
@@ -1200,63 +1249,101 @@ async function submitReq(){
 // ── DETAIL VIEW ───────────────────────────────────────────────
 let _reqId=null;
 
+// Who can edit what:
+//  Admin → pending + queried (before it goes to cashier)
+//  MD    → pending + queried + approved (anything not yet paid / rejected)
+function canEditReq(r){
+  if(S.role==='admin')return r.status==='pending'||r.status==='queried';
+  if(S.role==='md')return r.status==='pending'||r.status==='queried'||r.status==='approved';
+  return false;
+}
+
+function edRowHtml(it){
+  return`<div class="item-row ed-row"><input class="form-input" value="${esc(it?.description||'')}" placeholder="Description" oninput="calcEdTotal()"><input class="form-input" type="number" value="${it?.qty??1}" min="0" oninput="calcEdTotal()" style="text-align:center"><input class="form-input" type="number" value="${it?.unit_cost??0}" min="0" oninput="calcEdTotal()" style="text-align:right"><button class="item-del-btn" type="button" onclick="this.parentElement.remove();calcEdTotal()">&#215;</button></div>`;
+}
+function addEdItem(){document.getElementById('edItems').insertAdjacentHTML('beforeend',edRowHtml());}
+function calcEdTotal(){
+  let t=0;
+  document.querySelectorAll('#edItems .ed-row').forEach(row=>{const i=row.querySelectorAll('input');t+=(parseFloat(i[1]?.value)||0)*(parseFloat(i[2]?.value)||0);});
+  const el=document.getElementById('edTotalDisp');if(el)el.textContent=nairaFull(t);
+}
+
+function logHtml(r){
+  const log=Array.isArray(r.edit_log)?r.edit_log:[];
+  if(!log.length)return'';
+  return`<div class="req-sec-lbl">Edit History</div>`+log.slice().reverse().map(l=>`<div class="edit-log"><strong>${esc(l.by||'—')}</strong> <small>(${esc(ROLES[l.role]?.label||l.role||'')}) · ${l.at?new Date(l.at).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):''}</small><br>${(l.summary||[]).map(esc).join('<br>')}</div>`).join('');
+}
+
 function openReqDetail(id){
   const r=reqs.find(x=>x.id===id);if(!r)return;
   _reqId=id;
   const role=S.role;
   const total=r.items?.reduce((s,it)=>s+(it.qty||0)*(it.unit_cost||0),0)||r.total_amount||0;
-  document.getElementById('reqDetailTtl').textContent=r.purpose||'Requisition';
+  document.getElementById('reqDetailTtl').textContent=reqNo(r)+' · '+(r.purpose||'Requisition');
+  const statusBadge=`<span class="req-status ${esc(r.status)}">${esc(REQ_STATUS[r.status]?.label||r.status)}</span>`;
+  const editable=canEditReq(r);
 
-  const statusBadge=`<span class="req-status ${r.status}">${REQ_STATUS[r.status]?.label||r.status}</span>`;
-
-  // Items — editable for admin on pending, read-only otherwise
-  let itemsHtml='';
-  if(role==='admin'&&r.status==='pending'){
-    itemsHtml=`<div class="req-sec-lbl">Items <span style="font-weight:500;text-transform:none;letter-spacing:0;color:var(--sky-600)">(you can adjust qty &amp; cost)</span></div>
-    <div style="font-size:10.5px;color:var(--muted);display:grid;grid-template-columns:1fr 72px 120px;gap:7px;padding:0 2px;margin-bottom:6px"><span>Description</span><span style="text-align:center">Qty</span><span style="text-align:right">Unit Cost</span></div>
-    <div id="adminItemRows">${(r.items||[]).map((it,i)=>`<div class="item-row" id="ai${i}" style="grid-template-columns:1fr 72px 120px"><input class="form-input" value="${it.description}" oninput="calcAdminTotal()"><input class="form-input" type="number" value="${it.qty}" min="1" oninput="calcAdminTotal()" style="text-align:center"><input class="form-input" type="number" value="${it.unit_cost}" min="0" oninput="calcAdminTotal()" style="text-align:right"></div>`).join('')}</div>
-    <div class="req-total-row"><span class="req-total-lbl">Total</span><span class="req-total-val" id="adminTotalDisp">${nairaFull(total)}</span></div>
-    <div class="form-grp" style="margin-top:12px"><label class="form-lbl">Admin Notes (optional)</label><textarea class="form-ta" id="adminNotesInp" placeholder="Adjustments, notes for cashier...">${r.admin_notes||''}</textarea></div>`;
-  }else{
-    itemsHtml=`<div class="req-sec-lbl">Items</div>
-    <table class="req-items"><thead><tr><th>Description</th><th class="r">Qty</th><th class="r">Unit Cost</th><th class="r">Total</th></tr></thead>
-    <tbody>${(r.items||[]).map(it=>`<tr><td>${it.description}</td><td class="r">${it.qty}</td><td class="r">${nairaFull(it.unit_cost)}</td><td class="r">${nairaFull(it.qty*it.unit_cost)}</td></tr>`).join('')}</tbody></table>
-    <div class="req-total-row"><span class="req-total-lbl">Total</span><span class="req-total-val">${nairaFull(total)}</span></div>`;
-  }
-
-  const vendorHtml=`<div class="req-sec-lbl">Vendor &amp; Payment Details</div>
-  <div class="detail-box">
-    <div class="detail-box-row"><span class="detail-box-lbl">Vendor</span><span class="detail-box-val">${r.vendor_name||'—'}</span></div>
-    <div class="detail-box-row"><span class="detail-box-lbl">Bank</span><span class="detail-box-val">${r.vendor_bank||'—'}</span></div>
-    <div class="detail-box-row"><span class="detail-box-lbl">Account No.</span><span class="detail-box-val">${r.vendor_account_no||'—'}</span></div>
-    <div class="detail-box-row"><span class="detail-box-lbl">Account Name</span><span class="detail-box-val">${r.vendor_account_name||'—'}</span></div>
-  </div>`;
-
-  const queryHtml=r.md_query?`<div style="background:#ede9fe;border:1px solid #c4b5fd;border-radius:10px;padding:10px 13px;margin:10px 0;font-size:12.5px;color:#5b21b6"><strong>MD Query:</strong> ${r.md_query}</div>`:'';
+  const queryHtml=r.md_query?`<div style="background:#ede9fe;border:1px solid #c4b5fd;border-radius:10px;padding:10px 13px;margin:10px 0;font-size:12.5px;color:#5b21b6"><strong>MD Query:</strong> ${esc(r.md_query)}</div>`:'';
 
   const infoHtml=`<div class="req-sec-lbl">Details</div>
   <div class="detail-box">
-    <div class="detail-box-row"><span class="detail-box-lbl">Raised By</span><span class="detail-box-val">${r.raised_by_name||r.raised_by_role||'—'}</span></div>
+    <div class="detail-box-row"><span class="detail-box-lbl">Req. No.</span><span class="detail-box-val">${esc(reqNo(r))}</span></div>
+    <div class="detail-box-row"><span class="detail-box-lbl">Raised By</span><span class="detail-box-val">${esc(r.raised_by_name||r.raised_by_role||'—')}</span></div>
     <div class="detail-box-row"><span class="detail-box-lbl">Date</span><span class="detail-box-val">${r.created_at?new Date(r.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}):'—'}</span></div>
     <div class="detail-box-row"><span class="detail-box-lbl">Status</span><span class="detail-box-val">${statusBadge}</span></div>
-    ${r.notes?`<div class="detail-box-row"><span class="detail-box-lbl">Notes</span><span class="detail-box-val" style="font-weight:500">${r.notes}</span></div>`:''}
-    ${r.admin_notes&&role!=='admin'?`<div class="detail-box-row"><span class="detail-box-lbl">Admin Notes</span><span class="detail-box-val" style="font-weight:500">${r.admin_notes}</span></div>`:''}
-    ${r.rejection_reason?`<div class="detail-box-row"><span class="detail-box-lbl">Rejection Reason</span><span class="detail-box-val" style="color:#dc2626">${r.rejection_reason}</span></div>`:''}
+    ${r.notes?`<div class="detail-box-row"><span class="detail-box-lbl">Notes</span><span class="detail-box-val" style="font-weight:500">${esc(r.notes)}</span></div>`:''}
+    ${r.admin_notes&&!editable?`<div class="detail-box-row"><span class="detail-box-lbl">Reviewer Notes</span><span class="detail-box-val" style="font-weight:500">${esc(r.admin_notes)}</span></div>`:''}
+    ${r.rejection_reason?`<div class="detail-box-row"><span class="detail-box-lbl">Rejection Reason</span><span class="detail-box-val" style="color:#dc2626">${esc(r.rejection_reason)}</span></div>`:''}
   </div>`;
 
-  document.getElementById('reqDetailBody').innerHTML=itemsHtml+vendorHtml+queryHtml+infoHtml;
+  let body;
+  if(editable){
+    body=`${queryHtml}
+    <div class="form-grp"><label class="form-lbl">Purpose / Title</label><input class="form-input" id="ed-purpose" value="${esc(r.purpose)}"></div>
+    <div class="req-sec-lbl">Items <span style="font-weight:500;text-transform:none;letter-spacing:0;color:var(--sky-600)">(editable — add, remove or adjust)</span></div>
+    <div style="font-size:10.5px;color:var(--muted);display:grid;grid-template-columns:1fr 72px 120px 28px;gap:7px;padding:0 2px;margin-bottom:6px"><span>Description</span><span style="text-align:center">Qty</span><span style="text-align:right">Unit Cost</span><span></span></div>
+    <div id="edItems">${(r.items||[]).map(edRowHtml).join('')}</div>
+    <button class="add-item-btn" type="button" onclick="addEdItem()">+ Add Item</button>
+    <div class="req-total-row"><span class="req-total-lbl">Total</span><span class="req-total-val" id="edTotalDisp">${nairaFull(total)}</span></div>
+    <div class="req-sec-lbl">Vendor &amp; Payment Details</div>
+    <div class="form-row">
+      <div class="form-grp"><label class="form-lbl">Vendor</label><input class="form-input" id="ed-vendor" value="${esc(r.vendor_name)}"></div>
+      <div class="form-grp"><label class="form-lbl">Bank</label><input class="form-input" id="ed-bank" value="${esc(r.vendor_bank)}"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-grp"><label class="form-lbl">Account No.</label><input class="form-input" id="ed-accno" value="${esc(r.vendor_account_no)}"></div>
+      <div class="form-grp"><label class="form-lbl">Account Name</label><input class="form-input" id="ed-accname" value="${esc(r.vendor_account_name)}"></div>
+    </div>
+    <div class="form-grp"><label class="form-lbl">${role==='md'?'MD':'Admin'} Notes ${role==='admin'&&r.status==='queried'?'(reply to the MD query here)':'(optional)'}</label><textarea class="form-ta" id="ed-notes" placeholder="Adjustments, reasons, notes for cashier...">${esc(r.admin_notes)}</textarea></div>
+    ${infoHtml}${logHtml(r)}`;
+  }else{
+    body=`<div class="req-sec-lbl">Items</div>
+    <table class="req-items"><thead><tr><th>Description</th><th class="r">Qty</th><th class="r">Unit Cost</th><th class="r">Total</th></tr></thead>
+    <tbody>${(r.items||[]).map(it=>`<tr><td>${esc(it.description)}</td><td class="r">${esc(it.qty)}</td><td class="r">${nairaFull(it.unit_cost)}</td><td class="r">${nairaFull(it.qty*it.unit_cost)}</td></tr>`).join('')}</tbody></table>
+    <div class="req-total-row"><span class="req-total-lbl">Total</span><span class="req-total-val">${nairaFull(total)}</span></div>
+    <div class="req-sec-lbl">Vendor &amp; Payment Details</div>
+    <div class="detail-box">
+      <div class="detail-box-row"><span class="detail-box-lbl">Vendor</span><span class="detail-box-val">${esc(r.vendor_name)||'—'}</span></div>
+      <div class="detail-box-row"><span class="detail-box-lbl">Bank</span><span class="detail-box-val">${esc(r.vendor_bank)||'—'}</span></div>
+      <div class="detail-box-row"><span class="detail-box-lbl">Account No.</span><span class="detail-box-val">${esc(r.vendor_account_no)||'—'}</span></div>
+      <div class="detail-box-row"><span class="detail-box-lbl">Account Name</span><span class="detail-box-val">${esc(r.vendor_account_name)||'—'}</span></div>
+    </div>${queryHtml}${infoHtml}${logHtml(r)}`;
+  }
+  document.getElementById('reqDetailBody').innerHTML=body;
 
-  // Footer buttons
   let footer=`<button class="btn-ghost" onclick="closeModal('reqDetailModal')">Close</button>`;
-  if(role==='admin'&&r.status==='pending'){
+  if(role==='admin'&&editable){
     footer+=`<button class="btn-reject-r" onclick="rejectReq()">Reject</button>`;
+    footer+=`<button class="btn-save" onclick="saveReqEdit()">Save Changes</button>`;
     footer+=`<button class="btn-approve" onclick="approveReq()">Approve &rarr; Cashier</button>`;
   }else if(role==='cashier'&&r.status==='approved'){
     footer+=`<button class="btn-pay" onclick="markPaid()">Mark as Paid ✓</button>`;
   }else if(role==='md'){
-    if(r.status==='pending'||r.status==='approved'){
+    if(editable){
       footer+=`<button class="btn-query" onclick="queryReqMD()">Query</button>`;
       footer+=`<button class="btn-reject-r" onclick="rejectReqMD()">Reject</button>`;
+      footer+=`<button class="btn-save" onclick="saveReqEdit()">Save Changes</button>`;
+      if(r.status!=='approved')footer+=`<button class="btn-approve" onclick="approveReq()">Approve &rarr; Cashier</button>`;
     }
     footer+=`<button class="btn-del-grey" onclick="deleteReqMD()">Delete</button>`;
   }
@@ -1264,26 +1351,71 @@ function openReqDetail(id){
   openModal('reqDetailModal');
 }
 
-function calcAdminTotal(){
-  let t=0;
-  document.querySelectorAll('#adminItemRows .item-row').forEach(row=>{const i=row.querySelectorAll('input');t+=(parseFloat(i[1]?.value)||0)*(parseFloat(i[2]?.value)||0);});
-  const el=document.getElementById('adminTotalDisp');if(el)el.textContent=nairaFull(t);
-}
-
-function getAdminItems(){
+function collectEditor(){
   const items=[];
-  document.querySelectorAll('#adminItemRows .item-row').forEach(row=>{
+  document.querySelectorAll('#edItems .ed-row').forEach(row=>{
     const i=row.querySelectorAll('input');const desc=i[0]?.value?.trim();const qty=parseFloat(i[1]?.value)||0;const cost=parseFloat(i[2]?.value)||0;
     if(desc)items.push({description:desc,qty,unit_cost:cost,total:qty*cost});
   });
-  return items;
+  const v=id=>document.getElementById(id)?.value?.trim()||'';
+  return{purpose:v('ed-purpose'),items,total_amount:items.reduce((s,it)=>s+it.total,0),vendor_name:v('ed-vendor'),vendor_bank:v('ed-bank'),vendor_account_no:v('ed-accno'),vendor_account_name:v('ed-accname'),admin_notes:v('ed-notes')};
+}
+
+function diffReq(r,p){
+  const out=[];
+  if((r.purpose||'')!==p.purpose)out.push(`Title: "${r.purpose||''}" → "${p.purpose}"`);
+  const old=r.items||[];
+  const max=Math.max(old.length,p.items.length);
+  for(let i=0;i<max;i++){
+    const a=old[i],b=p.items[i];
+    if(a&&!b)out.push(`Removed item "${a.description}"`);
+    else if(!a&&b)out.push(`Added item "${b.description}" (${b.qty} × ${nairaFull(b.unit_cost)})`);
+    else if(a.description!==b.description||a.qty!==b.qty||a.unit_cost!==b.unit_cost){
+      const bits=[];
+      if(a.description!==b.description)bits.push(`name "${a.description}" → "${b.description}"`);
+      if(a.qty!==b.qty)bits.push(`qty ${a.qty} → ${b.qty}`);
+      if(a.unit_cost!==b.unit_cost)bits.push(`cost ${nairaFull(a.unit_cost)} → ${nairaFull(b.unit_cost)}`);
+      out.push(`"${b.description}": ${bits.join(', ')}`);
+    }
+  }
+  const oldTotal=old.reduce((s,it)=>s+(it.qty||0)*(it.unit_cost||0),0);
+  if(oldTotal!==p.total_amount)out.push(`Total ${nairaFull(oldTotal)} → ${nairaFull(p.total_amount)}`);
+  [['vendor_name','Vendor'],['vendor_bank','Bank'],['vendor_account_no','Account no.'],['vendor_account_name','Account name']].forEach(([k,l])=>{
+    if((r[k]||'')!==p[k])out.push(`${l}: "${r[k]||''}" → "${p[k]}"`);
+  });
+  if((r.admin_notes||'')!==p.admin_notes)out.push('Reviewer note updated');
+  return out;
+}
+
+function validateEditor(p){
+  if(!p.purpose){showToast('Title cannot be empty','⚠️');return false;}
+  if(!p.items.length){showToast('Keep at least one item','⚠️');return false;}
+  if(!p.vendor_name){showToast('Vendor name cannot be empty','⚠️');return false;}
+  return true;
+}
+
+function withLog(r,p,extra){
+  const summary=diffReq(r,p).concat(extra||[]);
+  const log=Array.isArray(r.edit_log)?r.edit_log:[];
+  if(!summary.length)return{...p,edit_log:log};
+  return{...p,edit_log:[...log,{at:new Date().toISOString(),by:document.getElementById('uName').textContent,role:S.role,summary}]};
+}
+
+async function saveReqEdit(){
+  const r=reqs.find(x=>x.id===_reqId);if(!r)return;
+  const p=collectEditor();if(!validateEditor(p))return;
+  if(!diffReq(r,p).length){showToast('No changes to save','ℹ️');return;}
+  try{await updateReqDB(_reqId,withLog(r,p));closeModal('reqDetailModal');showToast('Changes saved ✓','✅');renderReqPage();if(S.page==='dashboard')renderDashboard();}
+  catch(e){showToast('Error: '+e.message,'❌');}
 }
 
 async function approveReq(){
-  const items=getAdminItems();const total=items.reduce((s,it)=>s+it.total,0);
-  const notes=document.getElementById('adminNotesInp')?.value?.trim()||'';
-  try{await updateReqDB(_reqId,{status:'approved',items,total_amount:total,admin_notes:notes,approved_by:currentUser?.id||null,approved_at:new Date().toISOString()});closeModal('reqDetailModal');showToast('Requisition approved — sent to cashier ✓','✅');renderReqPage();}
-  catch(e){showToast('Error: '+e.message,'❌');}
+  const r=reqs.find(x=>x.id===_reqId);if(!r)return;
+  const p=collectEditor();if(!validateEditor(p))return;
+  try{
+    await updateReqDB(_reqId,{...withLog(r,p,['Approved by '+(ROLES[S.role]?.label||S.role)+' → sent to cashier']),status:'approved',approved_by:currentUser?.id||null,approved_at:new Date().toISOString()});
+    closeModal('reqDetailModal');showToast('Requisition approved — sent to cashier ✓','✅');renderReqPage();
+  }catch(e){showToast('Error: '+e.message,'❌');}
 }
 
 async function rejectReq(){
@@ -1314,6 +1446,100 @@ async function deleteReqMD(){
   if(!confirm('Permanently delete this requisition? This cannot be undone.'))return;
   try{await deleteReqDB(_reqId);closeModal('reqDetailModal');showToast('Deleted','✓');renderReqPage();}
   catch(e){showToast('Error: '+e.message,'❌');}
+}
+
+// ── MD DASHBOARD ──────────────────────────────────────────────
+function reqTotal(r){return r.total_amount||r.items?.reduce((s,it)=>s+(it.qty||0)*(it.unit_cost||0),0)||0}
+function ageDays(r){return r.created_at?Math.floor((Date.now()-new Date(r.created_at).getTime())/864e5):0}
+function barRows(rows,color){
+  const max=Math.max(1,...rows.map(r=>r.v));
+  return rows.map(r=>`<div class="bar-row"><div class="bar-lbl" title="${esc(r.l)}">${esc(r.l)}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.round(r.v/max*100)}%;background:${r.c||color||'var(--sky-500)'}"></div></div><div class="bar-val">${fmtMoney(r.v)}</div></div>`).join('');
+}
+function openReqFromDash(id){switchPage('requisitions');currentReqTab=(reqs.find(r=>r.id===id)||{}).status||'pending';renderReqPage();openReqDetail(id);}
+function goReqTab(tab){switchPage('requisitions');currentReqTab=tab;renderReqPage();}
+
+function renderDashboard(){
+  const el=document.getElementById('dashBody');if(!el)return;
+  const now=new Date(),ts=todayStr();
+  const sub=document.getElementById('dashSubtitle');
+  if(sub)sub.textContent=now.toLocaleDateString('en-NG',{weekday:'long',day:'numeric',month:'long',year:'numeric'})+' · all properties';
+
+  // ── events / revenue
+  const totRev=S.events.reduce((s,e)=>s+e.amount,0);
+  const mKey=e=>e.date.slice(0,7);
+  const curKey=ts.slice(0,7);
+  const mRev=S.events.filter(e=>mKey(e)===curKey).reduce((s,e)=>s+e.amount,0);
+  const occH=new Set(S.events.filter(e=>e.date===ts).map(e=>e.hallId)).size;
+  const upc=S.events.filter(e=>e.date>=ts).sort((a,b)=>a.date.localeCompare(b.date));
+  const propRows=PROPERTIES.map(p=>{
+    const hallIds=HALLS.filter(h=>h.propId===p.id).map(h=>h.id);
+    return{l:p.name+' · '+p.city,v:S.events.filter(e=>hallIds.includes(e.hallId)).reduce((s,e)=>s+e.amount,0),c:p.color};
+  });
+  const months=[];
+  for(let i=5;i>=0;i--){
+    const d=new Date(now.getFullYear(),now.getMonth()-i,1);
+    const k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+    months.push({l:MONTHS[d.getMonth()].slice(0,3)+' '+d.getFullYear(),v:S.events.filter(e=>mKey(e)===k).reduce((s,e)=>s+e.amount,0)});
+  }
+
+  // ── requisitions
+  const by=st=>reqs.filter(r=>r.status===st);
+  const sum=l=>l.reduce((s,r)=>s+reqTotal(r),0);
+  const pend=by('pending'),qry=by('queried'),appr=by('approved'),paid=by('paid'),rej=by('rejected');
+  const paidMonth=paid.filter(r=>r.paid_at&&r.paid_at.slice(0,7)===curKey);
+  const attention=[...pend,...qry,...appr].map(r=>({r,big:reqTotal(r)>=MD_FLAG_AMOUNT,old:r.status!=='approved'&&ageDays(r)>=MD_FLAG_DAYS}))
+    .sort((a,b)=>(b.big+b.old)-(a.big+a.old)||reqTotal(b.r)-reqTotal(a.r)).slice(0,6);
+  const recent=[...reqs].sort((a,b)=>(b.updated_at||b.created_at||'').localeCompare(a.updated_at||a.created_at||'')).slice(0,6);
+
+  const card=(lbl,val,sub,opts='')=>`<div class="stat-card ${opts}"><div class="stat-inner"><div class="stat-lbl">${lbl}</div><div class="stat-val">${val}</div><div class="stat-sub"><span>${sub}</span></div></div></div>`;
+  const pipe=(st,label,list)=>`<div class="pipe-row" onclick="goReqTab('${st}')"><span><span class="req-status ${st}">${label}</span> <span style="color:var(--muted);margin-left:6px">${list.length} request${list.length===1?'':'s'}</span></span><strong>${nairaFull(sum(list))}</strong></div>`;
+
+  el.innerHTML=`
+  <div class="stats-grid">
+    ${card('Total Revenue',fmtMoney(totRev),'all bookings, all properties')}
+    ${card('Revenue This Month',fmtMoney(mRev),S.events.filter(e=>mKey(e)===curKey).length+' events')}
+    ${card('Halls Occupied Today',occH+' / '+HALLS.length,Math.round(occH/HALLS.length*100)+'% occupancy')}
+    ${card('Upcoming Events',upc.length,'pipeline '+fmtMoney(upc.reduce((s,e)=>s+e.amount,0)))}
+  </div>
+  <div class="stats-grid">
+    ${card('Awaiting Admin',pend.length+qry.length,nairaFull(sum(pend)+sum(qry))+' in review','clickable'+((pend.length+qry.length)?' alert':'')).replace('class="stat-card','onclick="goReqTab(\'pending\')" class="stat-card')}
+    ${card('Approved · Unpaid',appr.length,nairaFull(sum(appr))+' with cashier','clickable').replace('class="stat-card','onclick="goReqTab(\'approved\')" class="stat-card')}
+    ${card('Paid This Month',nairaFull(sum(paidMonth)),paidMonth.length+(paidMonth.length===1?' payment':' payments')+' made')}
+    ${card('Total Paid Out',fmtMoney(sum(paid)),paid.length+(paid.length===1?' requisition':' requisitions')+', all time')}
+  </div>
+
+  <div class="dash-grid2">
+    <div class="panel-card"><div class="panel-inner">
+      <div class="panel-ttl">Needs your attention</div>
+      ${attention.length?attention.map(({r,big,old})=>`<div class="attn-item" onclick="openReqFromDash('${r.id}')"><div><div class="attn-t"><span style="color:var(--sky-600);font-size:11px;margin-right:6px">${esc(reqNo(r))}</span>${esc(r.purpose||'Untitled')}${big?'<span class="flag">High value</span>':''}${old?`<span class="flag age">${ageDays(r)}d old</span>`:''}</div><div class="attn-m">${esc(r.raised_by_name||r.raised_by_role||'')} · ${esc(r.vendor_name||'No vendor')} · <span class="req-status ${r.status}">${esc(REQ_STATUS[r.status]?.label||r.status)}</span></div></div><strong style="color:var(--sky-700)">${nairaFull(reqTotal(r))}</strong></div>`).join(''):'<p style="color:var(--muted);font-size:12px">Nothing waiting. All requisitions are cleared.</p>'}
+    </div></div>
+    <div class="panel-card"><div class="panel-inner">
+      <div class="panel-ttl">Requisition pipeline</div>
+      ${pipe('pending','Pending',pend)}${pipe('queried','Queried',qry)}${pipe('approved','Approved',appr)}${pipe('paid','Paid',paid)}${pipe('rejected','Rejected',rej)}
+    </div></div>
+  </div>
+
+  <div class="dash-grid2">
+    <div class="panel-card"><div class="panel-inner">
+      <div class="panel-ttl">Revenue by property</div>
+      ${barRows(propRows)}
+    </div></div>
+    <div class="panel-card"><div class="panel-inner">
+      <div class="panel-ttl">Revenue · last 6 months</div>
+      ${barRows(months,'var(--sky-600)')}
+    </div></div>
+  </div>
+
+  <div class="dash-grid2">
+    <div class="panel-card"><div class="panel-inner">
+      <div class="panel-ttl">Recent requisition activity</div>
+      ${recent.length?recent.map(r=>`<div class="attn-item" onclick="openReqFromDash('${r.id}')"><div><div class="attn-t"><span style="color:var(--sky-600);font-size:11px;margin-right:6px">${esc(reqNo(r))}</span>${esc(r.purpose||'Untitled')}</div><div class="attn-m">${esc(r.raised_by_name||r.raised_by_role||'')} · ${new Date(r.updated_at||r.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</div></div><div style="text-align:right"><div style="font-weight:800;font-size:13px">${nairaFull(reqTotal(r))}</div><span class="req-status ${r.status}">${esc(REQ_STATUS[r.status]?.label||r.status)}</span></div></div>`).join(''):'<p style="color:var(--muted);font-size:12px">No requisitions yet.</p>'}
+    </div></div>
+    <div class="panel-card"><div class="panel-inner">
+      <div class="panel-ttl">Next events</div>
+      ${upc.slice(0,6).map(e=>{const h=HM[e.hallId];const pr=PM[h?.propId];return`<div class="upc-item" onclick="switchPage('events');openDetail('${e.id}')"><div class="upc-dot" style="background:${h?.color}"></div><div><div class="upc-name">${esc(e.name)}</div><div class="upc-meta">${new Date(e.date+'T00:00:00').toLocaleDateString('en-NG',{day:'numeric',month:'short'})} · ${esc(h?.name)} · ${esc(pr?.city||'')} · ${fmtMoney(e.amount)}</div></div></div>`}).join('')||'<p style="color:var(--muted);font-size:12px">No upcoming events.</p>'}
+    </div></div>
+  </div>`;
 }
 
 // ── PROPERTY MAP (Admin / MD dashboard) ──────────────────────
@@ -1411,6 +1637,8 @@ function showPropertyDetail(propId){
   await initSupabase();
   await fetchReqs();
   renderStats();renderCal();renderUpcoming();renderLegend();
+  if(S.page==='dashboard')renderDashboard();
+  if(S.page==='requisitions')renderReqPage();
 })();
 </script>
 </body>
