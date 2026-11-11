@@ -868,16 +868,23 @@ async function initSupabase(){
   }
 }
 
+// Returns {data} on success or {error} on failure, so the caller can tell the user.
 async function saveEvtToDB(evt){
-  if(!sb||!currentUser)return;
+  if(!sb||!currentUser)return{error:{message:'You are not signed in.'}};
   try{
-    await sb.from('events').insert({name:evt.name,client:evt.client,date:evt.date,hall_id:evt.hallId,guests:evt.guests||null,amount:evt.amount,notes:evt.notes||'',booked_by:currentUser?.id});
-  }catch(e){}
+    const res=await sb.from('events').insert({name:evt.name,client:evt.client,date:evt.date,hall_id:evt.hallId,guests:evt.guests||null,amount:evt.amount,notes:evt.notes||'',booked_by:currentUser?.id}).select().single();
+    return res.error?{error:res.error}:{data:res.data};
+  }catch(e){return{error:{message:e.message||'Network error'}}}
 }
 
 async function deleteEvtFromDB(id){
-  if(!sb||!currentUser)return;
-  try{await sb.from('events').delete().eq('id',id);}catch(e){}
+  if(!sb||!currentUser)return{error:{message:'You are not signed in.'}};
+  try{
+    const res=await sb.from('events').delete().eq('id',id).select();
+    if(res.error)return{error:res.error};
+    if(!res.data||!res.data.length)return{error:{message:'Only the person who made this booking can delete it.'}};
+    return{};
+  }catch(e){return{error:{message:e.message||'Network error'}}}
 }
 
 async function logout(){
@@ -1166,7 +1173,8 @@ async function confirmDelete(id){
   const ev=S.events.find(x=>x.id===id);
   const ok=await askDialog({title:'Delete booking',message:(ev?'"'+ev.name+'" will be':'This booking will be')+' permanently deleted. This cannot be undone.',confirmLabel:'Delete',danger:true});
   if(!ok)return;
-  await deleteEvtFromDB(id);
+  const del=await deleteEvtFromDB(id);
+  if(del.error){showToast('Not deleted: '+del.error.message,'err');return;}
   S.events=S.events.filter(e=>e.id!==id);
   saveEvts(S.events);
   closeModal('detailModal');
@@ -1194,8 +1202,15 @@ async function submitBooking(){
   if(!name||!client||!date||!hallId||!amount){showToast('Please fill in all required fields.','warn');return}
   if(hasConflict(date,hallId)){showToast(`${HM[hallId].name} is already booked for this date.`,'warn');return}
   const ev={id:'e'+Date.now(),name,client,date,hallId,guests,amount,notes};
+  const saved=await saveEvtToDB(ev);
+  if(saved.error){
+    // Do not pretend it worked: nothing was stored, so nothing is added to the calendar.
+    console.error('Booking not saved:',saved.error);
+    showToast('Booking not saved: '+(saved.error.message||'unknown error'),'err');
+    return;
+  }
+  ev.id=saved.data.id;   // use the database id so the booking can be deleted later
   S.events.push(ev);saveEvts(S.events);
-  await saveEvtToDB(ev);
   closeModal('bookingModal');
   const d=new Date(date+'T00:00:00');
   if(d.getFullYear()===S.year&&d.getMonth()===S.month)renderCal();
