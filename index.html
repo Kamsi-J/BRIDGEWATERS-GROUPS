@@ -205,20 +205,10 @@ i[class*="ph-"]{display:inline-block;line-height:1;vertical-align:-.14em}
       <button class="modal-close" onclick="closeForgot()" aria-label="Close"><i class="ph-light ph-x"></i></button>
     </div>
     <div class="modal-body">
-      <div class="modal-desc">Enter your work email and we will send you a link to reset your password.</div>
-      <div class="err-box" id="forgotErr" style="margin-bottom:14px"><i class="ph-light ph-warning-circle"></i><span id="forgotErrMsg"></span></div>
-      <div class="success-box" id="forgotSuccess" style="margin-bottom:14px"><i class="ph-light ph-check-circle"></i><span id="forgotSuccessMsg">Reset link sent. Check your email.</span></div>
-      <div class="form-grp" style="margin-bottom:0">
-        <label class="form-lbl" for="forgotEmail">Work email</label>
-        <div class="input-wrap">
-          <i class="input-icon ph-light ph-envelope-simple"></i>
-          <input class="form-input" type="email" id="forgotEmail" placeholder="you@bridgewaters.com">
-        </div>
-      </div>
+      <div class="modal-desc" style="margin-bottom:0">Your administrator can set a new password for you. Contact them, then log in with the new password. You can change it again from <b>Change password</b> in the portal.</div>
     </div>
     <div class="modal-footer">
-      <button class="btn-ghost" onclick="closeForgot()">Cancel</button>
-      <button class="btn-sm-primary" id="resetBtn" onclick="sendReset()">Send reset link</button>
+      <button class="btn-sm-primary" onclick="closeForgot()">Got it</button>
     </div>
   </div>
 </div>
@@ -303,32 +293,11 @@ function togglePassword(){
 
 function openForgot(){
   document.getElementById('forgotModal').classList.add('open');
-  document.getElementById('forgotEmail').value=document.getElementById('email').value;
-  document.getElementById('forgotErr').classList.remove('show');
-  document.getElementById('forgotSuccess').classList.remove('show');
-  document.getElementById('resetBtn').disabled=false;
-  document.getElementById('resetBtn').textContent='Send reset link';
 }
 function closeForgot(){document.getElementById('forgotModal').classList.remove('open')}
 document.getElementById('forgotModal').addEventListener('click',e=>{if(e.target===document.getElementById('forgotModal'))closeForgot()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeForgot()});
 
-async function sendReset(){
-  const btn=document.getElementById('resetBtn');
-  const fail=m=>{document.getElementById('forgotErrMsg').textContent=m;document.getElementById('forgotErr').classList.add('show');btn.disabled=false;btn.textContent='Send reset link'};
-  const email=document.getElementById('forgotEmail').value.trim();
-  if(!email){fail('Please enter your email address.');return}
-  btn.disabled=true;btn.textContent='Sending';
-  document.getElementById('forgotErr').classList.remove('show');
-  if(!sb){fail('Cannot connect to authentication service.');return}
-  try{
-    const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.href});
-    if(error){fail(error.message||'Failed to send reset email.');return}
-    document.getElementById('forgotSuccess').classList.add('show');
-    btn.textContent='Sent';
-    setTimeout(closeForgot,2500);
-  }catch(e){fail('An unexpected error occurred.')}
-}
 </script>
 </body>
 </html>
