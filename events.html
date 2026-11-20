@@ -584,6 +584,10 @@ button{font-family:inherit}
       <div class="nav-icon"><i class="ph-light ph-device-mobile"></i></div>
       <div class="nav-txt"><span>Approved phones</span><span class="nav-count" id="devNavCount"></span></div>
     </div>
+    <div class="nav-item" id="navStaff" style="display:none">
+      <div class="nav-icon"><i class="ph-light ph-users-three"></i></div>
+      <div class="nav-txt"><span>HR and staff</span></div>
+    </div>
     <div class="nav-item" id="navInstall" style="display:none" onclick="installApp();closeMobSidebar()">
       <div class="nav-icon"><i class="ph-light ph-download-simple"></i></div>
       <div class="nav-txt"><span>Install the app</span></div>
@@ -596,10 +600,6 @@ button{font-family:inherit}
     <div class="nav-item dimmed">
       <div class="nav-icon"><i class="ph-light ph-chart-line-up"></i></div>
       <div class="nav-txt"><span>Reports</span></div>
-    </div>
-    <div class="nav-item dimmed" id="navStaff">
-      <div class="nav-icon"><i class="ph-light ph-users-three"></i></div>
-      <div class="nav-txt"><span>HR and staff</span></div>
     </div>
   </nav>
   <div class="sb-footer">
@@ -1204,13 +1204,11 @@ function updateNavForRole(role){
   const navStaff=document.getElementById('navStaff');
   if(!navStaff)return;
   if(role==='admin'){
-    navStaff.classList.remove('dimmed');
-    navStaff.style.pointerEvents='';
-    navStaff.style.opacity='';
+    navStaff.style.display='';
     navStaff.setAttribute('data-page','staff');
     navStaff.onclick=function(){switchPage('staff');closeMobSidebar();};
   }else{
-    navStaff.classList.add('dimmed');
+    navStaff.style.display='none';
     navStaff.removeAttribute('data-page');
     navStaff.onclick=null;
   }
