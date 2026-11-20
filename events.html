@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bridge Waters</title>
 <link rel="icon" type="image/png" href="assets/logo.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0b1823">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Bridge Waters">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet">
@@ -278,11 +285,65 @@ button{font-family:inherit}
 .staff-page-hdr{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:16px}
 .staff-page-hdr .page-title{font-size:34px}
 .staff-grid{display:flex;flex-direction:column;border-top:1px solid var(--ink)}
-.staff-row{display:grid;grid-template-columns:48px minmax(0,1.3fr) minmax(0,1fr) minmax(0,1.4fr);gap:20px;align-items:center;padding:18px 6px;border-bottom:1px solid var(--line)}
+.staff-row{display:grid;grid-template-columns:48px minmax(0,1.3fr) minmax(0,1fr) minmax(0,1.4fr) auto;gap:20px;align-items:center;padding:18px 6px;border-bottom:1px solid var(--line)}
 .staff-avatar{width:40px;height:40px;border-radius:var(--r);border:1px solid var(--line-2);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:17px;font-weight:600;color:var(--ink-2)}
 .staff-name{font-size:15.5px;font-weight:500;color:var(--ink)}
 .staff-role{font-size:13px;color:var(--muted);margin-top:2px}
 .staff-prop,.staff-email{font-size:14px;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.staff-act .btn-ghost{height:34px;padding:0 12px;font-size:13px}
+@media(max-width:800px){.staff-row{grid-template-columns:48px minmax(0,1fr) auto;row-gap:6px}.staff-prop,.staff-email{grid-column:2 / 4}}
+
+/* ── PASSWORD + INSTALL ────────────────────────────────────── */
+.btn-sb{display:flex;align-items:center;gap:10px;background:transparent;border:none;cursor:pointer;font-size:13px;color:#a9b9c5;padding:10px 12px;border-radius:var(--r);width:100%;margin-top:6px;transition:color .2s,background .2s;font-family:inherit}
+.btn-sb:hover{background:rgba(255,255,255,.045);color:#fff}
+.btn-sb i{font-size:18px}
+.pw-note{font-size:12.5px;color:var(--muted);line-height:1.6;margin-top:6px}
+.inst-bar{position:fixed;left:50%;bottom:18px;transform:translate(-50%,24px);z-index:90;width:calc(100% - 32px);max-width:460px;background:var(--surface);color:var(--ink);border:1px solid var(--line-2);border-radius:var(--r);box-shadow:var(--shadow-sheet);padding:14px 14px 14px 16px;display:flex;align-items:center;gap:12px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s}
+.inst-bar.show{opacity:1;pointer-events:all;transform:translate(-50%,0)}
+.inst-bar img{width:40px;height:40px;border-radius:9px;flex-shrink:0}
+.inst-bar .inst-t{flex:1;min-width:0;font-size:13px;line-height:1.45;color:var(--ink-2)}
+.inst-bar .inst-t b{display:block;font-size:14px;color:var(--ink);font-weight:600}
+.inst-bar .btn-primary{height:36px;padding:0 14px;font-size:13px}
+.inst-x{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:18px;padding:4px;line-height:1}
+.inst-steps{list-style:none;counter-reset:s;margin:6px 0 0;padding:0}
+.inst-steps li{counter-increment:s;display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line);font-size:14.5px;line-height:1.5;color:var(--ink-2)}
+.inst-steps li::before{content:counter(s);flex-shrink:0;width:26px;height:26px;border-radius:50%;border:1px solid var(--line-2);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--ink)}
+.inst-steps li i{font-size:18px;vertical-align:-3px;color:var(--ink)}
+.inst-steps b{color:var(--ink);font-weight:600}
+
+/* ── DEVICES (approved phones) ─────────────────────────────── */
+.lock-bar{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:18px 20px;border:1px solid var(--line);border-left:3px solid var(--line-2);background:var(--surface);border-radius:var(--r);margin-bottom:34px}
+.lock-bar.on{border-left-color:var(--ok)}
+.lock-bar.off{border-left-color:var(--warn)}
+.lock-bar .lb-t{font-size:15.5px;font-weight:500;color:var(--ink)}
+.lock-bar .lb-s{font-size:13.5px;color:var(--muted);margin-top:3px;max-width:560px;line-height:1.55}
+.dev-sec{margin-bottom:36px}
+.dev-sec h3{font-family:var(--serif);font-size:26px;font-weight:500;color:var(--ink);line-height:1.1;margin-bottom:4px;display:flex;align-items:center;gap:10px}
+.dev-sec .dev-sub{font-size:13.5px;color:var(--muted);margin-bottom:12px}
+.dev-list{border-top:1px solid var(--ink)}
+.dev-row{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1.5fr) auto;gap:20px;align-items:center;padding:16px 6px;border-bottom:1px solid var(--line)}
+.dev-who{font-size:15.5px;font-weight:500;color:var(--ink)}
+.dev-meta{font-size:13px;color:var(--muted);margin-top:2px}
+.dev-phone{font-size:14px;color:var(--ink-2);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.dev-code{font-family:var(--mono);font-size:12.5px;letter-spacing:.08em;padding:2px 7px;border:1px solid var(--line-2);border-radius:var(--r);color:var(--ink-2)}
+.dev-acts{display:flex;gap:8px;justify-content:flex-end}
+.dev-acts button{height:36px;padding:0 14px}
+.dev-empty{padding:18px 6px;font-size:14px;color:var(--muted);border-bottom:1px solid var(--line)}
+.dev-warn{font-size:12.5px;color:var(--warn);background:var(--warn-bg);padding:3px 8px;border-radius:var(--r)}
+@media(max-width:700px){.dev-row{grid-template-columns:1fr;gap:8px}.dev-acts{justify-content:flex-start}}
+
+/* Shown to staff on a phone that hasn't been approved */
+.gate{position:fixed;inset:0;z-index:300;background:var(--deep);display:none;align-items:center;justify-content:center;padding:28px;overflow:auto}
+.gate.show{display:flex}
+.gate-box{max-width:440px;width:100%;color:#d6e0e7}
+.gate-box img{width:190px;max-width:60%;display:block;margin-bottom:38px}
+.gate-box h2{font-family:var(--serif);font-size:38px;font-weight:500;color:#fff;line-height:1.05;margin-bottom:14px}
+.gate-box p{font-size:15.5px;line-height:1.65;color:rgba(214,224,231,.82);margin-bottom:16px}
+.gate-code{font-family:var(--mono);font-size:30px;letter-spacing:.18em;color:#fff;border:1px solid rgba(255,255,255,.22);border-radius:var(--r);padding:14px 20px;display:inline-block;margin:4px 0 22px}
+.gate-acts{display:flex;gap:10px;flex-wrap:wrap}
+.gate-acts button{height:44px;padding:0 20px;border-radius:var(--r);font-family:var(--sans);font-size:14.5px;font-weight:500;cursor:pointer;border:1px solid rgba(255,255,255,.28);background:transparent;color:#fff}
+.gate-acts button.pri{background:var(--azure);border-color:var(--azure);color:#06141d}
+.gate-acts button:disabled{opacity:.6;cursor:wait}
 
 /* ── PROPERTY MAP ──────────────────────────────────────────── */
 .map-layout{display:grid;grid-template-columns:1fr 310px;gap:40px;align-items:start}
@@ -519,6 +580,14 @@ button{font-family:inherit}
       <div class="nav-icon"><i class="ph-light ph-file-text"></i></div>
       <div class="nav-txt"><span>Requisitions</span><span class="nav-count" id="reqNavCount"></span></div>
     </div>
+    <div class="nav-item" id="navDevices" data-page="devices" style="display:none" onclick="switchPage('devices');closeMobSidebar()">
+      <div class="nav-icon"><i class="ph-light ph-device-mobile"></i></div>
+      <div class="nav-txt"><span>Approved phones</span><span class="nav-count" id="devNavCount"></span></div>
+    </div>
+    <div class="nav-item" id="navInstall" style="display:none" onclick="installApp();closeMobSidebar()">
+      <div class="nav-icon"><i class="ph-light ph-download-simple"></i></div>
+      <div class="nav-txt"><span>Install the app</span></div>
+    </div>
     <div class="nav-sec-lbl">Coming soon</div>
     <div class="nav-item dimmed">
       <div class="nav-icon"><i class="ph-light ph-desktop"></i></div>
@@ -541,6 +610,7 @@ button{font-family:inherit}
         <div class="role-pill" id="uRolePill">Banqueting Manager</div>
       </div>
     </div>
+    <button class="btn-sb" id="pwBtn" onclick="openChangePw()"><i class="ph-light ph-key"></i><span>Change password</span></button>
     <button class="btn-logout" id="logoutBtn" onclick="logout()"><i class="ph-light ph-sign-out"></i><span>Sign out</span></button>
   </div>
 </aside>
@@ -632,6 +702,13 @@ button{font-family:inherit}
       <button class="btn-primary" onclick="openAddStaff()"><i class="ph-light ph-plus"></i> Add staff member</button>
     </div>
     <div class="staff-grid" id="staffGrid"></div>
+  </div>
+
+  <div class="content" id="pageDevices" style="display:none">
+    <div class="staff-page-hdr">
+      <div style="font-size:15px;color:var(--muted);max-width:620px;line-height:1.6">Each staff member can sign in from one approved phone. Anyone signing in from a different phone is blocked until you approve it here.</div>
+    </div>
+    <div id="devBody"></div>
   </div>
 </main>
 </div>
@@ -755,13 +832,63 @@ button{font-family:inherit}
         </div>
       </div>
       <div class="form-grp"><label class="form-lbl">Temporary password *</label><input class="form-input" id="st-pass" type="password" placeholder="Minimum 8 characters" autocomplete="new-password"></div>
-      <div style="font-size:11px;color:var(--muted);margin-top:8px;padding:9px 11px;background:var(--sky-50);border-radius:8px;border:1px solid var(--sky-100);line-height:1.6">The staff member will receive a confirmation email to activate their account. Ask them to change their password after first login.</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:8px;padding:9px 11px;background:var(--sky-50);border-radius:8px;border:1px solid var(--sky-100);line-height:1.6">The account is active immediately, no email confirmation needed. Share the temporary password with the staff member and ask them to change it after first login.</div>
     </div>
     <div class="modal-footer">
       <button class="btn-ghost" onclick="closeModal('staffModal')">Cancel</button>
       <button class="btn-primary" id="staffSubmitBtn" onclick="submitNewStaff()">Create account</button>
     </div>
   </div>
+</div>
+
+<!-- Change own password -->
+<div class="modal-overlay" id="pwModal">
+  <div class="modal" style="max-width:440px">
+    <div class="modal-hdr"><span class="modal-ttl">Change password</span><button class="modal-close" onclick="closeModal('pwModal')" aria-label="Close"><i class="ph-light ph-x"></i></button></div>
+    <div class="modal-body">
+      <div class="form-grp"><label class="form-lbl">New password *</label><input class="form-input" id="pw-new" type="password" placeholder="Minimum 8 characters" autocomplete="new-password"></div>
+      <div class="form-grp"><label class="form-lbl">Confirm new password *</label><input class="form-input" id="pw-new2" type="password" autocomplete="new-password"></div>
+      <p class="pw-note">Forgot your password? Ask your administrator to reset it for you.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('pwModal')">Cancel</button>
+      <button class="btn-primary" id="pwSubmitBtn" onclick="submitChangePw()">Save password</button>
+    </div>
+  </div>
+</div>
+
+<!-- Admin resets someone else's password -->
+<div class="modal-overlay" id="resetPwModal">
+  <div class="modal" style="max-width:440px">
+    <div class="modal-hdr"><span class="modal-ttl">Reset password</span><button class="modal-close" onclick="closeModal('resetPwModal')" aria-label="Close"><i class="ph-light ph-x"></i></button></div>
+    <div class="modal-body">
+      <p class="pw-note" style="margin:0 0 14px">Set a new password for <b id="rp-who"></b>. Share it with them and ask them to change it after they log in.</p>
+      <div class="form-grp"><label class="form-lbl">New password *</label><input class="form-input" id="rp-pass" type="text" placeholder="Minimum 8 characters" autocomplete="off"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('resetPwModal')">Cancel</button>
+      <button class="btn-primary" id="rpSubmitBtn" onclick="submitResetPw()">Reset password</button>
+    </div>
+  </div>
+</div>
+
+<!-- Install guide (iPhone steps, or manual steps when the browser can't prompt) -->
+<div class="modal-overlay" id="installModal">
+  <div class="modal" style="max-width:460px">
+    <div class="modal-hdr"><span class="modal-ttl" id="instTitle">Add to your Home Screen</span><button class="modal-close" onclick="closeModal('installModal')" aria-label="Close"><i class="ph-light ph-x"></i></button></div>
+    <div class="modal-body">
+      <ol class="inst-steps" id="instSteps"></ol>
+    </div>
+    <div class="modal-footer"><button class="btn-primary" onclick="closeModal('installModal')">Got it</button></div>
+  </div>
+</div>
+
+<!-- Install nudge -->
+<div class="inst-bar" id="instBar">
+  <img src="assets/icon-192.png" alt="">
+  <div class="inst-t"><b>Install the Bridge Waters app</b>Open it from your home screen, like any other app.</div>
+  <button class="btn-primary" onclick="installApp()">Install</button>
+  <button class="inst-x" onclick="dismissInstallBar()" aria-label="Not now"><i class="ph-light ph-x"></i></button>
 </div>
 
 <div class="sb-overlay" id="sbOverlay" onclick="toggleMobSidebar()"></div>
@@ -777,6 +904,23 @@ button{font-family:inherit}
   </div>
 </div>
 
+<!-- Phone approval gate (shown to staff on an unapproved phone) -->
+<div class="gate" id="gate" role="alertdialog" aria-labelledby="gateTitle">
+  <div class="gate-box">
+    <img src="assets/logo-white.png" alt="Bridge Waters">
+    <h2 id="gateTitle"></h2>
+    <p id="gateMsg"></p>
+    <div id="gateCodeWrap" style="display:none">
+      <p style="margin-bottom:6px">Give this code to your administrator:</p>
+      <div class="gate-code" id="gateCode"></div>
+    </div>
+    <div class="gate-acts">
+      <button class="pri" id="gateRetry" onclick="recheckDevice()">Check again</button>
+      <button onclick="logout()">Sign out</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast" role="status"><i id="toastIcon" class="ph-light ph-check-circle"></i><span id="toastMsg">Done</span></div>
 
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
@@ -789,8 +933,43 @@ const SB_ANON = 'sb_publishable_zQdEhR6vwnrFZXykrV8D3A_3w4UTh-Z';
 // Update this to your deployed portal URL after deployment
 const PORTAL_URL = './index.html';
 
+// ── THIS PHONE'S SECRET ID ────────────────────────────────────
+// Made once per phone/browser and sent with every request. The database only
+// hands out business data to a phone an Admin has approved for that person.
+function getDeviceToken(){
+  try{
+    let t=localStorage.getItem('bw_device_id');
+    if(!t||t.length<32){
+      const a=new Uint8Array(24);crypto.getRandomValues(a);
+      t=Array.from(a,b=>b.toString(16).padStart(2,'0')).join('');
+      localStorage.setItem('bw_device_id',t);
+    }
+    return t;
+  }catch{return '';}
+}
+async function deviceCode(){
+  try{
+    const h=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(getDeviceToken()));
+    return Array.from(new Uint8Array(h).slice(0,2),b=>b.toString(16).padStart(2,'0')).join('').toUpperCase();
+  }catch{return '';}
+}
+function guessPhoneLabel(){
+  const ua=navigator.userAgent||'';
+  let n='Computer';
+  if(/iPhone/.test(ua))n='iPhone';
+  else if(/iPad/.test(ua))n='iPad';
+  else if(/Android/.test(ua)){const m=ua.match(/Android[^;]*;\s*([^;)]+?)(?:\sBuild|\)|;)/);n=m?m[1].trim():'Android phone';}
+  else if(/Windows/.test(ua))n='Windows computer';
+  else if(/Macintosh/.test(ua))n='Mac';
+  const app=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone;
+  return n+(app?' (installed app)':' (browser)');
+}
+
 let sb, currentUser = null;
-try { sb = window.supabase?.createClient(SB_URL, SB_ANON); } catch(e) {}
+try { sb = window.supabase?.createClient(SB_URL, SB_ANON, {global:{headers:{'x-device-id':getDeviceToken()}}}); } catch(e) {}
+
+// PWA: lets the portal be installed on a phone's home screen
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
 
 // ── DATA ──────────────────────────────────────────────────────
 // Properties (locations) under Bridge Waters Groups
@@ -828,12 +1007,48 @@ function saveEvts(e){try{localStorage.setItem(KEY,JSON.stringify(e))}catch{}}
 let S={events:loadEvts(),role:'banqueting_manager',year:2026,month:10,page:'events',propertyId:null};
 
 // ── SUPABASE FUNCTIONS ────────────────────────────────────────
+// ── APPROVED-PHONE GATE ───────────────────────────────────────
+// Returns true when this phone may continue. The database enforces the real
+// lock; this just gives staff a clear screen instead of empty pages.
+async function runDeviceGate(){
+  try{
+    const{data,error}=await sb.rpc('check_device',{p_label:guessPhoneLabel(),p_ua:navigator.userAgent});
+    if(error||!data){console.warn('Phone check unavailable:',error?.message);return true;}
+    S.deviceStatus=data.status;
+    if(data.status==='exempt'||data.status==='approved'||!data.lock)return true;
+    await showGate(data.status);
+    return false;
+  }catch(e){console.warn('Phone check failed:',e);return true;}
+}
+async function showGate(status){
+  try{localStorage.removeItem(KEY);localStorage.removeItem(REQ_KEY);}catch{}
+  const t=document.getElementById('gateTitle'),m=document.getElementById('gateMsg');
+  const wrap=document.getElementById('gateCodeWrap');
+  if(status==='pending'){
+    t.textContent='Waiting for approval';
+    m.textContent='This phone has not been approved for your account yet. Your administrator has been notified and will approve it once they confirm it is yours.';
+    const c=await deviceCode();
+    document.getElementById('gateCode').textContent=c;
+    wrap.style.display=c?'':'none';
+  }else{
+    t.textContent='This phone is not allowed';
+    m.textContent='This phone is not approved for your account. Please contact your administrator if you think this is a mistake.';
+    wrap.style.display='none';
+  }
+  document.getElementById('gate').classList.add('show');
+}
+function recheckDevice(){
+  const b=document.getElementById('gateRetry');b.disabled=true;b.textContent='Checking...';
+  setTimeout(()=>location.reload(),300);
+}
+
 async function initSupabase(){
-  if(!sb){window.location.href=PORTAL_URL;return;}
+  if(!sb){window.location.href=PORTAL_URL;return false;}
   try{
     const{data:{session}}=await sb.auth.getSession();
     if(session){
       currentUser=session.user;
+      if(!(await runDeviceGate()))return false;
       const{data:profile}=await sb.from('profiles').select('*').eq('id',session.user.id).single();
       if(profile){
         S.role=profile.role;
@@ -843,6 +1058,7 @@ async function initSupabase(){
         document.getElementById('uAvatar').textContent=ROLES[profile.role].initials;
         updateLocPill();
         updateNavForRole(S.role);
+        if(S.role==='admin'||S.role==='md')fetchDevices();
       }
       document.getElementById('logoutBtn').style.display='flex';
       document.getElementById('calGrid').dataset.canbooking=ROLES[S.role]?.canBook?'1':'';
@@ -855,17 +1071,21 @@ async function initSupabase(){
         setTimeout(()=>switchPage('dashboard'),0);
       }
       // Load events from DB; fall back to localStorage cache on network error
-      const{data:evts}=await sb.from('events').select('*').order('date');
-      if(evts?.length){
+      // Always trust the database when it answers (even with zero rows), so an emptied
+      // database also empties the phone's old cached copy.
+      const{data:evts,error:evErr}=await sb.from('events').select('*').order('date');
+      if(!evErr&&evts){
         S.events=evts.map(e=>({id:e.id,name:e.name,client:e.client,date:e.date,hallId:e.hall_id,guests:e.guests,amount:parseFloat(e.amount),notes:e.notes||''}));
         saveEvts(S.events);
       }
     }else{
       window.location.href=PORTAL_URL;
+      return false;
     }
   }catch(e){
     console.error('Auth error:',e);
   }
+  return true;
 }
 
 // Returns {data} on success or {error} on failure, so the caller can tell the user.
@@ -888,6 +1108,7 @@ async function deleteEvtFromDB(id){
 }
 
 async function logout(){
+  try{localStorage.removeItem(KEY);localStorage.removeItem(REQ_KEY);}catch{}
   if(sb)await sb.auth.signOut();
   window.location.href=PORTAL_URL;
 }
@@ -936,9 +1157,10 @@ function switchPage(p){
   document.getElementById('pageEvents').style.display=p==='events'?'':'none';
   document.getElementById('pageReq').style.display=p==='requisitions'?'':'none';
   document.getElementById('pageStaff').style.display=p==='staff'?'':'none';
+  document.getElementById('pageDevices').style.display=p==='devices'?'':'none';
   document.getElementById('monthNav').style.display=p==='events'?'':'none';
   document.getElementById('calGrid').dataset.canbooking=ROLES[S.role].canBook&&p==='events'?'1':'';
-  const titles={dashboard:'Executive overview',events:'Event booking',requisitions:'Requisitions',staff:'HR and staff'};
+  const titles={dashboard:'Executive overview',events:'Event booking',requisitions:'Requisitions',staff:'HR and staff',devices:'Approved phones'};
   if(p==='dashboard')renderDashboard();
   document.getElementById('pageTitle').textContent=titles[p]||'Event Booking';
   if(p==='events'){showMapSection(S.role==='admin'||S.role==='md');}
@@ -948,6 +1170,7 @@ function switchPage(p){
     renderReqPage();
   }
   if(p==='staff')renderStaffPage();
+  if(p==='devices')loadDevicesPage();
 }
 
 function changeRole(r){
@@ -976,6 +1199,8 @@ function updateLocPill(){
 function updateNavForRole(role){
   const navDash=document.getElementById('navDash');
   if(navDash)navDash.style.display=role==='md'?'':'none';
+  const navDev=document.getElementById('navDevices');
+  if(navDev)navDev.style.display=(role==='admin'||role==='md')?'':'none';
   const navStaff=document.getElementById('navStaff');
   if(!navStaff)return;
   if(role==='admin'){
@@ -1010,7 +1235,7 @@ function renderStaffPage(){
     const role=ROLES[p.role]||{label:p.role||'Unknown',initials:'??'};
     const prop=p.property_id?PM[p.property_id]:null;
     const initials=(p.full_name||'').split(' ').filter(Boolean).map(w=>w[0]).join('').toUpperCase().slice(0,2)||role.initials;
-    return`<div class="staff-row"><div class="staff-avatar">${esc(initials)}</div><div><div class="staff-name">${esc(p.full_name||'Unnamed')}</div><div class="staff-role">${esc(role.label)}</div></div><div class="staff-prop">${prop?esc(prop.name+', '+prop.city):'All properties'}</div><div class="staff-email">${esc(p.email||'')}</div></div>`;
+    return`<div class="staff-row"><div class="staff-avatar">${esc(initials)}</div><div><div class="staff-name">${esc(p.full_name||'Unnamed')}</div><div class="staff-role">${esc(role.label)}</div></div><div class="staff-prop">${prop?esc(prop.name+', '+prop.city):'All properties'}</div><div class="staff-email">${esc(p.email||'')}</div><div class="staff-act"><button class="btn-ghost" onclick="openResetPw('${esc(p.id)}')"><i class="ph-light ph-key"></i>Reset password</button></div></div>`;
   }).join('');
 }
 
@@ -1034,7 +1259,9 @@ async function submitNewStaff(){
   const btn=document.getElementById('staffSubmitBtn');
   btn.disabled=true;btn.textContent='Creating...';
   try{
-    const{data,error}=await sb.auth.signUp({email,password:pass,options:{data:{full_name:name,role}}});
+    // Separate non-persisting client so creating a staff account never replaces the current admin session
+    const tmp=window.supabase.createClient(SB_URL,SB_ANON,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false,storageKey:'sb-staff-create'}});
+    const{data,error}=await tmp.auth.signUp({email,password:pass,options:{data:{full_name:name,role}}});
     if(error)throw error;
     const uid=data?.user?.id;
     if(uid){
@@ -1044,13 +1271,109 @@ async function submitNewStaff(){
     await fetchStaff();
     renderStaffPage();
     closeModal('staffModal');
-    showToast(name+' added. A confirmation email has been sent','ok');
+    showToast(name+' added. They can log in now with the temporary password','ok');
   }catch(e){
     showToast('Error: '+(e.message||'Could not create account'),'err');
   }finally{
     btn.disabled=false;btn.textContent='Create Account';
   }
 }
+
+// ── PASSWORDS ─────────────────────────────────────────────────
+function openChangePw(){
+  document.getElementById('pw-new').value='';
+  document.getElementById('pw-new2').value='';
+  openModal('pwModal');
+}
+async function submitChangePw(){
+  const a=document.getElementById('pw-new').value,b=document.getElementById('pw-new2').value;
+  if(a.length<8){showToast('Password must be at least 8 characters.','warn');return;}
+  if(a!==b){showToast('The two passwords do not match.','warn');return;}
+  const btn=document.getElementById('pwSubmitBtn');btn.disabled=true;btn.textContent='Saving...';
+  try{
+    const{error}=await sb.auth.updateUser({password:a});
+    if(error)throw error;
+    closeModal('pwModal');
+    showToast('Password changed','ok');
+  }catch(e){showToast('Error: '+(e.message||'Could not change password'),'err');}
+  finally{btn.disabled=false;btn.textContent='Save password';}
+}
+
+let resetTarget=null;
+function openResetPw(id){
+  const p=staffList.find(x=>x.id===id);if(!p)return;
+  resetTarget=p;
+  document.getElementById('rp-who').textContent=(p.full_name||'this person')+(p.email?' ('+p.email+')':'');
+  document.getElementById('rp-pass').value='';
+  openModal('resetPwModal');
+}
+async function submitResetPw(){
+  const pass=document.getElementById('rp-pass').value;
+  if(!resetTarget)return;
+  if(pass.length<8){showToast('Password must be at least 8 characters.','warn');return;}
+  const btn=document.getElementById('rpSubmitBtn');btn.disabled=true;btn.textContent='Resetting...';
+  try{
+    const{error}=await sb.rpc('admin_set_password',{p_user:resetTarget.id,p_password:pass});
+    if(error)throw error;
+    closeModal('resetPwModal');
+    showToast('Password reset for '+(resetTarget.full_name||'staff member')+'. Share the new password with them.','ok');
+  }catch(e){showToast('Error: '+(e.message||'Could not reset password'),'err');}
+  finally{btn.disabled=false;btn.textContent='Reset password';}
+}
+
+// ── INSTALL THE APP (PWA) ─────────────────────────────────────
+let deferredInstall=null;
+const isStandalone=()=>window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+const isIOS=()=>/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+function lsGet(k){try{return localStorage.getItem(k)}catch{return null}}
+function lsSet(k,v){try{localStorage.setItem(k,v)}catch{}}
+function refreshInstallUI(){
+  if(isStandalone())lsSet('bw_installed','1');
+  const done=lsGet('bw_installed')==='1';
+  const nav=document.getElementById('navInstall'),bar=document.getElementById('instBar');
+  if(nav)nav.style.display=done?'none':'';
+  if(bar){
+    if(done||lsGet('bw_inst_dismissed')==='1')bar.classList.remove('show');
+    else setTimeout(()=>{if(lsGet('bw_installed')!=='1'&&lsGet('bw_inst_dismissed')!=='1')bar.classList.add('show')},1500);
+  }
+}
+function dismissInstallBar(){
+  lsSet('bw_inst_dismissed','1');
+  document.getElementById('instBar').classList.remove('show');
+}
+function showInstallSteps(kind){
+  const ttl=document.getElementById('instTitle'),ol=document.getElementById('instSteps');
+  if(kind==='ios'){
+    ttl.textContent='Add to your Home Screen';
+    ol.innerHTML='<li><span>Open this page in <b>Safari</b> (the blue compass icon). It will not install from other browsers.</span></li>'
+      +'<li><span>Tap the <b>Share</b> button <i class="ph-light ph-export"></i> at the bottom of the screen.</span></li>'
+      +'<li><span>Scroll down and tap <b>Add to Home Screen</b> <i class="ph-light ph-plus-square"></i>.</span></li>'
+      +'<li><span>Tap <b>Add</b> in the top corner. The Bridge Waters icon now appears on your Home Screen. Open it from there.</span></li>';
+  }else{
+    ttl.textContent='Install the app';
+    ol.innerHTML='<li><span>Open this page in <b>Google Chrome</b>.</span></li>'
+      +'<li><span>Tap the <b>menu</b> <i class="ph-light ph-dots-three-vertical"></i> at the top right.</span></li>'
+      +'<li><span>Tap <b>Install app</b> (or <b>Add to Home screen</b>), then confirm.</span></li>';
+  }
+  openModal('installModal');
+}
+async function installApp(){
+  if(deferredInstall){
+    const p=deferredInstall;deferredInstall=null;
+    p.prompt();
+    try{
+      const{outcome}=await p.userChoice;
+      if(outcome==='accepted'){lsSet('bw_installed','1');refreshInstallUI();}
+    }catch{}
+    document.getElementById('instBar').classList.remove('show');
+    return;
+  }
+  document.getElementById('instBar').classList.remove('show');
+  showInstallSteps(isIOS()?'ios':'manual');
+}
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;});
+window.addEventListener('appinstalled',()=>{lsSet('bw_installed','1');deferredInstall=null;refreshInstallUI();showToast('App installed. Open it from your home screen.','ok');});
+window.addEventListener('load',refreshInstallUI);
 
 function changeMonth(d){
   S.month+=d;
@@ -1245,6 +1568,7 @@ async function fetchReqs(){
     const{data,error}=await sb.from('requisitions').select('*').order('created_at',{ascending:false});
     if(error)throw error;
     reqs=data||[];
+    saveReqsLocal();
   }catch{reqs=loadReqsLocal();}
 }
 
@@ -1818,10 +2142,154 @@ function showPropertyDetail(propId){
 }
 function plural1(n,w){return n+' '+w+(n===1?'':'s')}
 
+// ── APPROVED PHONES (Admin / MD) ──────────────────────────────
+let devList=[],devLock=false,devError='';
+const devCode=d=>(d.token_hash||'').slice(0,4).toUpperCase();
+const devExempt=r=>r==='admin'||r==='md';
+
+async function fetchDevices(){
+  if(!sb)return;
+  try{
+    const[dv,st]=await Promise.all([
+      sb.from('devices').select('*').order('requested_at',{ascending:false}),
+      sb.from('app_settings').select('value').eq('key','device_lock').maybeSingle()
+    ]);
+    if(dv.error)throw dv.error;
+    devList=dv.data||[];
+    devLock=st.data?.value===true;
+    devError='';
+    if(!staffList.length)await fetchStaff();
+  }catch(e){
+    devError=e.message||'Could not load phones';
+  }
+  updateDevBadge();
+}
+function updateDevBadge(){
+  const el=document.getElementById('devNavCount');if(!el)return;
+  const n=devList.filter(d=>d.status==='pending').length;
+  el.textContent=n;el.classList.toggle('show',n>0);
+}
+async function loadDevicesPage(){
+  const body=document.getElementById('devBody');
+  if(!devList.length&&!devError)body.innerHTML='<p style="color:var(--muted);font-size:14px">Loading...</p>';
+  await fetchDevices();
+  renderDevices();
+}
+function devWho(uid){
+  const p=staffList.find(x=>x.id===uid);
+  return{name:p?.full_name||p?.email||'Unknown staff',role:ROLES[p?.role]?.label||''};
+}
+function devAgo(ts){
+  if(!ts)return 'never';
+  const m=Math.floor((Date.now()-new Date(ts).getTime())/60000);
+  if(m<2)return 'just now';
+  if(m<60)return m+' minutes ago';
+  const h=Math.floor(m/60);
+  if(h<24)return h+(h===1?' hour ago':' hours ago');
+  const d=Math.floor(h/24);
+  if(d<7)return d+(d===1?' day ago':' days ago');
+  return new Date(ts).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+}
+function renderDevices(){
+  const body=document.getElementById('devBody');if(!body)return;
+  if(devError){
+    body.innerHTML=`<div class="empty-req"><i class="ph-light ph-warning-circle"></i><div class="t">Phone approvals are not set up yet</div><p>Run <b>migration_device_binding.sql</b> once in the Supabase SQL Editor, then reload this page.</p></div>`;
+    return;
+  }
+  const pending=devList.filter(d=>d.status==='pending');
+  const approved=devList.filter(d=>d.status==='approved');
+  const removed=devList.filter(d=>d.status==='revoked');
+  const covered=new Set(approved.map(d=>d.user_id));
+  const needPhone=staffList.filter(p=>!devExempt(p.role)&&!covered.has(p.id));
+
+  const row=(d,acts,extra='')=>{
+    const w=devWho(d.user_id);
+    return`<div class="dev-row">
+      <div><div class="dev-who">${esc(w.name)}</div><div class="dev-meta">${esc(w.role)}</div></div>
+      <div><div class="dev-phone">${esc(d.label)} <span class="dev-code" title="Phone code">${esc(devCode(d))}</span></div>${extra}</div>
+      <div class="dev-acts">${acts}</div>
+    </div>`;
+  };
+
+  const lockBar=`<div class="lock-bar ${devLock?'on':'off'}">
+    <div><div class="lb-t">Phone lock is ${devLock?'ON':'OFF'}</div>
+    <div class="lb-s">${devLock
+      ?'Staff can only use the phone you approved for them. Anyone on another phone sees a waiting screen.'
+      :'Not enforced yet. Staff phones are being collected below. When the right phone is approved for each person, turn the lock on.'}</div></div>
+    <button class="${devLock?'btn-ghost':'btn-primary'}" onclick="toggleDevLock()">${devLock?'Turn lock off':'Turn lock on'}</button>
+  </div>`;
+
+  const pendHtml=pending.length?pending.map(d=>{
+    const had=approved.find(a=>a.user_id===d.user_id);
+    return row(d,
+      `<button class="btn-primary" onclick="devApprove('${d.id}')">Approve</button><button class="btn-ghost" onclick="devRemove('${d.id}',true)">Decline</button>`,
+      `<div class="dev-meta">Asked ${devAgo(d.requested_at)}</div>${had?`<div style="margin-top:6px"><span class="dev-warn">Already has a phone (${esc(had.label)}). Approving replaces it.</span></div>`:''}`
+    );
+  }).join(''):'<div class="dev-empty">No phones are waiting.</div>';
+
+  const apprHtml=approved.length?approved.map(d=>row(d,
+    `<button class="btn-ghost" onclick="devRemove('${d.id}')">Remove</button>`,
+    `<div class="dev-meta">Last used ${devAgo(d.last_seen_at)}</div>`
+  )).join(''):'<div class="dev-empty">No phones approved yet.</div>';
+
+  const needHtml=needPhone.length?needPhone.map(p=>`<div class="dev-row">
+      <div><div class="dev-who">${esc(p.full_name||p.email||'Unnamed')}</div><div class="dev-meta">${esc(ROLES[p.role]?.label||'')}</div></div>
+      <div class="dev-meta">No approved phone</div><div></div></div>`).join(''):'<div class="dev-empty">Everyone has an approved phone.</div>';
+
+  const remHtml=removed.length?`<details class="dev-sec" style="margin-bottom:0"><summary style="cursor:pointer;font-size:14px;color:var(--muted);padding:6px 0">Removed or declined phones (${removed.length})</summary><div class="dev-list" style="margin-top:10px">${removed.map(d=>row(d,
+    `<button class="btn-ghost" onclick="devApprove('${d.id}')">Allow again</button>`,
+    `<div class="dev-meta">Asked ${devAgo(d.requested_at)}</div>`
+  )).join('')}</div></details>`:'';
+
+  body.innerHTML=lockBar+
+    `<div class="dev-sec"><h3>Waiting for approval</h3><div class="dev-sub">A new phone tried to sign in. If you do not recognise it, decline it.</div><div class="dev-list">${pendHtml}</div></div>`+
+    `<div class="dev-sec"><h3>Approved phones</h3><div class="dev-sub">One phone per person.</div><div class="dev-list">${apprHtml}</div></div>`+
+    `<div class="dev-sec"><h3>Staff without a phone</h3><div class="dev-sub">These people cannot sign in once the lock is on. Ask them to sign in on their work phone.</div><div class="dev-list">${needHtml}</div></div>`+
+    remHtml;
+}
+
+async function devApprove(id){
+  const d=devList.find(x=>x.id===id);if(!d)return;
+  const w=devWho(d.user_id);
+  const had=devList.find(x=>x.user_id===d.user_id&&x.status==='approved'&&x.id!==id);
+  const ok=await askDialog({title:'Approve this phone?',message:`${w.name} will be able to sign in on "${d.label}" (code ${devCode(d)}).`+(had?` Their current phone, "${had.label}", will stop working.`:''),confirmLabel:'Approve'});
+  if(!ok)return;
+  const{error}=await sb.rpc('approve_device',{p_id:id});
+  if(error){showToast('Could not approve: '+error.message,'err');return;}
+  showToast('Phone approved for '+w.name,'ok');
+  await loadDevicesPage();
+}
+async function devRemove(id,declining){
+  const d=devList.find(x=>x.id===id);if(!d)return;
+  const w=devWho(d.user_id);
+  const ok=await askDialog({title:declining?'Decline this phone?':'Remove this phone?',message:declining?`${w.name} will not be able to use "${d.label}".`:`${w.name} will be signed out of "${d.label}" and will not be able to use it until you approve a phone for them again.`,confirmLabel:declining?'Decline':'Remove',danger:true});
+  if(!ok)return;
+  const{error}=await sb.rpc('revoke_device',{p_id:id});
+  if(error){showToast('Could not update: '+error.message,'err');return;}
+  showToast(declining?'Phone declined':'Phone removed','ok');
+  await loadDevicesPage();
+}
+async function toggleDevLock(){
+  const turnOn=!devLock;
+  const covered=new Set(devList.filter(d=>d.status==='approved').map(d=>d.user_id));
+  const missing=staffList.filter(p=>!devExempt(p.role)&&!covered.has(p.id));
+  const ok=await askDialog({
+    title:turnOn?'Turn the phone lock on?':'Turn the phone lock off?',
+    message:turnOn
+      ?(missing.length?`${missing.length} staff member${missing.length===1?' has':'s have'} no approved phone yet and will be blocked until you approve one. Admin and MD are never blocked.`:'Everyone has an approved phone. Admin and MD are never blocked.')
+      :'Staff will be able to sign in from any phone again.',
+    confirmLabel:turnOn?'Turn on':'Turn off',danger:turnOn&&missing.length>0});
+  if(!ok)return;
+  const{error}=await sb.rpc('set_device_lock',{p_on:turnOn});
+  if(error){showToast('Could not change the lock: '+error.message,'err');return;}
+  showToast('Phone lock is now '+(turnOn?'on':'off'),'ok');
+  await loadDevicesPage();
+}
+
 // ── INIT ──────────────────────────────────────────────────────
 (async function init(){
   document.getElementById('monthLabel').textContent=MONTHS[S.month]+' '+S.year;
-  await initSupabase();
+  if((await initSupabase())===false)return;
   await fetchReqs();
   renderStats();renderCal();renderUpcoming();renderLegend();updateNavCount();
   if(S.page==='dashboard')renderDashboard();
