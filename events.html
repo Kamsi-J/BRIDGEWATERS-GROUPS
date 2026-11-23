@@ -267,6 +267,18 @@ button{font-family:inherit}
 .add-item-btn:hover{text-decoration:underline;text-underline-offset:3px}
 .req-sec-lbl{font-family:var(--serif);font-size:21px;font-weight:500;color:var(--ink);margin:30px 0 10px;line-height:1.1;letter-spacing:0;text-transform:none}
 .req-sec-lbl span{font-family:var(--sans);font-size:13px;color:var(--muted)!important}
+.rq-note{font-size:13.5px;color:var(--muted);line-height:1.5;margin:6px 0 4px}
+.rq-sec{border:1px solid var(--line-2);border-radius:var(--r);padding:18px 18px 8px;margin:14px 0;background:var(--surface)}
+.rq-sec-hdr{display:flex;gap:12px;align-items:flex-end;margin-bottom:6px}
+.rq-sec-hdr .form-grp{flex:1;margin-bottom:0}
+.rq-sec-rm{height:42px;padding:0 12px;border:1px solid transparent;background:transparent;color:var(--muted);font-size:13.5px;cursor:pointer;border-radius:var(--r)}
+.rq-sec-rm:hover{background:var(--bad-bg);color:var(--bad)}
+.rq-sec .req-sec-lbl{font-size:17px;margin:16px 0 8px}
+.rq-sec-sub{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--line);padding:10px 0 12px;margin-top:2px;font-size:13.5px;color:var(--muted)}
+.rq-sec-sub b{font-family:var(--serif);font-size:20px;font-weight:500;color:var(--ink)}
+.req-file{display:inline-block;font-size:12px;color:var(--azure-ink);background:var(--azure-wash);border-radius:var(--r);padding:1px 8px;margin-left:8px;vertical-align:1px;white-space:nowrap}
+.req-filter{display:flex;align-items:center;gap:10px;margin:16px 0 4px;font-size:13.5px;color:var(--muted)}
+.req-filter .form-sel{width:260px;height:38px}
 .detail-box{border-top:1px solid var(--line);margin-bottom:10px}
 .detail-box-row{display:flex;justify-content:space-between;gap:20px;font-size:14px;padding:11px 0;border-bottom:1px solid var(--line)}
 .detail-box-row:last-child{border-bottom:none}
@@ -691,6 +703,7 @@ button{font-family:inherit}
       <button class="btn-primary" id="newReqBtn" onclick="openNewReq()" style="display:none"><i class="ph-light ph-plus"></i> New requisition</button>
     </div>
     <div class="req-tabs" id="reqTabs"></div>
+    <div class="req-filter" id="reqFilter"><label for="reqFileFilter">File</label><select class="form-sel" id="reqFileFilter" onchange="setReqFileFilter(this.value)"></select></div>
     <div class="req-list" id="reqList"></div>
   </div>
 
@@ -719,24 +732,14 @@ button{font-family:inherit}
     <div class="modal-hdr"><span class="modal-ttl">New requisition</span><button class="modal-close" onclick="closeModal('reqModal')" aria-label="Close"><i class="ph-light ph-x"></i></button></div>
     <div class="modal-body">
       <div class="form-grp"><label class="form-lbl">Purpose / Title *</label><input class="form-input" id="rq-purpose" type="text" placeholder="e.g. Food items for Zenith Bank AGM dinner"></div>
-      <div class="req-sec-lbl">Items</div>
-      <div style="font-size:10.5px;color:var(--muted);margin-bottom:8px;display:grid;grid-template-columns:1fr 72px 120px 28px;gap:7px;padding:0 2px"><span>Description</span><span style="text-align:center">Qty</span><span style="text-align:right">Unit cost (₦)</span><span></span></div>
-      <div id="rqItemRows"></div>
-      <button class="add-item-btn" onclick="addReqItem()"><i class="ph-light ph-plus"></i> Add item</button>
-      <div class="req-total-row" style="border-top:1px solid var(--border);padding-top:8px">
-        <span class="req-total-lbl">Total</span>
+      <div class="rq-note" id="rqMultiNote">Each file you add is raised as its own requisition, with its own number, vendor and approval.</div>
+      <div id="rqSections"></div>
+      <button class="add-item-btn" id="rqAddFileBtn" type="button" onclick="addReqSection()"><i class="ph-light ph-plus"></i> Add another file</button>
+      <div class="req-total-row">
+        <span class="req-total-lbl" id="rqTotalLbl">Total</span>
         <span class="req-total-val" id="rqTotalDisp">₦0</span>
       </div>
-      <div class="req-sec-lbl">Vendor and payment</div>
-      <div class="form-row">
-        <div class="form-grp"><label class="form-lbl">Vendor name *</label><input class="form-input" id="rq-vendor" type="text" placeholder="e.g. Fresh Mart Supplies Ltd"></div>
-        <div class="form-grp"><label class="form-lbl">Bank</label><input class="form-input" id="rq-bank" type="text" placeholder="e.g. Access Bank"></div>
-      </div>
-      <div class="form-row">
-        <div class="form-grp"><label class="form-lbl">Account number</label><input class="form-input" id="rq-accno" type="text" placeholder="0123456789"></div>
-        <div class="form-grp"><label class="form-lbl">Account name</label><input class="form-input" id="rq-accname" type="text" placeholder="Fresh Mart Supplies Ltd"></div>
-      </div>
-      <div class="form-grp"><label class="form-lbl">Notes (optional)</label><textarea class="form-ta" id="rq-notes" placeholder="Additional details, deadlines, delivery instructions..."></textarea></div>
+      <div class="form-grp" style="margin-top:22px"><label class="form-lbl">Notes (optional, applied to every file)</label><textarea class="form-ta" id="rq-notes" placeholder="Additional details, deadlines, delivery instructions..."></textarea></div>
     </div>
     <div class="modal-footer">
       <button class="btn-ghost" onclick="closeModal('reqModal')">Cancel</button>
@@ -994,7 +997,7 @@ const PM=Object.fromEntries(PROPERTIES.map(p=>[p.id,p]));
 const ROLES={
   banqueting_manager:{label:'Banqueting Manager',initials:'BM',canBook:true, canRaiseReq:true},
   bdm:              {label:'BDM',               initials:'BD',canBook:true,  canRaiseReq:false},
-  admin:            {label:'Admin',             initials:'AD',canBook:false, canApproveReq:true},
+  admin:            {label:'Admin',             initials:'AD',canBook:false, canApproveReq:true, canRaiseReq:true},
   md:               {label:'MD',               initials:'MD',canBook:false, canOverrideReq:true},
   storekeeper:      {label:'Store Keeper',      initials:'SK',canBook:false, canRaiseReq:true},
   cashier:          {label:'Cashier',           initials:'CA',canBook:false, canPayReq:true},
@@ -1561,7 +1564,15 @@ let currentReqTab='pending';
 function loadReqsLocal(){try{const s=localStorage.getItem(REQ_KEY);return s?JSON.parse(s):[]}catch{return[]}}
 function saveReqsLocal(){try{localStorage.setItem(REQ_KEY,JSON.stringify(reqs))}catch{}}
 
+async function fetchReqFiles(){
+  try{
+    const{data,error}=await sb.from('requisition_files').select('name').eq('active',true).order('sort_order');
+    if(!error&&data&&data.length)REQ_FILES=data.map(f=>f.name);
+  }catch{}
+}
+
 async function fetchReqs(){
+  await fetchReqFiles();
   try{
     const{data,error}=await sb.from('requisitions').select('*').order('created_at',{ascending:false});
     if(error)throw error;
@@ -1570,10 +1581,20 @@ async function fetchReqs(){
   }catch{reqs=loadReqsLocal();}
 }
 
+// The 17 files a storekeeper must raise requisitions under
+// Loaded from the requisition_files table; this built-in list is the fallback
+let REQ_FILES=['Kitchen Hotel','Kitchen Store','Kitchen Park','Disposable','Printing & Stationery','All Bakeries','Laundry','House Keeping','Bar Drinks','Staff Canteen','Cleaning & Sanitation','Ivy Water','Chivita','Coco Coal','Meat & Fish','Ice Cream','Ticket Paper'];
+let reqFileFilter='';
+function setReqFileFilter(v){reqFileFilter=v;renderReqPage();}
+function fileOptions(selected,placeholder){return`<option value="">${placeholder||'Select a file'}</option>`+REQ_FILES.map(f=>`<option value="${esc(f)}"${f===selected?' selected':''}>${esc(f)}</option>`).join('');}
+
+// Inserts one or many requisitions in a single call (all or nothing)
 async function createReqDB(payload){
-  const{data,error}=await sb.from('requisitions').insert([payload]).select().single();
+  const rows=Array.isArray(payload)?payload:[payload];
+  const{data,error}=await sb.from('requisitions').insert(rows).select();
   if(error)throw error;
-  reqs.unshift(data);return data;
+  (data||[]).slice().reverse().forEach(d=>reqs.unshift(d));
+  return Array.isArray(payload)?data:data[0];
 }
 
 async function updateReqDB(id,patch){
@@ -1607,6 +1628,7 @@ function getFilteredReqs(tab){
   if(role==='banqueting_manager'||role==='storekeeper'){
     list=list.filter(r=>r.raised_by_role===role||(currentUser&&r.raised_by===currentUser.id));
   }
+  if(reqFileFilter)list=list.filter(r=>(r.file||'')===reqFileFilter);
   if(tab==='all')return list;
   return list.filter(r=>r.status===tab);
 }
@@ -1635,11 +1657,17 @@ function updateNavCount(){
 
 function renderReqPage(){
   const role=S.role;
-  const raiser=role==='banqueting_manager'||role==='storekeeper';
+  const raiser=role==='banqueting_manager'||role==='storekeeper'||role==='admin';
   const btn=document.getElementById('newReqBtn');
   if(btn)btn.style.display=raiser?'inline-flex':'none';
   const sub=document.getElementById('reqSubtitle');
-  if(sub){const m={banqueting_manager:'Your procurement requests for events',storekeeper:'Your kitchen and supplies requests',admin:'Review, edit and approve incoming requisitions',cashier:'Process payments for approved requests',md:'Oversee, edit, approve, query or reject requisitions',bdm:'Requisition overview'};sub.textContent=m[role]||'';}
+  if(sub){const m={banqueting_manager:'Your procurement requests for events',storekeeper:'Your kitchen and supplies requests',admin:'Raise requisitions straight to the cashier, and review incoming ones',cashier:'Process payments for approved requests',md:'Oversee, edit, approve, query or reject requisitions',bdm:'Requisition overview'};sub.textContent=m[role]||'';}
+  const ff=document.getElementById('reqFileFilter');
+  if(ff){
+    const filed=reqs.some(r=>r.file);
+    document.getElementById('reqFilter').style.display=(filed||reqFileFilter)?'flex':'none';
+    ff.innerHTML=fileOptions(reqFileFilter,'All files');
+  }
   renderReqTabs();
   updateNavCount();
   const list=getFilteredReqs(currentReqTab);
@@ -1655,7 +1683,7 @@ function renderReqPage(){
     const st=r.status||'pending';
     return`<div class="req-row" onclick="openReqDetail('${esc(r.id)}')">
       <span class="req-no">${esc(reqNo(r))}</span>
-      <div class="req-main"><div class="req-ttl">${esc(r.purpose||'Untitled')}</div><div class="req-sub">${esc(r.raised_by_name||r.raised_by_role||'')}${date?', '+date:''}</div></div>
+      <div class="req-main"><div class="req-ttl">${esc(r.purpose||'Untitled')}${r.file?`<span class="req-file">${esc(r.file)}</span>`:''}</div><div class="req-sub">${esc(r.raised_by_name||r.raised_by_role||'')}${date?', '+date:''}</div></div>
       <span class="req-vendor">${esc(r.vendor_name||'No vendor')}</span>
       <span class="req-amt">${nairaFull(total)}</span>
       <span class="req-status-cell"><span class="req-status ${esc(st)}">${esc(REQ_STATUS[st]?.label||st)}</span></span>
@@ -1665,48 +1693,122 @@ function renderReqPage(){
 }
 
 // ── CREATE ────────────────────────────────────────────────────
+// A storekeeper raises one section per file; each section becomes its own requisition.
+// Other raisers (banqueting manager) get a single section with no file.
+const usesFiles=()=>S.role==='storekeeper'||S.role==='admin';
+// Admin requisitions skip review and go straight to the cashier; only the MD can then inspect, adjust or reject them
+const goesStraightToCashier=()=>S.role==='admin';
+
 function openNewReq(){
-  ['rq-purpose','rq-vendor','rq-bank','rq-accno','rq-accname','rq-notes'].forEach(id=>{document.getElementById(id).value='';});
-  document.getElementById('rqItemRows').innerHTML='';
-  document.getElementById('rqTotalDisp').textContent='₦0';
-  addReqItem();
+  ['rq-purpose','rq-notes'].forEach(id=>{document.getElementById(id).value='';});
+  document.getElementById('rqSections').innerHTML='';
+  const multi=usesFiles();
+  const note=document.getElementById('rqMultiNote');
+  note.style.display=multi?'':'none';
+  note.textContent=goesStraightToCashier()?'Each file you add is raised as its own requisition and goes straight to the cashier for payment. Only the MD can then inspect, adjust or reject it.':'Each file you add is raised as its own requisition, with its own number, vendor and approval.';
+  document.getElementById('rqAddFileBtn').style.display=multi?'':'none';
+  addReqSection();
+  calcReqTotal();
   openModal('reqModal');
 }
 
-function addReqItem(){
-  const id='ri'+Date.now()+Math.random().toString(36).slice(2,5);
+function addReqSection(){
+  const sec=document.createElement('div');
+  sec.className='rq-sec';
+  const multi=usesFiles();
+  sec.innerHTML=`${multi?`<div class="rq-sec-hdr"><div class="form-grp"><label class="form-lbl">File *</label><select class="form-sel rq-file" onchange="syncReqFiles()">${fileOptions('')}</select></div><button class="rq-sec-rm" type="button" onclick="removeReqSection(this)">Remove file</button></div>`:''}
+    <div class="req-sec-lbl">Items</div>
+    <div style="font-size:12.5px;color:var(--muted);display:grid;grid-template-columns:1fr 76px 126px 36px;gap:8px;padding:0 2px;margin-bottom:6px"><span>Description</span><span style="text-align:center">Qty</span><span style="text-align:right">Unit cost (₦)</span><span></span></div>
+    <div class="rq-items"></div>
+    <button class="add-item-btn" type="button" onclick="addReqItem(this.closest('.rq-sec'))"><i class="ph-light ph-plus"></i> Add item</button>
+    <div class="req-sec-lbl">Vendor and payment</div>
+    <div class="form-row">
+      <div class="form-grp"><label class="form-lbl">Vendor name *</label><input class="form-input rq-vendor" type="text" placeholder="e.g. Fresh Mart Supplies Ltd"></div>
+      <div class="form-grp"><label class="form-lbl">Bank</label><input class="form-input rq-bank" type="text" placeholder="e.g. Access Bank"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-grp"><label class="form-lbl">Account number</label><input class="form-input rq-accno" type="text" placeholder="0123456789"></div>
+      <div class="form-grp"><label class="form-lbl">Account name</label><input class="form-input rq-accname" type="text" placeholder="Fresh Mart Supplies Ltd"></div>
+    </div>
+    <div class="rq-sec-sub"><span>${multi?'Subtotal for this file':'Total'}</span><b class="rq-sub">₦0</b></div>`;
+  document.getElementById('rqSections').appendChild(sec);
+  addReqItem(sec);
+  syncReqFiles();updateReqSectionUi();
+}
+
+function removeReqSection(btn){btn.closest('.rq-sec').remove();updateReqSectionUi();calcReqTotal();syncReqFiles();}
+
+// Hide files already chosen in another section so one file can't be raised twice
+function syncReqFiles(){
+  const sels=[...document.querySelectorAll('#rqSections .rq-file')];
+  const taken=sels.map(s=>s.value).filter(Boolean);
+  sels.forEach(s=>{[...s.options].forEach(o=>{o.disabled=!!o.value&&o.value!==s.value&&taken.includes(o.value);});});
+  const btn=document.getElementById('rqAddFileBtn');
+  if(btn)btn.disabled=taken.length>=REQ_FILES.length;
+}
+function updateReqSectionUi(){
+  const secs=document.querySelectorAll('#rqSections .rq-sec');
+  secs.forEach(s=>{const rm=s.querySelector('.rq-sec-rm');if(rm)rm.style.display=secs.length>1?'':'none';});
+  const lbl=document.getElementById('rqTotalLbl');
+  if(lbl)lbl.textContent=(usesFiles()&&secs.length>1)?'Grand total':'Total';
+}
+
+function addReqItem(sec){
   const div=document.createElement('div');
-  div.className='item-row';div.id=id;
-  div.innerHTML=`<input class="form-input" placeholder="Description" oninput="calcReqTotal()"><input class="form-input" placeholder="1" type="number" min="1" value="1" oninput="calcReqTotal()" style="text-align:center"><input class="form-input" placeholder="0" type="number" min="0" oninput="calcReqTotal()" style="text-align:right"><button class="item-del-btn" type="button" aria-label="Remove item" onclick="document.getElementById('${id}').remove();calcReqTotal()"><i class="ph-light ph-x"></i></button>`;
-  document.getElementById('rqItemRows').appendChild(div);
+  div.className='item-row';
+  div.innerHTML=`<input class="form-input" placeholder="Description" oninput="calcReqTotal()"><input class="form-input" placeholder="1" type="number" min="1" value="1" oninput="calcReqTotal()" style="text-align:center"><input class="form-input" placeholder="0" type="number" min="0" oninput="calcReqTotal()" style="text-align:right"><button class="item-del-btn" type="button" aria-label="Remove item" onclick="this.parentElement.remove();calcReqTotal()"><i class="ph-light ph-x"></i></button>`;
+  sec.querySelector('.rq-items').appendChild(div);
 }
 
-function calcReqTotal(){
-  let t=0;
-  document.querySelectorAll('#rqItemRows .item-row').forEach(row=>{const i=row.querySelectorAll('input');t+=(parseFloat(i[1]?.value)||0)*(parseFloat(i[2]?.value)||0);});
-  document.getElementById('rqTotalDisp').textContent=nairaFull(t);
-}
-
-function getReqItems(){
+function secItems(sec){
   const items=[];
-  document.querySelectorAll('#rqItemRows .item-row').forEach(row=>{
+  sec.querySelectorAll('.rq-items .item-row').forEach(row=>{
     const i=row.querySelectorAll('input');const desc=i[0]?.value?.trim();const qty=parseFloat(i[1]?.value)||0;const cost=parseFloat(i[2]?.value)||0;
     if(desc)items.push({description:desc,qty,unit_cost:cost,total:qty*cost});
   });
   return items;
 }
 
+function calcReqTotal(){
+  let grand=0;
+  document.querySelectorAll('#rqSections .rq-sec').forEach(sec=>{
+    let t=0;
+    sec.querySelectorAll('.rq-items .item-row').forEach(row=>{const i=row.querySelectorAll('input');t+=(parseFloat(i[1]?.value)||0)*(parseFloat(i[2]?.value)||0);});
+    sec.querySelector('.rq-sub').textContent=nairaFull(t);grand+=t;
+  });
+  document.getElementById('rqTotalDisp').textContent=nairaFull(grand);
+}
+
 async function submitReq(){
   const purpose=document.getElementById('rq-purpose').value.trim();
-  const items=getReqItems();
-  const vendor=document.getElementById('rq-vendor').value.trim();
   if(!purpose){showToast('Enter a purpose/title','warn');return;}
-  if(!items.length){showToast('Add at least one item','warn');return;}
-  if(!vendor){showToast('Enter vendor name','warn');return;}
-  const total=items.reduce((s,it)=>s+it.total,0);
-  const payload={purpose,items,total_amount:total,vendor_name:vendor,vendor_bank:document.getElementById('rq-bank').value.trim(),vendor_account_no:document.getElementById('rq-accno').value.trim(),vendor_account_name:document.getElementById('rq-accname').value.trim(),notes:document.getElementById('rq-notes').value.trim(),raised_by:currentUser?.id||null,raised_by_name:document.getElementById('uName').textContent,raised_by_role:S.role,status:'pending',admin_notes:'',md_query:''};
-  try{await createReqDB(payload);closeModal('reqModal');showToast('Requisition submitted','ok');renderReqPage();}
-  catch(e){showToast('Error: '+e.message,'err');}
+  const multi=usesFiles();
+  const secs=[...document.querySelectorAll('#rqSections .rq-sec')];
+  const notes=document.getElementById('rq-notes').value.trim();
+  const batch=secs.length>1?(crypto.randomUUID?crypto.randomUUID():String(Date.now())):null;
+  const rows=[];
+  for(const sec of secs){
+    const file=multi?sec.querySelector('.rq-file').value:'';
+    const items=secItems(sec);
+    const vendor=sec.querySelector('.rq-vendor').value.trim();
+    const tag=multi&&file?file+': ':'';
+    if(multi&&!file){showToast('Select a file for every section','warn');return;}
+    if(!items.length){showToast(tag+'add at least one item','warn');return;}
+    if(!vendor){showToast(tag+'enter the vendor name','warn');return;}
+    const row={purpose,items,total_amount:items.reduce((s,it)=>s+it.total,0),vendor_name:vendor,vendor_bank:sec.querySelector('.rq-bank').value.trim(),vendor_account_no:sec.querySelector('.rq-accno').value.trim(),vendor_account_name:sec.querySelector('.rq-accname').value.trim(),notes,raised_by:currentUser?.id||null,raised_by_name:document.getElementById('uName').textContent,raised_by_role:S.role,status:'pending',admin_notes:'',md_query:''};
+    if(goesStraightToCashier()){row.status='approved';row.approved_by=currentUser?.id||null;row.approved_at=new Date().toISOString();}
+    if(multi)row.file=file;
+    if(batch)row.batch_id=batch;
+    rows.push(row);
+  }
+  if(!rows.length)return;
+  try{
+    await createReqDB(rows);closeModal('reqModal');
+    showToast((rows.length>1?rows.length+' requisitions':'Requisition')+(goesStraightToCashier()?' sent to the cashier':' submitted'),'ok');renderReqPage();
+  }catch(e){
+    const m=String(e.message||e);
+    showToast(/\b(file|batch_id)\b/i.test(m)?'The database needs the new file column. Run migration_requisition_files.sql in Supabase.':'Error: '+m,'err');
+  }
 }
 
 // ── DETAIL VIEW ───────────────────────────────────────────────
@@ -1716,7 +1818,8 @@ let _reqId=null;
 //  Admin → pending + queried (before it goes to cashier)
 //  MD    → pending + queried + approved (anything not yet paid / rejected)
 function canEditReq(r){
-  if(S.role==='admin')return r.status==='pending'||r.status==='queried';
+  // Admin's own requisitions are out of her hands once raised: only the MD can edit or reject them
+  if(S.role==='admin')return(r.status==='pending'||r.status==='queried')&&r.raised_by_role!=='admin'&&!(currentUser&&r.raised_by===currentUser.id);
   if(S.role==='md')return r.status==='pending'||r.status==='queried'||r.status==='approved';
   return false;
 }
@@ -1737,6 +1840,14 @@ function logHtml(r){
   return`<div class="req-sec-lbl">Edit History</div>`+log.slice().reverse().map(l=>`<div class="edit-log"><strong>${esc(l.by||'Unknown')}</strong> <small>(${esc(ROLES[l.role]?.label||l.role||'')}), ${l.at?new Date(l.at).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):''}</small><br>${(l.summary||[]).map(esc).join('<br>')}</div>`).join('');
 }
 
+// Other requisitions raised in the same sitting (storekeeper multi-file submissions)
+function siblingsHtml(r){
+  if(!r.batch_id)return'';
+  const sib=reqs.filter(x=>x.batch_id===r.batch_id&&x.id!==r.id);
+  if(!sib.length)return'';
+  return`<div class="detail-box-row"><span class="detail-box-lbl">Raised together with</span><span class="detail-box-val" style="font-weight:400">${sib.map(x=>esc(reqNo(x))+(x.file?' ('+esc(x.file)+')':'')).join(', ')}</span></div>`;
+}
+
 function openReqDetail(id){
   const r=reqs.find(x=>x.id===id);if(!r)return;
   _reqId=id;
@@ -1752,6 +1863,8 @@ function openReqDetail(id){
   const infoHtml=`<div class="req-sec-lbl">Details</div>
   <div class="detail-box">
     <div class="detail-box-row"><span class="detail-box-lbl">Raised by</span><span class="detail-box-val">${dash(r.raised_by_name||r.raised_by_role)}</span></div>
+    ${r.file&&!editable?`<div class="detail-box-row"><span class="detail-box-lbl">File</span><span class="detail-box-val">${esc(r.file)}</span></div>`:''}
+    ${siblingsHtml(r)}
     <div class="detail-box-row"><span class="detail-box-lbl">Date</span><span class="detail-box-val">${r.created_at?new Date(r.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}):'None'}</span></div>
     <div class="detail-box-row"><span class="detail-box-lbl">Status</span><span class="detail-box-val">${statusBadge}</span></div>
     ${r.notes?`<div class="detail-box-row"><span class="detail-box-lbl">Notes</span><span class="detail-box-val" style="font-weight:400">${esc(r.notes)}</span></div>`:''}
@@ -1763,6 +1876,7 @@ function openReqDetail(id){
   if(editable){
     body=`${queryHtml}
     <div class="form-grp" style="margin-top:8px"><label class="form-lbl" for="ed-purpose">Title</label><input class="form-input" id="ed-purpose" value="${esc(r.purpose)}"></div>
+    ${r.file?`<div class="form-grp"><label class="form-lbl" for="ed-file">File</label><select class="form-sel" id="ed-file">${fileOptions(r.file)}</select></div>`:''}
     <div class="req-sec-lbl" style="margin-top:22px">Items <span>Add, remove or adjust</span></div>
     <div style="font-size:12.5px;color:var(--muted);display:grid;grid-template-columns:1fr 76px 126px 36px;gap:8px;padding:0 2px;margin-bottom:6px"><span>Description</span><span style="text-align:center">Qty</span><span style="text-align:right">Unit cost</span><span></span></div>
     <div id="edItems">${(r.items||[]).map(edRowHtml).join('')}</div>
@@ -1823,12 +1937,14 @@ function collectEditor(){
     if(desc)items.push({description:desc,qty,unit_cost:cost,total:qty*cost});
   });
   const v=id=>document.getElementById(id)?.value?.trim()||'';
-  return{purpose:v('ed-purpose'),items,total_amount:items.reduce((s,it)=>s+it.total,0),vendor_name:v('ed-vendor'),vendor_bank:v('ed-bank'),vendor_account_no:v('ed-accno'),vendor_account_name:v('ed-accname'),admin_notes:v('ed-notes')};
+  const fileEl=document.getElementById('ed-file');
+  return{...(fileEl&&fileEl.value?{file:fileEl.value}:{}),purpose:v('ed-purpose'),items,total_amount:items.reduce((s,it)=>s+it.total,0),vendor_name:v('ed-vendor'),vendor_bank:v('ed-bank'),vendor_account_no:v('ed-accno'),vendor_account_name:v('ed-accname'),admin_notes:v('ed-notes')};
 }
 
 function diffReq(r,p){
   const out=[];
   if((r.purpose||'')!==p.purpose)out.push(`Title: "${r.purpose||''}" → "${p.purpose}"`);
+  if(p.file&&(r.file||'')!==p.file)out.push(`File: "${r.file||''}" → "${p.file}"`);
   const old=r.items||[];
   const max=Math.max(old.length,p.items.length);
   for(let i=0;i<max;i++){
