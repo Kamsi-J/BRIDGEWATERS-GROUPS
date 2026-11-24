@@ -212,6 +212,11 @@ button{font-family:inherit}
 .form-sel{appearance:none;-webkit-appearance:none;padding-right:36px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%2358686f' stroke-width='1.5'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
 .conflict-warn{background:var(--warn-bg);color:var(--warn);border-radius:var(--r);padding:11px 14px;font-size:13.5px;margin-bottom:16px;display:none;border-left:2px solid var(--warn)}
 .conflict-warn.show{display:block}
+.price-note{font-size:13.5px;color:var(--muted);margin:-4px 0 16px;line-height:1.5}
+.price-note b{color:var(--text,inherit);font-weight:600}
+.price-note.below{color:var(--warn)}
+.price-note.above{color:var(--azure-ink)}
+.det-price-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 14px}
 
 /* ── TOAST ─────────────────────────────────────────────────── */
 .toast{position:fixed;bottom:28px;left:50%;background:var(--deep);color:#fff;border-radius:var(--r);padding:13px 20px;box-shadow:var(--shadow-sheet);z-index:200;display:flex;align-items:center;gap:12px;font-size:14px;transform:translate(-50%,24px);opacity:0;pointer-events:none;transition:all .35s var(--ease);max-width:min(92vw,520px)}
@@ -277,6 +282,9 @@ button{font-family:inherit}
 .rq-sec-sub{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--line);padding:10px 0 12px;margin-top:2px;font-size:13.5px;color:var(--muted)}
 .rq-sec-sub b{font-family:var(--serif);font-size:20px;font-weight:500;color:var(--ink)}
 .req-file{display:inline-block;font-size:12px;color:var(--azure-ink);background:var(--azure-wash);border-radius:var(--r);padding:1px 8px;margin-left:8px;vertical-align:1px;white-space:nowrap}
+.req-loc{display:inline-block;font-size:12px;color:var(--ink-2,#13293b);background:#e9eef2;border-radius:var(--r);padding:1px 8px;margin-left:8px;vertical-align:1px;white-space:nowrap}
+.req-loc.unset{color:var(--muted);background:transparent;border:1px dashed #c4ced6}
+.req-filter{flex-wrap:wrap;row-gap:8px}
 .req-filter{display:flex;align-items:center;gap:10px;margin:16px 0 4px;font-size:13.5px;color:var(--muted)}
 .req-filter .form-sel{width:260px;height:38px}
 .detail-box{border-top:1px solid var(--line);margin-bottom:10px}
@@ -703,7 +711,7 @@ button{font-family:inherit}
       <button class="btn-primary" id="newReqBtn" onclick="openNewReq()" style="display:none"><i class="ph-light ph-plus"></i> New requisition</button>
     </div>
     <div class="req-tabs" id="reqTabs"></div>
-    <div class="req-filter" id="reqFilter"><label for="reqFileFilter">File</label><select class="form-sel" id="reqFileFilter" onchange="setReqFileFilter(this.value)"></select></div>
+    <div class="req-filter" id="reqFilter"><span id="reqLocFilterWrap" style="display:none;align-items:center;gap:10px"><label for="reqLocFilter">Location</label><select class="form-sel" id="reqLocFilter" onchange="setReqLocFilter(this.value)"></select></span><span id="reqFileFilterWrap" style="display:flex;align-items:center;gap:10px"><label for="reqFileFilter">File</label><select class="form-sel" id="reqFileFilter" onchange="setReqFileFilter(this.value)"></select></span></div>
     <div class="req-list" id="reqList"></div>
   </div>
 
@@ -732,6 +740,7 @@ button{font-family:inherit}
     <div class="modal-hdr"><span class="modal-ttl">New requisition</span><button class="modal-close" onclick="closeModal('reqModal')" aria-label="Close"><i class="ph-light ph-x"></i></button></div>
     <div class="modal-body">
       <div class="form-grp"><label class="form-lbl">Purpose / Title *</label><input class="form-input" id="rq-purpose" type="text" placeholder="e.g. Food items for Zenith Bank AGM dinner"></div>
+      <div class="form-grp" id="rqLocGrp" style="display:none"><label class="form-lbl">Location *</label><select class="form-sel" id="rq-loc"></select></div>
       <div class="rq-note" id="rqMultiNote">Each file you add is raised as its own requisition, with its own number, vendor and approval.</div>
       <div id="rqSections"></div>
       <button class="add-item-btn" id="rqAddFileBtn" type="button" onclick="addReqSection()"><i class="ph-light ph-plus"></i> Add another file</button>
@@ -787,12 +796,13 @@ button{font-family:inherit}
         </div>
         <div class="form-row">
           <div class="form-grp"><label class="form-lbl">Event date *</label><input class="form-input" id="f-date" type="date" onchange="checkFormConflict()"></div>
-          <div class="form-grp"><label class="form-lbl">Hall *</label><select class="form-sel" id="f-hall" onchange="checkFormConflict()"></select></div>
+          <div class="form-grp"><label class="form-lbl">Hall *</label><select class="form-sel" id="f-hall" onchange="onHallChange()"></select></div>
         </div>
         <div class="form-row">
           <div class="form-grp"><label class="form-lbl">Expected guests</label><input class="form-input" id="f-guests" type="number" placeholder="e.g. 200" min="1"></div>
-          <div class="form-grp"><label class="form-lbl">Amount paid (&#8358;) *</label><input class="form-input" id="f-amount" type="number" placeholder="e.g. 1500000" min="0"></div>
+          <div class="form-grp"><label class="form-lbl">Sold for (&#8358;) *</label><input class="form-input" id="f-amount" type="number" placeholder="Pick a hall first" min="0" oninput="updatePriceNote()"></div>
         </div>
+        <div class="price-note" id="priceNote">Select a hall to see its standard price.</div>
         <div class="form-grp"><label class="form-lbl">Notes (optional)</label><textarea class="form-ta" id="f-notes" placeholder="Setup requirements, special instructions..."></textarea></div>
       </form>
     </div>
@@ -984,15 +994,26 @@ const PROPERTIES=[
   {id:'oak_park',  name:'Oakland Amusement Park', city:'Enugu', state:'Enugu', lat:6.3993, lng:7.5065, color:'#1f6b6f'},
   {id:'placia',    name:'Placia Hotel',           city:'Enugu', state:'Enugu', lat:6.4350, lng:7.5004, color:'#5b6f7c'},
 ];
-// Halls per property. Capacities are placeholders: replace with the real figures.
+// Halls per property, with the STANDARD PRICE each hall should sell for (naira).
+// The booking form fills this in by default, and every booking stores a copy of it
+// (standard_price) next to the price it actually sold for, so auditors can compare.
 const HALLS=[
-  {id:'william',    name:'William Hall',    cap:500, color:'#12709c',propId:'bw_hotel'},
-  {id:'seraphina',  name:'Seraphina Hall',  cap:300, color:'#13293b',propId:'bw_hotel'},
-  {id:'anambra',    name:'Anambra Hall',    cap:400, color:'#3f5d70',propId:'oak_enugu'},
-  {id:'delta',      name:'Delta Hall',      cap:600, color:'#1f6b6f',propId:'oak_park'},
-  {id:'conference', name:'Conference Hall', cap:200, color:'#5b6f7c',propId:'oak_park'},
+  {id:'william',    name:'William Hall',    price:1200000, color:'#12709c',propId:'bw_enugu'},
+  {id:'seraphina',  name:'Seraphina Hall',  price:1000000, color:'#13293b',propId:'bw_enugu'},
+  {id:'small_hall', name:'Small Hall',      price:200000,  color:'#2a86b3',propId:'bw_enugu'},
+  {id:'restaurant', name:'Restaurant',      price:100000,  color:'#6a8da3',propId:'bw_enugu'},
+  {id:'abuja_hall', name:'Abuja Hall',      price:400000,  color:'#0e5878',propId:'bw_hotel'},
+  {id:'anambra',    name:'Anambra Hall',    price:300000,  color:'#3f5d70',propId:'oak_enugu'},
+  {id:'enugu_hall', name:'Enugu Hall',      price:300000,  color:'#4f7388',propId:'oak_enugu'},
+  {id:'board_room', name:'Board Room',      price:120000,  color:'#7a93a3',propId:'oak_enugu'},
+  {id:'lounge',     name:'Lounge',          price:450000,  color:'#2d4a5c',propId:'oak_enugu'},
+  {id:'delta',      name:'Delta Hall',      price:700000,  color:'#1f6b6f',propId:'oak_park'},
+  {id:'pool',       name:'Pool Area',       price:120000,  color:'#2f8f93',propId:'oak_park'},
+  {id:'placia_hall',name:'Placia Hall',     price:200000,  color:'#5b6f7c',propId:'placia'},
 ];
 const HM=Object.fromEntries(HALLS.map(h=>[h.id,h]));
+// Retired hall kept only so old bookings still display
+HM.conference={id:'conference',name:'Conference Hall',price:0,color:'#5b6f7c',propId:'oak_park'};
 const PM=Object.fromEntries(PROPERTIES.map(p=>[p.id,p]));
 const ROLES={
   banqueting_manager:{label:'Banqueting Manager',initials:'BM',canBook:true, canRaiseReq:true},
@@ -1078,7 +1099,7 @@ async function initSupabase(){
       // database also empties the phone's old cached copy.
       const{data:evts,error:evErr}=await sb.from('events').select('*').order('date');
       if(!evErr&&evts){
-        S.events=evts.map(e=>({id:e.id,name:e.name,client:e.client,date:e.date,hallId:e.hall_id,guests:e.guests,amount:parseFloat(e.amount),notes:e.notes||''}));
+        S.events=evts.map(e=>({id:e.id,name:e.name,client:e.client,date:e.date,hallId:e.hall_id,guests:e.guests,amount:parseFloat(e.amount),stdPrice:e.standard_price==null?null:parseFloat(e.standard_price),notes:e.notes||''}));
         saveEvts(S.events);
       }
     }else{
@@ -1095,7 +1116,11 @@ async function initSupabase(){
 async function saveEvtToDB(evt){
   if(!sb||!currentUser)return{error:{message:'You are not signed in.'}};
   try{
-    const res=await sb.from('events').insert({name:evt.name,client:evt.client,date:evt.date,hall_id:evt.hallId,guests:evt.guests||null,amount:evt.amount,notes:evt.notes||'',booked_by:currentUser?.id}).select().single();
+    const row={name:evt.name,client:evt.client,date:evt.date,hall_id:evt.hallId,guests:evt.guests||null,amount:evt.amount,standard_price:evt.stdPrice,notes:evt.notes||'',booked_by:currentUser?.id};
+    let res=await sb.from('events').insert(row).select().single();
+    if(res.error&&/standard_price/i.test(res.error.message||'')){
+      return{error:{message:'The database needs the standard price column. Run migration_hall_prices.sql in Supabase.'}};
+    }
     return res.error?{error:res.error}:{data:res.data};
   }catch(e){return{error:{message:e.message||'Network error'}}}
 }
@@ -1126,6 +1151,33 @@ function hasConflict(date,hallId,excludeId=null){
   return S.events.some(e=>e.date===date&&e.hallId===hallId&&e.id!==excludeId);
 }
 
+// Picking a hall fills in its standard price; staff can still change it if the hall sold for less or more
+function onHallChange(){
+  const h=HM[document.getElementById('f-hall').value];
+  const amt=document.getElementById('f-amount');
+  if(h){amt.value=h.price;amt.placeholder='e.g. '+h.price;}
+  updatePriceNote();checkFormConflict();
+}
+function updatePriceNote(){
+  const note=document.getElementById('priceNote');
+  const h=HM[document.getElementById('f-hall').value];
+  note.className='price-note';
+  if(!h){note.textContent='Select a hall to see its standard price.';return;}
+  const sold=parseFloat(document.getElementById('f-amount').value)||0;
+  const diff=sold-h.price;
+  let txt=`Standard price for ${h.name}: <b>${nairaFull(h.price)}</b>.`;
+  if(sold&&diff<0){txt+=` Selling ${nairaFull(-diff)} below standard. This is recorded for the auditors.`;note.classList.add('below');}
+  else if(sold&&diff>0){txt+=` Selling ${nairaFull(diff)} above standard.`;note.classList.add('above');}
+  else if(sold)txt+=' Selling at the standard price.';
+  note.innerHTML=txt;
+}
+function priceVarianceHtml(e){
+  if(e.stdPrice==null)return'';
+  const d=e.amount-e.stdPrice;
+  const word=d===0?'At standard price':d<0?nairaFull(-d)+' below standard':nairaFull(d)+' above standard';
+  const col=d<0?'var(--warn)':d>0?'var(--azure-ink)':'var(--muted)';
+  return`<div class="det-price-row"><div class="det-field"><div class="det-field-lbl">Standard price</div><div class="det-field-val">${nairaFull(e.stdPrice)}</div></div><div class="det-field"><div class="det-field-lbl">Sold for</div><div class="det-field-val">${nairaFull(e.amount)}</div></div><div class="det-field"><div class="det-field-lbl">Difference</div><div class="det-field-val" style="color:${col}">${word}</div></div></div>`;
+}
 function checkFormConflict(){
   const date=document.getElementById('f-date').value;
   const hallId=document.getElementById('f-hall').value;
@@ -1485,7 +1537,7 @@ function clickDay(day){
 function openDetail(id){
   const e=S.events.find(x=>x.id===id);if(!e)return;
   const h=HM[e.hallId];
-  document.getElementById('detailBody').innerHTML=`<div class="det-hdr"><div class="det-badge"><i class="ph-light ph-buildings"></i></div><div><div class="det-name">${e.name}</div><div class="det-hall">${h.name}</div></div></div><div class="det-grid"><div class="det-field"><div class="det-field-lbl">Client</div><div class="det-field-val">${e.client}</div></div><div class="det-field"><div class="det-field-lbl">Date</div><div class="det-field-val">${fmtDate(e.date)}</div></div><div class="det-field"><div class="det-field-lbl">Amount Paid</div><div class="det-field-val" style="color:var(--azure-ink)">${fmtMoney(e.amount)}</div></div><div class="det-field"><div class="det-field-lbl">Guests</div><div class="det-field-val">${e.guests?e.guests.toLocaleString():'Not specified'}</div></div></div>${e.notes?'<div class="det-field"><div class="det-field-lbl">Notes</div><div class="det-field-val" style="font-weight:500;font-size:13px;color:var(--text-2);line-height:1.55">'+e.notes+'</div></div>':''}`;
+  document.getElementById('detailBody').innerHTML=`<div class="det-hdr"><div class="det-badge"><i class="ph-light ph-buildings"></i></div><div><div class="det-name">${e.name}</div><div class="det-hall">${h.name}</div></div></div><div class="det-grid"><div class="det-field"><div class="det-field-lbl">Client</div><div class="det-field-val">${e.client}</div></div><div class="det-field"><div class="det-field-lbl">Date</div><div class="det-field-val">${fmtDate(e.date)}</div></div><div class="det-field"><div class="det-field-lbl">Sold For</div><div class="det-field-val" style="color:var(--azure-ink)">${fmtMoney(e.amount)}</div></div><div class="det-field"><div class="det-field-lbl">Guests</div><div class="det-field-val">${e.guests?e.guests.toLocaleString():'Not specified'}</div></div></div>${priceVarianceHtml(e)}${e.notes?'<div class="det-field"><div class="det-field-lbl">Notes</div><div class="det-field-val" style="font-weight:500;font-size:13px;color:var(--text-2);line-height:1.55">'+e.notes+'</div></div>':''}`;
   const footer=document.getElementById('detailFooter');
   footer.innerHTML=ROLES[S.role].canBook
     ?`<button class="btn-danger" style="margin-right:auto" onclick="confirmDelete('${e.id}')">Delete booking</button><button class="btn-ghost" onclick="closeModal('detailModal')">Close</button>`
@@ -1510,7 +1562,9 @@ function openBookingModal(prefill){
   if(!ROLES[S.role].canBook)return;
   document.getElementById('bookingForm').reset();
   document.getElementById('conflictWarn').classList.remove('show');
-  document.getElementById('f-hall').innerHTML='<option value="">Select a hall...</option>'+PROPERTIES.map(p=>{const halls=HALLS.filter(h=>h.propId===p.id);return`<optgroup label="${p.name}, ${p.city}">${halls.map(h=>`<option value="${h.id}">${h.name} (capacity ${h.cap.toLocaleString()})</option>`).join('')}</optgroup>`;}).join('');
+  document.getElementById('f-hall').innerHTML='<option value="">Select a hall...</option>'+PROPERTIES.map(p=>{const halls=HALLS.filter(h=>h.propId===p.id);return`<optgroup label="${p.name}, ${p.city}">${halls.map(h=>`<option value="${h.id}">${h.name} (${nairaFull(h.price)})</option>`).join('')}</optgroup>`;}).join('');
+  document.getElementById('f-amount').placeholder='Pick a hall first';
+  updatePriceNote();
   if(prefill)document.getElementById('f-date').value=prefill;
   openModal('bookingModal');
 }
@@ -1525,7 +1579,7 @@ async function submitBooking(){
   const notes=document.getElementById('f-notes').value.trim();
   if(!name||!client||!date||!hallId||!amount){showToast('Please fill in all required fields.','warn');return}
   if(hasConflict(date,hallId)){showToast(`${HM[hallId].name} is already booked for this date.`,'warn');return}
-  const ev={id:'e'+Date.now(),name,client,date,hallId,guests,amount,notes};
+  const ev={id:'e'+Date.now(),name,client,date,hallId,guests,amount,stdPrice:HM[hallId].price,notes};
   const saved=await saveEvtToDB(ev);
   if(saved.error){
     // Do not pretend it worked: nothing was stored, so nothing is added to the calendar.
@@ -1586,6 +1640,14 @@ async function fetchReqs(){
 let REQ_FILES=['Kitchen Hotel','Kitchen Store','Kitchen Park','Disposable','Printing & Stationery','All Bakeries','Laundry','House Keeping','Bar Drinks','Staff Canteen','Cleaning & Sanitation','Ivy Water','Chivita','Coco Coal','Meat & Fish','Ice Cream','Ticket Paper'];
 let reqFileFilter='';
 function setReqFileFilter(v){reqFileFilter=v;renderReqPage();}
+// Location: every requisition is stamped with the property of whoever raised it
+let reqLocFilter='';
+function setReqLocFilter(v){reqLocFilter=v;renderReqPage();}
+const propLabel=id=>{const p=PM[id];return p?p.name+', '+p.city:''};
+function locBadge(r){return r.property_id&&PM[r.property_id]?`<span class="req-loc">${esc(propLabel(r.property_id))}</span>`:`<span class="req-loc unset">Location not set</span>`}
+function locOptions(selected,placeholder,withNone){return`<option value="">${placeholder}</option>`+PROPERTIES.map(p=>`<option value="${p.id}"${p.id===selected?' selected':''}>${esc(p.name+', '+p.city)}</option>`).join('')+(withNone?`<option value="_none"${selected==='_none'?' selected':''}>Location not set</option>`:'');}
+// Admin, MD and cashier see every location, so they get the location filter
+const seesAllLocations=()=>S.role==='admin'||S.role==='md'||S.role==='cashier';
 function fileOptions(selected,placeholder){return`<option value="">${placeholder||'Select a file'}</option>`+REQ_FILES.map(f=>`<option value="${esc(f)}"${f===selected?' selected':''}>${esc(f)}</option>`).join('');}
 
 // Inserts one or many requisitions in a single call (all or nothing)
@@ -1629,6 +1691,7 @@ function getFilteredReqs(tab){
     list=list.filter(r=>r.raised_by_role===role||(currentUser&&r.raised_by===currentUser.id));
   }
   if(reqFileFilter)list=list.filter(r=>(r.file||'')===reqFileFilter);
+  if(reqLocFilter)list=list.filter(r=>reqLocFilter==='_none'?!r.property_id:r.property_id===reqLocFilter);
   if(tab==='all')return list;
   return list.filter(r=>r.status===tab);
 }
@@ -1665,8 +1728,12 @@ function renderReqPage(){
   const ff=document.getElementById('reqFileFilter');
   if(ff){
     const filed=reqs.some(r=>r.file);
-    document.getElementById('reqFilter').style.display=(filed||reqFileFilter)?'flex':'none';
+    const allLoc=seesAllLocations();
+    document.getElementById('reqFileFilterWrap').style.display=(filed||reqFileFilter)?'flex':'none';
+    document.getElementById('reqLocFilterWrap').style.display=allLoc?'flex':'none';
+    document.getElementById('reqFilter').style.display=((filed||reqFileFilter)||allLoc)?'flex':'none';
     ff.innerHTML=fileOptions(reqFileFilter,'All files');
+    document.getElementById('reqLocFilter').innerHTML=locOptions(reqLocFilter,'All locations',true);
   }
   renderReqTabs();
   updateNavCount();
@@ -1683,7 +1750,7 @@ function renderReqPage(){
     const st=r.status||'pending';
     return`<div class="req-row" onclick="openReqDetail('${esc(r.id)}')">
       <span class="req-no">${esc(reqNo(r))}</span>
-      <div class="req-main"><div class="req-ttl">${esc(r.purpose||'Untitled')}${r.file?`<span class="req-file">${esc(r.file)}</span>`:''}</div><div class="req-sub">${esc(r.raised_by_name||r.raised_by_role||'')}${date?', '+date:''}</div></div>
+      <div class="req-main"><div class="req-ttl">${esc(r.purpose||'Untitled')}${r.file?`<span class="req-file">${esc(r.file)}</span>`:''}${seesAllLocations()?locBadge(r):''}</div><div class="req-sub">${esc(r.raised_by_name||r.raised_by_role||'')}${date?', '+date:''}</div></div>
       <span class="req-vendor">${esc(r.vendor_name||'No vendor')}</span>
       <span class="req-amt">${nairaFull(total)}</span>
       <span class="req-status-cell"><span class="req-status ${esc(st)}">${esc(REQ_STATUS[st]?.label||st)}</span></span>
@@ -1707,6 +1774,10 @@ function openNewReq(){
   note.style.display=multi?'':'none';
   note.textContent=goesStraightToCashier()?'Each file you add is raised as its own requisition and goes straight to the cashier for payment. Only the MD can then inspect, adjust or reject it.':'Each file you add is raised as its own requisition, with its own number, vendor and approval.';
   document.getElementById('rqAddFileBtn').style.display=multi?'':'none';
+  // Admin works across all locations, so she says which one this requisition is for
+  const lg=document.getElementById('rqLocGrp');
+  lg.style.display=S.role==='admin'?'':'none';
+  if(S.role==='admin')document.getElementById('rq-loc').innerHTML=locOptions(S.propertyId||'','Select a location');
   addReqSection();
   calcReqTotal();
   openModal('reqModal');
@@ -1786,6 +1857,8 @@ async function submitReq(){
   const secs=[...document.querySelectorAll('#rqSections .rq-sec')];
   const notes=document.getElementById('rq-notes').value.trim();
   const batch=secs.length>1?(crypto.randomUUID?crypto.randomUUID():String(Date.now())):null;
+  const locId=S.role==='admin'?document.getElementById('rq-loc').value:(S.propertyId||'');
+  if(S.role==='admin'&&!locId){showToast('Select a location','warn');return;}
   const rows=[];
   for(const sec of secs){
     const file=multi?sec.querySelector('.rq-file').value:'';
@@ -1798,6 +1871,7 @@ async function submitReq(){
     const row={purpose,items,total_amount:items.reduce((s,it)=>s+it.total,0),vendor_name:vendor,vendor_bank:sec.querySelector('.rq-bank').value.trim(),vendor_account_no:sec.querySelector('.rq-accno').value.trim(),vendor_account_name:sec.querySelector('.rq-accname').value.trim(),notes,raised_by:currentUser?.id||null,raised_by_name:document.getElementById('uName').textContent,raised_by_role:S.role,status:'pending',admin_notes:'',md_query:''};
     if(goesStraightToCashier()){row.status='approved';row.approved_by=currentUser?.id||null;row.approved_at=new Date().toISOString();}
     if(multi)row.file=file;
+    if(locId)row.property_id=locId;
     if(batch)row.batch_id=batch;
     rows.push(row);
   }
@@ -1807,7 +1881,7 @@ async function submitReq(){
     showToast((rows.length>1?rows.length+' requisitions':'Requisition')+(goesStraightToCashier()?' sent to the cashier':' submitted'),'ok');renderReqPage();
   }catch(e){
     const m=String(e.message||e);
-    showToast(/\b(file|batch_id)\b/i.test(m)?'The database needs the new file column. Run migration_requisition_files.sql in Supabase.':'Error: '+m,'err');
+    showToast(/property_id/i.test(m)?'The database needs the location column. Run migration_hall_prices.sql in Supabase.':/\b(file|batch_id)\b/i.test(m)?'The database needs the new file column. Run migration_requisition_files.sql in Supabase.':'Error: '+m,'err');
   }
 }
 
@@ -1863,6 +1937,7 @@ function openReqDetail(id){
   const infoHtml=`<div class="req-sec-lbl">Details</div>
   <div class="detail-box">
     <div class="detail-box-row"><span class="detail-box-lbl">Raised by</span><span class="detail-box-val">${dash(r.raised_by_name||r.raised_by_role)}</span></div>
+    <div class="detail-box-row"><span class="detail-box-lbl">Location</span><span class="detail-box-val">${r.property_id&&PM[r.property_id]?esc(propLabel(r.property_id)):'Not set'}</span></div>
     ${r.file&&!editable?`<div class="detail-box-row"><span class="detail-box-lbl">File</span><span class="detail-box-val">${esc(r.file)}</span></div>`:''}
     ${siblingsHtml(r)}
     <div class="detail-box-row"><span class="detail-box-lbl">Date</span><span class="detail-box-val">${r.created_at?new Date(r.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}):'None'}</span></div>
@@ -2241,7 +2316,7 @@ function showPropertyDetail(propId){
     const todayBk=S.events.filter(e=>e.hallId===hall.id&&e.date===ts);
     const upcoming=S.events.filter(e=>e.hallId===hall.id&&e.date>=ts).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,2);
     return`<div class="prop-hall-card">
-      <div class="prop-hall-hdr"><span class="prop-hall-name">${esc(hall.name)}</span><span class="prop-hall-cap">Capacity ${hall.cap.toLocaleString()}</span></div>
+      <div class="prop-hall-hdr"><span class="prop-hall-name">${esc(hall.name)}</span><span class="prop-hall-cap">${nairaFull(hall.price)}</span></div>
       <div class="prop-hall-meta">${todayBk.length?`${plural1(todayBk.length,'booking')} today: ${esc(todayBk.map(e=>e.name).join(', '))}`:'Available today'}</div>
       ${upcoming.length?`<div class="prop-hall-next">Next: ${upcoming.map(e=>`${esc(e.name)} on ${new Date(e.date+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'})}`).join('; ')}</div>`:''}
     </div>`;
