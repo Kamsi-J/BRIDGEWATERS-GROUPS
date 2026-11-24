@@ -264,7 +264,7 @@ button{font-family:inherit}
 .req-total-row{display:flex;justify-content:space-between;gap:14px;align-items:baseline;padding:14px 0 0;border-top:1px solid var(--ink);margin-top:6px}
 .req-total-lbl{font-size:13.5px;color:var(--muted)}
 .req-total-val{font-family:var(--serif);font-size:30px;font-weight:500;color:var(--ink);line-height:1}
-.item-row{display:grid;grid-template-columns:1fr 76px 126px 36px;gap:8px;align-items:center;margin-bottom:8px}
+.item-row{display:grid;grid-template-columns:1fr 76px 126px 130px 36px;gap:8px;align-items:center;margin-bottom:8px}
 .item-row .form-input{height:40px}
 .item-del-btn{width:36px;height:36px;border-radius:var(--r);border:1px solid transparent;background:transparent;color:var(--muted);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:color .2s,background .2s}
 .item-del-btn:hover{background:var(--bad-bg);color:var(--bad)}
@@ -460,7 +460,9 @@ button{font-family:inherit}
   .modal-footer{padding:14px 20px 20px}
   .modal-ttl{font-size:24px}
   .form-row{grid-template-columns:1fr}
-  .item-row{grid-template-columns:1fr 64px 100px 34px}
+  .item-row{grid-template-columns:64px 1fr 1fr 34px}
+  .item-row>:first-child{grid-column:1/-1}
+  .item-hdr{display:none!important}
   .toast{bottom:20px}
   .map-layout{gap:24px}
   #propertyMap{height:300px}
@@ -1789,7 +1791,7 @@ function addReqSection(){
   const multi=usesFiles();
   sec.innerHTML=`${multi?`<div class="rq-sec-hdr"><div class="form-grp"><label class="form-lbl">File *</label><select class="form-sel rq-file" onchange="syncReqFiles()">${fileOptions('')}</select></div><button class="rq-sec-rm" type="button" onclick="removeReqSection(this)">Remove file</button></div>`:''}
     <div class="req-sec-lbl">Items</div>
-    <div style="font-size:12.5px;color:var(--muted);display:grid;grid-template-columns:1fr 76px 126px 36px;gap:8px;padding:0 2px;margin-bottom:6px"><span>Description</span><span style="text-align:center">Qty</span><span style="text-align:right">Unit cost (₦)</span><span></span></div>
+    <div class="item-hdr" style="font-size:12.5px;color:var(--muted);display:grid;grid-template-columns:1fr 76px 126px 130px 36px;gap:8px;padding:0 2px;margin-bottom:6px"><span>Description</span><span style="text-align:center">Qty</span><span style="text-align:right">Unit cost (₦)</span><span>Balance in store</span><span></span></div>
     <div class="rq-items"></div>
     <button class="add-item-btn" type="button" onclick="addReqItem(this.closest('.rq-sec'))"><i class="ph-light ph-plus"></i> Add item</button>
     <div class="req-sec-lbl">Vendor and payment</div>
@@ -1827,15 +1829,15 @@ function updateReqSectionUi(){
 function addReqItem(sec){
   const div=document.createElement('div');
   div.className='item-row';
-  div.innerHTML=`<input class="form-input" placeholder="Description" oninput="calcReqTotal()"><input class="form-input" placeholder="1" type="number" min="1" value="1" oninput="calcReqTotal()" style="text-align:center"><input class="form-input" placeholder="0" type="number" min="0" oninput="calcReqTotal()" style="text-align:right"><button class="item-del-btn" type="button" aria-label="Remove item" onclick="this.parentElement.remove();calcReqTotal()"><i class="ph-light ph-x"></i></button>`;
+  div.innerHTML=`<input class="form-input" placeholder="Description" oninput="calcReqTotal()"><input class="form-input" placeholder="Qty" aria-label="Quantity" type="number" min="1" value="1" oninput="calcReqTotal()" style="text-align:center"><input class="form-input" placeholder="Unit cost" aria-label="Unit cost" type="number" min="0" oninput="calcReqTotal()" style="text-align:right"><input class="form-input" type="text" placeholder="Balance in store" title="How much is left in store, e.g. 1 crate or 4 eggs" aria-label="Balance in store"><button class="item-del-btn" type="button" aria-label="Remove item" onclick="this.parentElement.remove();calcReqTotal()"><i class="ph-light ph-x"></i></button>`;
   sec.querySelector('.rq-items').appendChild(div);
 }
 
 function secItems(sec){
   const items=[];
   sec.querySelectorAll('.rq-items .item-row').forEach(row=>{
-    const i=row.querySelectorAll('input');const desc=i[0]?.value?.trim();const qty=parseFloat(i[1]?.value)||0;const cost=parseFloat(i[2]?.value)||0;
-    if(desc)items.push({description:desc,qty,unit_cost:cost,total:qty*cost});
+    const i=row.querySelectorAll('input');const desc=i[0]?.value?.trim();const qty=parseFloat(i[1]?.value)||0;const cost=parseFloat(i[2]?.value)||0;const balance=i[3]?.value?.trim()||'';
+    if(desc)items.push({description:desc,qty,unit_cost:cost,balance,total:qty*cost});
   });
   return items;
 }
@@ -1899,7 +1901,7 @@ function canEditReq(r){
 }
 
 function edRowHtml(it){
-  return`<div class="item-row ed-row"><input class="form-input" value="${esc(it?.description||'')}" placeholder="Description" oninput="calcEdTotal()"><input class="form-input" type="number" value="${it?.qty??1}" min="0" oninput="calcEdTotal()" style="text-align:center"><input class="form-input" type="number" value="${it?.unit_cost??0}" min="0" oninput="calcEdTotal()" style="text-align:right"><button class="item-del-btn" type="button" onclick="this.parentElement.remove();calcEdTotal()">&#215;</button></div>`;
+  return`<div class="item-row ed-row"><input class="form-input" value="${esc(it?.description||'')}" placeholder="Description" oninput="calcEdTotal()"><input class="form-input" type="number" value="${it?.qty??1}" min="0" oninput="calcEdTotal()" style="text-align:center"><input class="form-input" type="number" value="${it?.unit_cost??0}" min="0" oninput="calcEdTotal()" style="text-align:right"><input class="form-input" type="text" value="${esc(it?.balance||'')}" placeholder="Balance in store" aria-label="Balance in store"><button class="item-del-btn" type="button" onclick="this.parentElement.remove();calcEdTotal()">&#215;</button></div>`;
 }
 function addEdItem(){document.getElementById('edItems').insertAdjacentHTML('beforeend',edRowHtml());}
 function calcEdTotal(){
@@ -1953,7 +1955,7 @@ function openReqDetail(id){
     <div class="form-grp" style="margin-top:8px"><label class="form-lbl" for="ed-purpose">Title</label><input class="form-input" id="ed-purpose" value="${esc(r.purpose)}"></div>
     ${r.file?`<div class="form-grp"><label class="form-lbl" for="ed-file">File</label><select class="form-sel" id="ed-file">${fileOptions(r.file)}</select></div>`:''}
     <div class="req-sec-lbl" style="margin-top:22px">Items <span>Add, remove or adjust</span></div>
-    <div style="font-size:12.5px;color:var(--muted);display:grid;grid-template-columns:1fr 76px 126px 36px;gap:8px;padding:0 2px;margin-bottom:6px"><span>Description</span><span style="text-align:center">Qty</span><span style="text-align:right">Unit cost</span><span></span></div>
+    <div class="item-hdr" style="font-size:12.5px;color:var(--muted);display:grid;grid-template-columns:1fr 76px 126px 130px 36px;gap:8px;padding:0 2px;margin-bottom:6px"><span>Description</span><span style="text-align:center">Qty</span><span style="text-align:right">Unit cost</span><span>Balance in store</span><span></span></div>
     <div id="edItems">${(r.items||[]).map(edRowHtml).join('')}</div>
     <button class="add-item-btn" type="button" onclick="addEdItem()"><i class="ph-light ph-plus"></i> Add item</button>
     <div class="req-total-row"><span class="req-total-lbl">Total</span><span class="req-total-val" id="edTotalDisp">${nairaFull(total)}</span></div>
@@ -1970,8 +1972,8 @@ function openReqDetail(id){
     ${infoHtml}${logHtml(r)}`;
   }else{
     body=`<div class="req-sec-lbl" style="margin-top:8px">Items</div>
-    <table class="req-items"><thead><tr><th>Description</th><th class="r">Qty</th><th class="r">Unit cost</th><th class="r">Total</th></tr></thead>
-    <tbody>${(r.items||[]).map(it=>`<tr><td>${esc(it.description)}</td><td class="r">${esc(it.qty)}</td><td class="r">${nairaFull(it.unit_cost)}</td><td class="r">${nairaFull(it.qty*it.unit_cost)}</td></tr>`).join('')}</tbody></table>
+    <table class="req-items"><thead><tr><th>Description</th><th class="r">Qty</th><th>Balance in store</th><th class="r">Unit cost</th><th class="r">Total</th></tr></thead>
+    <tbody>${(r.items||[]).map(it=>`<tr><td>${esc(it.description)}</td><td class="r">${esc(it.qty)}</td><td>${it.balance?esc(it.balance):'<span style="color:var(--muted)">Not stated</span>'}</td><td class="r">${nairaFull(it.unit_cost)}</td><td class="r">${nairaFull(it.qty*it.unit_cost)}</td></tr>`).join('')}</tbody></table>
     <div class="req-total-row"><span class="req-total-lbl">Total</span><span class="req-total-val">${nairaFull(total)}</span></div>
     <div class="req-sec-lbl">Vendor and payment</div>
     <div class="detail-box">
@@ -2008,8 +2010,8 @@ function openReqDetail(id){
 function collectEditor(){
   const items=[];
   document.querySelectorAll('#edItems .ed-row').forEach(row=>{
-    const i=row.querySelectorAll('input');const desc=i[0]?.value?.trim();const qty=parseFloat(i[1]?.value)||0;const cost=parseFloat(i[2]?.value)||0;
-    if(desc)items.push({description:desc,qty,unit_cost:cost,total:qty*cost});
+    const i=row.querySelectorAll('input');const desc=i[0]?.value?.trim();const qty=parseFloat(i[1]?.value)||0;const cost=parseFloat(i[2]?.value)||0;const balance=i[3]?.value?.trim()||'';
+    if(desc)items.push({description:desc,qty,unit_cost:cost,balance,total:qty*cost});
   });
   const v=id=>document.getElementById(id)?.value?.trim()||'';
   const fileEl=document.getElementById('ed-file');
@@ -2026,10 +2028,11 @@ function diffReq(r,p){
     const a=old[i],b=p.items[i];
     if(a&&!b)out.push(`Removed item "${a.description}"`);
     else if(!a&&b)out.push(`Added item "${b.description}" (${b.qty} × ${nairaFull(b.unit_cost)})`);
-    else if(a.description!==b.description||a.qty!==b.qty||a.unit_cost!==b.unit_cost){
+    else if(a.description!==b.description||a.qty!==b.qty||a.unit_cost!==b.unit_cost||(a.balance||'')!==(b.balance||'')){
       const bits=[];
       if(a.description!==b.description)bits.push(`name "${a.description}" → "${b.description}"`);
       if(a.qty!==b.qty)bits.push(`qty ${a.qty} → ${b.qty}`);
+      if((a.balance||'')!==(b.balance||''))bits.push(`balance "${a.balance||''}" → "${b.balance||''}"`);
       if(a.unit_cost!==b.unit_cost)bits.push(`cost ${nairaFull(a.unit_cost)} → ${nairaFull(b.unit_cost)}`);
       out.push(`"${b.description}": ${bits.join(', ')}`);
     }
