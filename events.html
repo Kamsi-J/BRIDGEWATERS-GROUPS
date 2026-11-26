@@ -1637,9 +1637,9 @@ async function fetchReqs(){
   }catch{reqs=loadReqsLocal();}
 }
 
-// The 17 files a storekeeper must raise requisitions under
+// The 22 files a storekeeper must raise requisitions under
 // Loaded from the requisition_files table; this built-in list is the fallback
-let REQ_FILES=['Kitchen Hotel','Kitchen Store','Kitchen Park','Disposable','Printing & Stationery','All Bakeries','Laundry','House Keeping','Bar Drinks','Staff Canteen','Cleaning & Sanitation','Ivy Water','Chivita','Coco Coal','Meat & Fish','Ice Cream','Ticket Paper'];
+let REQ_FILES=['Kitchen Hotel','Kitchen Store','Kitchen Park','Disposable','Printing & Stationery','All Bakeries','Laundry','House Keeping','Bar Drinks','Staff Canteen','Cleaning & Sanitation','Ivy Water','Chivita','Coco Coal','Meat & Fish','Ice Cream','Ticket Paper','Inventory','Electrical','Other Maintenance','Diesel','Adlac'];
 let reqFileFilter='';
 function setReqFileFilter(v){reqFileFilter=v;renderReqPage();}
 // Location: every requisition is stamped with the property of whoever raised it
@@ -1762,9 +1762,9 @@ function renderReqPage(){
 }
 
 // ── CREATE ────────────────────────────────────────────────────
-// A storekeeper raises one section per file; each section becomes its own requisition.
-// Other raisers (banqueting manager) get a single section with no file.
-const usesFiles=()=>S.role==='storekeeper'||S.role==='admin';
+// Everyone who raises requisitions (storekeeper, banqueting manager, admin) works the same way:
+// one section per file, and each section becomes its own requisition.
+const usesFiles=()=>S.role==='storekeeper'||S.role==='admin'||S.role==='banqueting_manager';
 // Admin requisitions skip review and go straight to the cashier; only the MD can then inspect, adjust or reject them
 const goesStraightToCashier=()=>S.role==='admin';
 
