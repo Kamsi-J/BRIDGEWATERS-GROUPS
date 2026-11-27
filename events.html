@@ -675,10 +675,16 @@ button{font-family:inherit}
       </div>
     </div>
 
-    <div class="month-nav" id="monthNav" style="margin-bottom:16px">
+    <div id="evToolbar" style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-bottom:16px">
+    <div class="month-nav" id="monthNav" style="margin-bottom:0">
       <button onclick="changeMonth(-1)" title="Previous month" aria-label="Previous month"><i class="ph-light ph-caret-left"></i></button>
       <span class="month-label" id="monthLabel">November 2026</span>
       <button onclick="changeMonth(1)" title="Next month" aria-label="Next month"><i class="ph-light ph-caret-right"></i></button>
+    </div>
+    <!-- Admin and MD only: look at one branch, or all of them -->
+    <select class="form-sel" id="evBranchFilter" onchange="setBranchFilter(this.value)" aria-label="Filter by branch" style="display:none;width:260px;height:38px"></select>
+    <!-- Banqueting manager and BDM only: book on any date for their own branch -->
+    <button class="btn-primary" id="newBookingBtn" onclick="openBookingModal()" style="display:none"><i class="ph-light ph-plus"></i> New booking</button>
     </div>
     <div class="cal-layout">
       <div class="cal-card">
@@ -1153,6 +1159,28 @@ function hasConflict(date,hallId,excludeId=null){
   return S.events.some(e=>e.date===date&&e.hallId===hallId&&e.id!==excludeId);
 }
 
+// ── BRANCHES ──────────────────────────────────────────────────
+// Each branch runs its own calendar. Oakland Hotel and Oakland Amusement Park are one
+// team, so a BDM there sees both; every other branch sees only itself. Admin and MD see
+// everything and can filter. The database enforces the same rule (migration_event_branches.sql);
+// this keeps the screen in step with it, including any old copy cached on the phone.
+const branchOf=p=>p==='oak_enugu'||p==='oak_park'?'oakland':p;
+const seesAllBranches=()=>S.role==='admin'||S.role==='md';
+S.branchFilter='';
+function hallInView(h){
+  if(seesAllBranches())return !S.branchFilter||h.propId===S.branchFilter;
+  return !!S.propertyId&&branchOf(h.propId)===branchOf(S.propertyId);
+}
+const visHalls=()=>HALLS.filter(hallInView);
+function evs(){return S.events.filter(e=>{const h=HM[e.hallId];return !!h&&hallInView(h)});}
+function branchOptions(sel){
+  return'<option value="">All branches</option>'+PROPERTIES.map(p=>`<option value="${p.id}"${p.id===sel?' selected':''}>${p.name}, ${p.city}</option>`).join('');
+}
+function setBranchFilter(v){
+  S.branchFilter=v;
+  renderCal();renderUpcoming();renderStats();renderLegend();
+}
+
 // Picking a hall fills in its standard price; staff can still change it if the hall sold for less or more
 function onHallChange(){
   const h=HM[document.getElementById('f-hall').value];
@@ -1208,6 +1236,8 @@ function closeMobSidebar(){
 
 
 function switchPage(p){
+  // Cashier and storekeeper have no business with event bookings
+  if(p==='events'&&(S.role==='cashier'||S.role==='storekeeper'))p='requisitions';
   S.page=p;
   document.querySelectorAll('.nav-item[data-page]').forEach(el=>el.classList.toggle('active',el.dataset.page===p));
   document.getElementById('pageDash').style.display=p==='dashboard'?'':'none';
@@ -1215,7 +1245,7 @@ function switchPage(p){
   document.getElementById('pageReq').style.display=p==='requisitions'?'':'none';
   document.getElementById('pageStaff').style.display=p==='staff'?'':'none';
   document.getElementById('pageDevices').style.display=p==='devices'?'':'none';
-  document.getElementById('monthNav').style.display=p==='events'?'':'none';
+  document.getElementById('evToolbar').style.display=p==='events'?'flex':'none';
   document.getElementById('calGrid').dataset.canbooking=ROLES[S.role].canBook&&p==='events'?'1':'';
   const titles={dashboard:'Executive overview',events:'Event booking',requisitions:'Requisitions',staff:'HR and staff',devices:'Approved phones'};
   if(p==='dashboard')renderDashboard();
@@ -1254,6 +1284,16 @@ function updateLocPill(){
 }
 
 function updateNavForRole(role){
+  const navEvents=document.querySelector('.nav-item[data-page="events"]');
+  if(navEvents)navEvents.style.display=(role==='cashier'||role==='storekeeper')?'none':'';
+  const bf=document.getElementById('evBranchFilter');
+  if(bf){
+    const all=role==='admin'||role==='md';
+    if(all&&!bf.options.length)bf.innerHTML=branchOptions(S.branchFilter);
+    bf.style.display=all?'':'none';
+  }
+  const nb=document.getElementById('newBookingBtn');
+  if(nb)nb.style.display=ROLES[role]?.canBook?'':'none';
   const navDash=document.getElementById('navDash');
   if(navDash)navDash.style.display=role==='md'?'':'none';
   const navDev=document.getElementById('navDevices');
@@ -1446,35 +1486,36 @@ function toggleTheme(){
 
 function renderStats(){
   const now=new Date(),ts=todayStr();
-  const mEvts=S.events.filter(e=>{const d=new Date(e.date+'T00:00:00');return d.getFullYear()===now.getFullYear()&&d.getMonth()===now.getMonth()});
-  const totRev=S.events.reduce((s,e)=>s+e.amount,0);
+  const vis=evs(),nHalls=visHalls().length||1;
+  const mEvts=vis.filter(e=>{const d=new Date(e.date+'T00:00:00');return d.getFullYear()===now.getFullYear()&&d.getMonth()===now.getMonth()});
+  const totRev=vis.reduce((s,e)=>s+e.amount,0);
   const mRev=mEvts.reduce((s,e)=>s+e.amount,0);
-  const todayEvts=S.events.filter(e=>e.date===ts);
+  const todayEvts=vis.filter(e=>e.date===ts);
   const occH=new Set(todayEvts.map(e=>e.hallId)).size;
-  const upc=S.events.filter(e=>e.date>=ts).sort((a,b)=>a.date.localeCompare(b.date));
+  const upc=vis.filter(e=>e.date>=ts).sort((a,b)=>a.date.localeCompare(b.date));
   const pipRev=upc.reduce((s,e)=>s+e.amount,0);
   const rStats={
     banqueting_manager:[
       {lbl:'Events This Month',val:mEvts.length,sub:'bookings confirmed'},
       {lbl:'Revenue This Month',val:fmtMoney(mRev),sub:'total collected'},
-      {lbl:'Available Halls',val:HALLS.length-occH,sub:'free today'},
+      {lbl:'Available Halls',val:nHalls-occH,sub:'free today'},
       {lbl:'Upcoming Events',val:upc.length,sub:'in the pipeline'},
     ],
     bdm:[
       {lbl:'Events This Month',val:mEvts.length,sub:'total bookings'},
       {lbl:'Revenue This Month',val:fmtMoney(mRev),sub:'month-to-date'},
-      {lbl:'Halls Occupied Today',val:occH,sub:'of '+HALLS.length+' halls'},
+      {lbl:'Halls Occupied Today',val:occH,sub:'of '+nHalls+' halls'},
       {lbl:'Pipeline Revenue',val:fmtMoney(pipRev),sub:'upcoming bookings'},
     ],
     admin:[
-      {lbl:'Total Events',val:S.events.length,sub:'all time'},
+      {lbl:'Total Events',val:vis.length,sub:'all time'},
       {lbl:'Total Revenue',val:fmtMoney(totRev),sub:'all bookings'},
-      {lbl:'Halls Occupied Today',val:occH,sub:'of '+HALLS.length+' halls'},
+      {lbl:'Halls Occupied Today',val:occH,sub:'of '+nHalls+' halls'},
       {lbl:'This Month',val:mEvts.length,sub:'events booked'},
     ],
     md:[
       {lbl:'Total Revenue',val:fmtMoney(totRev),sub:'portfolio total'},
-      {lbl:'Occupancy Rate',val:Math.round(occH/HALLS.length*100)+'%',sub:'today'},
+      {lbl:'Occupancy Rate',val:Math.round(occH/nHalls*100)+'%',sub:'today'},
       {lbl:'Events This Month',val:mEvts.length,sub:'confirmed bookings'},
       {lbl:'Upcoming Events',val:upc.length,sub:'scheduled ahead'},
     ],
@@ -1502,7 +1543,7 @@ function renderCal(){
   const dim=new Date(y,m+1,0).getDate();
   const t=todayObj();
   const byDate={};
-  S.events.forEach(e=>{const d=new Date(e.date+'T00:00:00');if(d.getFullYear()===y&&d.getMonth()===m){const k=d.getDate();if(!byDate[k])byDate[k]=[];byDate[k].push(e)}});
+  evs().forEach(e=>{const d=new Date(e.date+'T00:00:00');if(d.getFullYear()===y&&d.getMonth()===m){const k=d.getDate();if(!byDate[k])byDate[k]=[];byDate[k].push(e)}});
   let html='';
   for(let i=0;i<firstDay;i++)html+='<div class="cal-day empty"></div>';
   for(let d=1;d<=dim;d++){
@@ -1515,19 +1556,19 @@ function renderCal(){
 
 function renderUpcoming(){
   const ts=todayStr();
-  const list=S.events.filter(e=>e.date>=ts).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,7);
+  const list=evs().filter(e=>e.date>=ts).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,7);
   const el=document.getElementById('upcList');
   if(!list.length){el.innerHTML='<p style="color:var(--muted);font-size:12px">No upcoming events.</p>';return}
   el.innerHTML=list.map(e=>{const h=HM[e.hallId];const d=new Date(e.date+'T00:00:00');const ds=d.toLocaleDateString('en-NG',{day:'numeric',month:'short'});return`<div class="upc-item" onclick="openDetail('${e.id}')"><div class="upc-dot" style="background:${h.color}"></div><div><div class="upc-name">${e.name}</div><div class="upc-meta">${ds}, ${h.name}</div></div></div>`;}).join('');
 }
 
 function renderLegend(){
-  document.getElementById('legList').innerHTML=HALLS.map(h=>`<div class="leg-item"><div class="leg-dot" style="background:${h.color}"></div><div class="leg-name">${h.name}</div></div>`).join('');
+  document.getElementById('legList').innerHTML=visHalls().map(h=>`<div class="leg-item"><div class="leg-dot" style="background:${h.color}"></div><div class="leg-name">${h.name}</div></div>`).join('');
 }
 
 function clickDay(day){
   const{year:y,month:m}=S;
-  const evts=S.events.filter(e=>{const d=new Date(e.date+'T00:00:00');return d.getFullYear()===y&&d.getMonth()===m&&d.getDate()===day});
+  const evts=evs().filter(e=>{const d=new Date(e.date+'T00:00:00');return d.getFullYear()===y&&d.getMonth()===m&&d.getDate()===day});
   const lbl=new Date(y,m,day).toLocaleDateString('en-NG',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   if(!evts.length){if(ROLES[S.role].canBook){const ds=y+'-'+String(m+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');openBookingModal(ds)}return}
   if(evts.length===1){openDetail(evts[0].id);return}
@@ -1562,9 +1603,12 @@ async function confirmDelete(id){
 
 function openBookingModal(prefill){
   if(!ROLES[S.role].canBook)return;
+  // Only the halls of the booker's own branch (Oakland's two properties count as one)
+  const mine=visHalls();
+  if(!mine.length){showToast('Your account has no branch set yet. Ask the admin to set your location.','warn');return;}
   document.getElementById('bookingForm').reset();
   document.getElementById('conflictWarn').classList.remove('show');
-  document.getElementById('f-hall').innerHTML='<option value="">Select a hall...</option>'+PROPERTIES.map(p=>{const halls=HALLS.filter(h=>h.propId===p.id);return`<optgroup label="${p.name}, ${p.city}">${halls.map(h=>`<option value="${h.id}">${h.name} (${nairaFull(h.price)})</option>`).join('')}</optgroup>`;}).join('');
+  document.getElementById('f-hall').innerHTML='<option value="">Select a hall...</option>'+PROPERTIES.map(p=>{const halls=mine.filter(h=>h.propId===p.id);return halls.length?`<optgroup label="${p.name}, ${p.city}">${halls.map(h=>`<option value="${h.id}">${h.name} (${nairaFull(h.price)})</option>`).join('')}</optgroup>`:'';}).join('');
   document.getElementById('f-amount').placeholder='Pick a hall first';
   updatePriceNote();
   if(prefill)document.getElementById('f-date').value=prefill;
