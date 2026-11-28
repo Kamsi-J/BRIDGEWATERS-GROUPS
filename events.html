@@ -1705,13 +1705,14 @@ async function createReqDB(payload){
   return Array.isArray(payload)?data:data[0];
 }
 
-async function updateReqDB(id,patch){
+async function updateReqDB(id,patch,onlyIfStatus){
   const idx=reqs.findIndex(r=>r.id===id);
-  let res=await sb.from('requisitions').update({...patch,updated_at:new Date().toISOString()}).eq('id',id).select().single();
+  const run=p=>{let q=sb.from('requisitions').update({...p,updated_at:new Date().toISOString()}).eq('id',id);if(onlyIfStatus)q=q.eq('status',onlyIfStatus);return q.select().single();};
+  let res=await run(patch);
   // Fallback if the edit_log column hasn't been added yet (run migration_md_workflow.sql)
   if(res.error&&/edit_log/i.test(res.error.message||'')){
     const{edit_log,...rest}=patch;
-    res=await sb.from('requisitions').update({...rest,updated_at:new Date().toISOString()}).eq('id',id).select().single();
+    res=await run(rest);
   }
   if(res.error)throw res.error;
   if(idx>=0)reqs[idx]=res.data;return res.data;
@@ -1935,14 +1936,15 @@ async function submitReq(){
 let _reqId=null;
 
 // Who can edit what:
-//  Admin → pending + queried (before it goes to cashier)
+//  Admin → pending + queried (before it goes to cashier), including her own. Approved ones must be called back first
 //  MD    → pending + queried + approved (anything not yet paid / rejected)
 function canEditReq(r){
-  // Admin's own requisitions are out of her hands once raised: only the MD can edit or reject them
-  if(S.role==='admin')return(r.status==='pending'||r.status==='queried')&&r.raised_by_role!=='admin'&&!(currentUser&&r.raised_by===currentUser.id);
+  if(S.role==='admin')return r.status==='pending'||r.status==='queried';
   if(S.role==='md')return r.status==='pending'||r.status==='queried'||r.status==='approved';
   return false;
 }
+// Admin and MD can pull an approved (unpaid) requisition back from the cashier to correct it
+function canRecallReq(r){return(S.role==='admin'||S.role==='md')&&r.status==='approved';}
 
 function edRowHtml(it){
   return`<div class="item-row ed-row"><input class="form-input" value="${esc(it?.description||'')}" placeholder="Description" oninput="calcEdTotal()"><input class="form-input" type="number" value="${it?.qty??1}" min="0" oninput="calcEdTotal()" style="text-align:center"><input class="form-input" type="number" value="${it?.unit_cost??0}" min="0" oninput="calcEdTotal()" style="text-align:right"><input class="form-input" type="text" value="${esc(it?.balance||'')}" placeholder="Balance in store" aria-label="Balance in store"><button class="item-del-btn" type="button" onclick="this.parentElement.remove();calcEdTotal()">&#215;</button></div>`;
@@ -2034,11 +2036,14 @@ function openReqDetail(id){
     footer+=`<button class="btn-reject-r" style="margin-right:auto" onclick="rejectReq()">Reject</button>`;
     footer+=`<button class="btn-save" onclick="saveReqEdit()">Save changes</button>`;
     footer+=`<button class="btn-approve" onclick="approveReq()">Approve</button>`;
+  }else if(role==='admin'&&canRecallReq(r)){
+    footer+=`<button class="btn-ghost" style="margin-right:auto" onclick="closeModal('reqDetailModal')">Close</button><button class="btn-query" onclick="recallReq()">Call back</button>`;
   }else if(role==='cashier'&&r.status==='approved'){
     footer+=`<button class="btn-ghost" onclick="closeModal('reqDetailModal')">Close</button><button class="btn-pay" onclick="markPaid()">Mark as paid</button>`;
   }else if(role==='md'){
     footer+=`<button class="btn-del-grey" style="margin-right:auto" onclick="deleteReqMD()">Delete</button>`;
     if(editable){
+      if(canRecallReq(r))footer+=`<button class="btn-query" onclick="recallReq()">Call back</button>`;
       footer+=`<button class="btn-reject-r" onclick="rejectReqMD()">Reject</button>`;
       footer+=`<button class="btn-query" onclick="queryReqMD()">Query</button>`;
       footer+=`<button class="btn-save" onclick="saveReqEdit()">Save changes</button>`;
@@ -2119,6 +2124,23 @@ async function approveReq(){
     await updateReqDB(_reqId,{...withLog(r,p,['Approved by '+(ROLES[S.role]?.label||S.role)+' → sent to cashier']),status:'approved',approved_by:currentUser?.id||null,approved_at:new Date().toISOString()});
     closeModal('reqDetailModal');showToast('Requisition approved and sent to the cashier','ok');renderReqPage();
   }catch(e){showToast('Error: '+e.message,'err');}
+}
+
+// Pull an approved requisition back from the cashier so it can be corrected and approved again
+async function recallReq(){
+  const r=reqs.find(x=>x.id===_reqId);if(!r||!canRecallReq(r))return;
+  const reason=await askDialog({title:'Call back requisition',message:`${reqNo(r)} will leave the cashier's list and return to Pending so you can edit it and approve it again.`,input:{label:'Reason',placeholder:'Optional'},confirmLabel:'Call back'});
+  if(reason===null)return;
+  const log=Array.isArray(r.edit_log)?r.edit_log:[];
+  const entry={at:new Date().toISOString(),by:document.getElementById('uName').textContent,role:S.role,summary:['Called back from the cashier for correction'+(reason?': '+reason:'')]};
+  try{
+    await updateReqDB(_reqId,{status:'pending',approved_by:null,approved_at:null,edit_log:[...log,entry]},'approved');
+    closeModal('reqDetailModal');showToast('Called back. It is in Pending for editing','ok');
+    currentReqTab='pending';renderReqPage();updateNavCount();if(S.page==='dashboard')renderDashboard();
+  }catch(e){
+    showToast(e.code==='PGRST116'?'Cannot call back: it was already paid or changed':'Error: '+e.message,'err');
+    await fetchReqs();renderReqPage();
+  }
 }
 
 // In-app dialog (replaces the browser's prompt() and confirm()).
